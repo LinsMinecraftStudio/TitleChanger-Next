@@ -1,0 +1,14 @@
+{
+  "titlechanger.title": "TitleChanger Config",
+  "titlechanger.category.general": "General Settings",
+  "titlechanger.category.placeholder": "Placeholder Settings",
+  "titlechanger.option.generalSettings.enabled": "Enable TitleChanger",
+  "titlechanger.option.generalSettings.title": "Title",
+  "titlechanger.option.generalSettings.title.@Tooltip[0]": "Write the title you want to display on the title bar.",
+  "titlechanger.option.generalSettings.title.@Tooltip[1]": "You can use placeholders to customize the title.",
+  "titlechanger.option.generalSettings.updateInterval": "Update Interval",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "Set the interval in milliseconds between title updates.",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "Set to -1 to disable automatic title updates.",
+  "titlechanger.option.placeholderSettings.hitokotoInternational": "International Hitokoto",
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "Default Time Format"
+}

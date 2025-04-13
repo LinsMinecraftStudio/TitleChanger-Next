@@ -1,0 +1,148 @@
+package me.mmmjjkx.titlechanger.fabric;
+
+import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+public class TitleProcessor {
+    private static final Pattern placeholderPattern = Pattern.compile("%(?:(\\w+)_)?(\\w+)(?::([^%]*))?%");
+
+    private final Map<String, TitlePlaceholderExtension> extensions;
+
+    private final Map<String, List<TemplatePart>> templateCache = new ConcurrentHashMap<>();
+    private ScheduledExecutorService executor;
+
+    public TitleProcessor() {
+        this.extensions = new ConcurrentHashMap<>(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class)
+                .stream()
+                .collect(Collectors.toMap(TitlePlaceholderExtension::getPlaceholderHeader, e -> e)));
+
+        this.executor = Executors.newSingleThreadScheduledExecutor(
+                r -> {
+                    Thread t = new Thread(r, "TitleChanger-Processor");
+                    t.setPriority(Thread.NORM_PRIORITY - 1);
+                    return t;
+                });
+    }
+
+    public void startProcessing(String template, long intervalMs, Consumer<String> resultConsumer) {
+        List<TemplatePart> parts = parseTemplate(template);
+
+        if (intervalMs < 0) {
+            try {
+                String result = processTemplate(parts);
+                resultConsumer.accept(result);
+            } catch (Exception e) {
+                System.err.println("Error processing template: " + e.getMessage());
+                resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
+            }
+
+            return;
+        }
+
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                String result = processTemplate(parts);
+                resultConsumer.accept(result);
+            } catch (Exception e) {
+                System.err.println("Error processing template: " + e.getMessage());
+                resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
+            }
+        }, 0, intervalMs, TimeUnit.MILLISECONDS);
+    }
+
+    private List<TemplatePart> parseTemplate(String template) {
+        return templateCache.computeIfAbsent(template, t -> {
+            List<TemplatePart> parts = new ArrayList<>();
+            Matcher matcher = placeholderPattern.matcher(template);
+            int lastEnd = 0;
+
+            while (matcher.find()) {
+                if (matcher.start() > lastEnd) {
+                    parts.add(new TextPart(template.substring(lastEnd, matcher.start())));
+                }
+
+                String header = matcher.group(1);
+                String placeholder = matcher.group(2);
+                String[] args = matcher.group(3) != null ?
+                        matcher.group(3).split(",") : new String[0];
+
+                parts.add(new PlaceholderPart(header, placeholder, args));
+                lastEnd = matcher.end();
+            }
+
+            if (lastEnd < template.length()) {
+                parts.add(new TextPart(template.substring(lastEnd)));
+            }
+
+            return Collections.unmodifiableList(parts);
+        });
+    }
+
+    private String processTemplate(List<TemplatePart> parts) {
+        StringBuilder result = new StringBuilder(estimateSize(parts));
+
+        for (TemplatePart part : parts) {
+            if (part instanceof TextPart) {
+                result.append(((TextPart) part).text);
+            } else if (part instanceof PlaceholderPart ph) {
+                String value = resolvePlaceholder(ph.header, ph.placeholder, ph.args);
+                result.append(value);
+            }
+        }
+
+        return result.toString();
+    }
+
+    private String resolvePlaceholder(String header, String placeholder, String[] args) {
+        for (TitlePlaceholderExtension ext : extensions.values()) {
+            if (header != null && ext.getPlaceholderHeader().equalsIgnoreCase(header)) {
+                if (ext.getPlaceholders().contains(placeholder.toLowerCase())) {
+                    return ext.getPlaceholderValue(placeholder, args);
+                }
+            } else if (header == null && ext.getPlaceholders().contains(placeholder.toLowerCase())) {
+                return ext.getPlaceholderValue(placeholder, args);
+            }
+        }
+
+        return "%" + (header != null ? header + "_" : "") + placeholder +
+                (args.length > 0 ? ":" + String.join(",", args) : "") + "%";
+    }
+
+    private int estimateSize(List<TemplatePart> parts) {
+        int size = 0;
+        for (TemplatePart part : parts) {
+            if (part instanceof TextPart) {
+                size += ((TextPart) part).text.length();
+            } else {
+                size += 10;
+            }
+        }
+        return size;
+    }
+
+    public void shutdown() {
+        executor.shutdown();
+        executor = Executors.newSingleThreadScheduledExecutor(
+                r -> {
+                    Thread t = new Thread(r, "TitleChanger-Processor");
+                    t.setPriority(Thread.NORM_PRIORITY - 1);
+                    return t;
+                });
+    }
+
+    private interface TemplatePart {}
+
+    private record TextPart(String text) implements TemplatePart { }
+
+    /**
+     * @param header maybe null
+     */
+    private record PlaceholderPart(String header, String placeholder, String[] args) implements TemplatePart { }
+}

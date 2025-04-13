@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.mmmjjkx.titlechanger.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ClientMixin"
+  ]
+}

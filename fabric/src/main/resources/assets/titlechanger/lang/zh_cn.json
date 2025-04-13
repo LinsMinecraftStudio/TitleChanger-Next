@@ -1,0 +1,14 @@
+{
+  "titlechanger.title": "TitleChanger 配置",
+  "titlechanger.category.general": "常规设置",
+  "titlechanger.category.placeholder": "占位符设置",
+  "titlechanger.option.generalSettings.enabled": "启用 TitleChanger",
+  "titlechanger.option.generalSettings.title": "标题",
+  "titlechanger.option.generalSettings.title.@Tooltip[0]": "在这里输入你想要的标题",
+  "titlechanger.option.generalSettings.title.@Tooltip[1]": "你可以使用变量来自定义标题",
+  "titlechanger.option.generalSettings.updateInterval": "更新间隔",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "设置更新间隔以刷新标题（单位：毫秒）",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "设置为 -1 以禁用自动刷新",
+  "titlechanger.option.placeholderSettings.hitokotoInternational": "国际版一言",
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "默认时间格式"
+}
