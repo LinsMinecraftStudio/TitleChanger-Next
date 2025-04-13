@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dd646dca-4a37-43fc-b26b-c8154b95b465" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/src/main/java/io/github/lijinhong11/titlechanger/api/TitlePlaceholderExtension.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/HttpUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/TitleProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/bulitin/TCPlaceholders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/config/TCConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/hook/ModMenuHook.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/mixin/ClientMixin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/en_us.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/zh_cn.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/fabric.mod.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState>
+        <dataType path="$PROJECT_DIR$/titlechanger-fabric">
+          <ModuleState>
+            <id value="com.demonwav.mcdev.platform.architectury.framework.ArchitecturyGradleData" />
+            <id value="com.intellij.externalSystem.JavaManifestData" />
+            <id value="com.intellij.externalSystem.JavaModuleData" />
+            <id value="com.intellij.openapi.externalSystem.model.project.ContentRootData" />
+            <id value="com.intellij.openapi.externalSystem.model.project.ModuleData" />
+            <id value="com.intellij.openapi.externalSystem.model.project.ModuleSdkData" />
+            <id value="com.intellij.openapi.externalSystem.model.task.TaskData" />
+            <id value="org.jetbrains.kotlin.idea.gradleTooling.model.allopen.AllOpenModel" />
+            <id value="org.jetbrains.kotlin.idea.gradleTooling.model.assignment.AssignmentModel" />
+            <id value="org.jetbrains.kotlin.idea.gradleTooling.model.noarg.NoArgModel" />
+            <id value="org.jetbrains.kotlin.idea.gradleTooling.model.samWithReceiver.SamWithReceiverModel" />
+            <id value="org.jetbrains.plugins.gradle.model.GradleExtensions" />
+            <id value="org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData" />
+            <id value="org.jetbrains.plugins.gradle.model.data.GradleProjectBuildScriptData" />
+          </ModuleState>
+        </dataType>
+      </ProjectState>
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/fabric">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/titlechanger-fabric">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="fabric" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="fabric" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="ide" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="help" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2vceCsujyH1XVkTY7vBk7OSbpW4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.titlechanger:fabric [configureClientLaunch].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger:fabric [runClient].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;jdk.selected.JDK&quot;: &quot;zulu-21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/CurryMix/IdeaProjects/titlechanger/titlechanger-fabric&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.grazie.pro.style&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;jdk.preference.JDK&quot;: [
+      &quot;17=C:/Program Files/Microsoft/jdk-17.0.8.7-hotspot&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\CurryMix\IdeaProjects\titlechanger\titlechanger-fabric" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\CurryMix\IdeaProjects\titlechanger\titlechanger-fabric\src\main" />
+      <recent name="C:\Users\CurryMix\IdeaProjects\titlechanger\titlechanger-fabric\src\main\java" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="titlechanger:fabric [runClient]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/fabric" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="runClient" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.titlechanger:fabric [runClient]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="dd646dca-4a37-43fc-b26b-c8154b95b465" name="更改" comment="" />
+      <created>1744448665495</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744448665495</updated>
+      <workItem from="1744448668286" duration="2820000" />
+      <workItem from="1744514395301" duration="5590000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
