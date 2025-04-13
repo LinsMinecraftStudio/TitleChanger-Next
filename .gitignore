@@ -40,3 +40,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### MC ###
+.log.gz
+.log
+.dat
+.dat_old
+/fabric/run/
