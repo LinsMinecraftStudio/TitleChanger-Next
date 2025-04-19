@@ -5,14 +5,24 @@ import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import org.apache.commons.lang3.StringUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class TCPlaceholders implements TitlePlaceholderExtension {
+    private static final String HOUR_REPLACE = "%h";
+    private static final String MINUTE_REPLACE = "%m";
+    private static final String SECOND_REPLACE = "%s";
+    private static final String HOUR_REPLACE_N2 = "%2h";
+    private static final String MINUTE_REPLACE_N2 = "%2m";
+    private static final String SECOND_REPLACE_N2 = "%2s";
+
     @Override
     public String getPlaceholderHeader() {
         return ""; // no header needed in core
@@ -26,6 +36,9 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();
             case "playeruuid" -> Minecraft.getInstance().getUser().getUuid();
+            case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
+            case "ping" -> getPing();
+            case "playtime" -> getPlayTime();
             case "starttime" -> {
                 if (args.length == 1) {
                     yield TitleChangerFabric.getStartTime(args[0]);
@@ -42,6 +55,19 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             }
             default -> "%ERROR%";
         };
+    }
+
+    private String getPing() {
+        Minecraft client = Minecraft.getInstance();
+        if (client.getConnection() != null) {
+            ClientPacketListener connection = client.getConnection();
+            PlayerInfo info = connection.getPlayerInfo(client.getUser().getUuid());
+            if (info != null) {
+                return String.valueOf(info.getLatency());
+            }
+        }
+
+        return "0";
     }
 
     private String getPlayingMode() {
@@ -69,6 +95,19 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         return now.format(formatter);
     }
 
+    private String getPlayTime() {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(TitleChangerFabric.getStartTime(), now);
+        String format = TitleChangerFabric.getConfig().placeholderSettings.playTimeFormat;
+        format = StringUtils.replace(format, HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
+        format = StringUtils.replace(format, MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
+        format = StringUtils.replace(format, SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
+        format = StringUtils.replace(format, HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
+        format = StringUtils.replace(format, MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
+        format = StringUtils.replace(format, SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
+        return format;
+    }
+
     @Override
     public String getExtensionName() {
         return "titlechanger";
@@ -76,6 +115,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public List<String> getPlaceholders() {
-        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid");
+        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime");
     }
 }

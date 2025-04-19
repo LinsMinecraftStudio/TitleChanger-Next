@@ -11,7 +11,7 @@
         "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-New",
         "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-New"
     },
-    "license": "GPL-3.0",
+    "license": "GNU General Public License v3.0",
     "environment": "client",
     "entrypoints": {
         "client": [

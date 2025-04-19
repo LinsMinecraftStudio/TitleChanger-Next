@@ -9,6 +9,12 @@
   "titlechanger.option.generalSettings.updateInterval": "Update Interval",
   "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "Set the interval in milliseconds between title updates.",
   "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "Set to -1 to disable automatic title updates.",
-  "titlechanger.option.placeholderSettings.hitokotoInternational": "International Hitokoto",
-  "titlechanger.option.placeholderSettings.defaultTimeFormat": "Default Time Format"
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "Default Time Format",
+  "titlechanger.option.placeholderSettings.playTimeFormat": "Playtime Display Format",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[0]": "Set the format of the playtime display.",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' represents hours (use %2h to get 2 digit)",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' represents minutes (use %2m to get 2 digit)",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' represents seconds (use %2s to get 2 digit)",
+  "titlechanger.error.hitokoto": "Cannot get Hitokoto",
+  "titlechanger.command.extensions": "Installed Extensions: "
 }

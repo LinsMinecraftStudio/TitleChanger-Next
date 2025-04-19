@@ -26,9 +26,9 @@ public class TCConfig implements ConfigData {
     }
 
     public static class Placeholder implements ConfigData {
-        @ConfigEntry.Gui.RequiresRestart
-        public boolean hitokotoInternational = true;
-
         public String defaultTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+        @ConfigEntry.Gui.Tooltip(count = 4)
+        public String playTimeFormat = "%h:%m:%s";
     }
 }

@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger.fabric;
+package me.mmmjjkx.titlechanger.fabric.utils;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import net.fabricmc.loader.api.FabricLoader;
@@ -54,7 +54,7 @@ public class TitleProcessor {
                 System.err.println("Error processing template: " + e.getMessage());
                 resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
             }
-        }, 0, intervalMs, TimeUnit.MILLISECONDS);
+        }, 10, intervalMs, TimeUnit.MILLISECONDS);
     }
 
     private List<TemplatePart> parseTemplate(String template) {
@@ -86,14 +86,14 @@ public class TitleProcessor {
     }
 
     private String processTemplate(List<TemplatePart> parts) {
-        StringBuilder result = new StringBuilder(estimateSize(parts));
+        RopeImplString result = new RopeImplString("");
 
         for (TemplatePart part : parts) {
-            if (part instanceof TextPart) {
-                result.append(((TextPart) part).text);
+            if (part instanceof TextPart tp) {
+                result.concat(new RopeImplString(tp.text));
             } else if (part instanceof PlaceholderPart ph) {
                 String value = resolvePlaceholder(ph.header, ph.placeholder, ph.args);
-                result.append(value);
+                result.concat(new RopeImplString(value));
             }
         }
 

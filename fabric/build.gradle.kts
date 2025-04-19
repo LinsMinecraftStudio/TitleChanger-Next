@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "1.0-SNAPSHOT"
+version = "2.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -32,6 +32,12 @@ dependencies {
 
     modApi("com.terraformersmc:modmenu:7.2.2") {
         exclude("net.fabricmc.fabric-api")
+    }
+}
+
+tasks.processResources {
+    filesMatching("fabric.mod.json") {
+        expand(project.properties)
     }
 }
 

@@ -1,6 +1,7 @@
-package me.mmmjjkx.titlechanger.fabric;
+package me.mmmjjkx.titlechanger.fabric.utils;
 
 import com.google.gson.Gson;
+import net.minecraft.network.chat.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,14 +14,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class HttpUtils {
     private static final String HITOKOTO_API_URL = "https://v1.hitokoto.cn/";
-    private static final String HITOKOTO_INTERNATIONAL_API_URL = "https://international.v1.hitokoto.cn/";
     private static final HttpClient http = HttpClient.newHttpClient();
 
-    public static String getHikotoko(boolean international) {
-        AtomicReference<String> hikotoko = new AtomicReference<>("无法获取一言，请稍后再试");
+    public static String getHikotoko() {
+        AtomicReference<String> hikotoko = new AtomicReference<>(Component.translatable("titlechanger.error.hitokoto").getString());
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(international ? HITOKOTO_INTERNATIONAL_API_URL : HITOKOTO_API_URL))
+                .uri(URI.create(HITOKOTO_API_URL))
                 .timeout(Duration.ofMinutes(2))
                 .header("Content-Type", "application/json")
                 .build();

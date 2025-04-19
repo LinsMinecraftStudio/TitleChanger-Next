@@ -1,8 +1,9 @@
 plugins {
     id("java")
+    id("maven-publish")
 }
 
-group = "io.github.lijinhong11.titlechanger"
+group = "io.github.lijinhong11"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -16,4 +17,27 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "io.github.lijinhong11"
+            artifactId = "titlechanger-api"
+            version = "1.0-SNAPSHOT"
+
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/lijinhong11/titlechanger")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }

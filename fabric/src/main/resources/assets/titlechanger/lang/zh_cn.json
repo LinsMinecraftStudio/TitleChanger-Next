@@ -9,6 +9,12 @@
   "titlechanger.option.generalSettings.updateInterval": "更新间隔",
   "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "设置更新间隔以刷新标题（单位：毫秒）",
   "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "设置为 -1 以禁用自动刷新",
-  "titlechanger.option.placeholderSettings.hitokotoInternational": "国际版一言",
-  "titlechanger.option.placeholderSettings.defaultTimeFormat": "默认时间格式"
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "默认时间格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat": "游戏时长显示格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[0]": "设置游戏时长显示的格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' 代表小时（使用%2h显示两位数）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' 代表分钟（使用%2m显示两位数）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' 代表秒数（使用%2s显示两位数）",
+  "titlechanger.error.hitokoto": "无法获取一言",
+  "titlechanger.command.extensions": "已安装的扩展: "
 }
