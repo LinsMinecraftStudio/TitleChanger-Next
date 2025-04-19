@@ -2,6 +2,7 @@ package me.mmmjjkx.titlechanger.fabric.utils;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -47,6 +48,10 @@ public class TitleProcessor {
         }
 
         executor.scheduleAtFixedRate(() -> {
+            if (Minecraft.getInstance().getWindow().isFullscreen()) {
+                return;
+            }
+
             try {
                 String result = processTemplate(parts);
                 resultConsumer.accept(result);

@@ -19,6 +19,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
+/*
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -33,11 +34,13 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/lijinhong11/titlechanger")
+            url = uri("https://maven.pkg.github.com/LinsMinecraftStudio/TitleChanger-New")
             credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN_PKG")
             }
         }
     }
 }
+
+ */
