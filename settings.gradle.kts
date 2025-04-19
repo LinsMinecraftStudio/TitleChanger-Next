@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "titlechanger"
+rootProject.name = "titlechanger-container"
+
 include("api")
 include("fabric")
-include("titlechanger-fabric")

@@ -6,6 +6,10 @@ plugins {
 group = "io.github.lijinhong11"
 version = "1.0-SNAPSHOT"
 
+base {
+    archivesName = "titlechanger-api"
+}
+
 repositories {
     mavenCentral()
 }

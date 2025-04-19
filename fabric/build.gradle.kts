@@ -1,10 +1,15 @@
 plugins {
     id("java")
     id("fabric-loom").version("1.10-SNAPSHOT")
+    id("com.gradleup.shadow").version("9.0.0-beta12")
 }
 
 group = "io.github.lijinhong11"
 version = "2.0-SNAPSHOT"
+
+base {
+    archivesName = "${project.properties["archives_base_name"]}"
+}
 
 repositories {
     mavenCentral()
@@ -23,7 +28,6 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
 
     implementation(project(":api"))
-    include(project(":api"))
 
     //api
     modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.136") {
@@ -39,8 +43,27 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(project.properties)
     }
+    exclude("mappings/mappings.tiny")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.shadowJar {
+    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow.jar")
+
+    dependencies {
+        include(project(":api"))
+    }
+
+    exclude("mappings/mappings.tiny")
+
+    finalizedBy(tasks.remapJar)
+}
+
+tasks.remapJar {
+    dependsOn(tasks.shadowJar)
+    inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
+    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}.jar")
 }
