@@ -32,7 +32,9 @@ public class TitleChangerFabric implements ClientModInitializer {
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((h, c) -> {
             titleProcessor.shutdown();
-            titleProcessor.startProcessing(c.generalSettings.title, 1000, t -> Minecraft.getInstance().getWindow().setTitle(t));
+            if (c.generalSettings.enabled) {
+                titleProcessor.startProcessing(c.generalSettings.title, 1000, t -> Minecraft.getInstance().getWindow().setTitle(t));
+            }
             return InteractionResult.SUCCESS;
         });
 

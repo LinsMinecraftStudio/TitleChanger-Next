@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "2.0-SNAPSHOT"
+version = "2.0"
 
 base {
     archivesName = "${project.properties["archives_base_name"]}"

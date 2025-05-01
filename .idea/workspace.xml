@@ -4,21 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd646dca-4a37-43fc-b26b-c8154b95b465" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/api/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/utils/RopeImplString.java" afterDir="false" />
+    <list default="true" id="dd646dca-4a37-43fc-b26b-c8154b95b465" name="更改" comment="2.0 first version">
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/es_es.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/pt_br.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/pt_pt.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/zh_hk.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/zh_tw.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/api/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/HttpUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/utils/HttpUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/TitleChangerFabric.java" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/TitleChangerFabric.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/TitleProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/utils/TitleProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/bulitin/TCPlaceholders.java" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/bulitin/TCPlaceholders.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/config/TCConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/java/me/mmmjjkx/titlechanger/fabric/config/TCConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/en_us.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/zh_cn.json" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/resources/assets/titlechanger/lang/zh_cn.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fabric/src/main/resources/fabric.mod.json" beforeDir="false" afterPath="$PROJECT_DIR$/fabric/src/main/resources/fabric.mod.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,22 +22,7 @@
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
-      <ProjectState>
-        <dataType path="$PROJECT_DIR$/titlechanger-fabric">
-          <ModuleState>
-            <id value="com.demonwav.mcdev.platform.architectury.framework.ArchitecturyGradleData" />
-            <id value="com.intellij.externalSystem.JavaManifestData" />
-            <id value="com.intellij.externalSystem.JavaModuleData" />
-            <id value="com.intellij.openapi.externalSystem.model.project.ContentRootData" />
-            <id value="com.intellij.openapi.externalSystem.model.project.ModuleData" />
-            <id value="com.intellij.openapi.externalSystem.model.project.ModuleSdkData" />
-            <id value="com.intellij.openapi.externalSystem.model.task.TaskData" />
-            <id value="org.jetbrains.plugins.gradle.model.GradleExtensions" />
-            <id value="org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData" />
-            <id value="org.jetbrains.plugins.gradle.model.data.GradleProjectBuildScriptData" />
-          </ModuleState>
-        </dataType>
-      </ProjectState>
+      <ProjectState />
     </projectState>
   </component>
   <component name="ExternalProjectsManager">
@@ -54,62 +34,33 @@
         <task path="$PROJECT_DIR$/titlechanger-fabric">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-container" type="f1a62948:ProjectNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-container" type="f1a62948:ProjectNode" />
                 <item name="fabric" type="2d1252cf:ModuleNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-container" type="f1a62948:ProjectNode" />
                 <item name="fabric" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
+                <item name="titlechanger-container" type="f1a62948:ProjectNode" />
                 <item name="fabric" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="fabric" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
-                <item name="fabric" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="ide" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
-                <item name="fabric" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="other" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
-                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
-                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="titlechanger" type="f1a62948:ProjectNode" />
-                <item name="titlechanger-fabric" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="help" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -128,6 +79,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1745030257" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1745030256" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -138,12 +114,19 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Gradle.titlechanger [api:publish].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger [fabric:build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger [fabric:remapJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger [fabric:shadowJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger:fabric [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.titlechanger:fabric [configureClientLaunch].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.titlechanger:fabric [processIncludeJars].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.titlechanger:fabric [runClient].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.下载源代码.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\CurryMix\\AppData\\Roaming\\JetBrains\\IntelliJIdea2024.1\\plugins\\Shell Script\\shellcheck.exe&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;jdk.selected.JDK&quot;: &quot;zulu-21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/CurryMix/IdeaProjects/titlechanger/fabric/run/mods&quot;,
@@ -152,7 +135,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;profiler.jvm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -171,13 +154,79 @@
       <recent name="C:\Users\CurryMix\IdeaProjects\titlechanger\titlechanger-fabric\src\main\java" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.titlechanger:fabric [build]">
+    <configuration name="titlechanger [api:publish]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="api:publish" />
+          </list>
+        </option>
+        <option name="vmOptions" value="-DproxyHost=127.0.0.1 -DproxyPort=10810" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="titlechanger [fabric:shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="fabric:shadowJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="titlechanger:fabric [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/fabric" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="titlechanger:fabric [runClient]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/fabric" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -194,8 +243,15 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Gradle.titlechanger [api:publish]" />
+      <item itemvalue="Gradle.titlechanger [fabric:shadowJar]" />
+      <item itemvalue="Gradle.titlechanger:fabric [build]" />
+      <item itemvalue="Gradle.titlechanger:fabric [runClient]" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.titlechanger:fabric [build]" />
         <item itemvalue="Gradle.titlechanger:fabric [runClient]" />
       </list>
     </recent_temporary>
@@ -209,6 +265,10 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\CurryMix\AppData\Roaming\Subversion</configuration>
+    <myIsUseDefaultProxy>true</myIsUseDefaultProxy>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
       <changelist id="dd646dca-4a37-43fc-b26b-c8154b95b465" name="更改" comment="" />
@@ -227,7 +287,9 @@
       <workItem from="1744986178856" duration="324000" />
       <workItem from="1744986563991" duration="47000" />
       <workItem from="1744987330119" duration="5687000" />
-      <workItem from="1745021967399" duration="7658000" />
+      <workItem from="1745021967399" duration="20116000" />
+      <workItem from="1745071449619" duration="661000" />
+      <workItem from="1746099635648" duration="970000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -261,7 +323,31 @@
       <option name="project" value="LOCAL" />
       <updated>1744522421646</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="first ver">
+      <option name="closed" value="true" />
+      <created>1745030161027</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1745030161027</updated>
+    </task>
+    <task id="LOCAL-00006" summary="finish">
+      <option name="closed" value="true" />
+      <created>1745032618091</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1745032618091</updated>
+    </task>
+    <task id="LOCAL-00007" summary="2.0 first version">
+      <option name="closed" value="true" />
+      <created>1745045661045</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745045661045</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -271,7 +357,10 @@
     <MESSAGE value="init" />
     <MESSAGE value="git ignore" />
     <MESSAGE value="1" />
-    <option name="LAST_COMMIT_MESSAGE" value="1" />
+    <MESSAGE value="first ver" />
+    <MESSAGE value="finish" />
+    <MESSAGE value="2.0 first version" />
+    <option name="LAST_COMMIT_MESSAGE" value="2.0 first version" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

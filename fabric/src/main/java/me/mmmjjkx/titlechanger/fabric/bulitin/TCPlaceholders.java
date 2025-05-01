@@ -39,6 +39,27 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
+            case "loc:x" -> {
+                if (Minecraft.getInstance().player != null) {
+                    yield String.valueOf(Minecraft.getInstance().player.getX());
+                }
+
+                yield "-1";
+            }
+            case "loc:y" -> {
+                if (Minecraft.getInstance().player != null) {
+                    yield String.valueOf(Minecraft.getInstance().player.getY());
+                }
+
+                yield "-1";
+            }
+            case "loc:z" -> {
+                if (Minecraft.getInstance().player != null) {
+                    yield String.valueOf(Minecraft.getInstance().player.getZ());
+                }
+
+                yield "-1";
+            }
             case "starttime" -> {
                 if (args.length == 1) {
                     yield TitleChangerFabric.getStartTime(args[0]);
@@ -115,6 +136,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public List<String> getPlaceholders() {
-        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime");
+        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "loc:x", "loc:y", "loc:z");
     }
 }

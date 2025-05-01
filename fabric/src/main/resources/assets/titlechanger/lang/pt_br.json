@@ -1,0 +1,20 @@
+{
+  "titlechanger.title": "Configuração do TitleChanger",
+  "titlechanger.category.general": "Configurações gerais",
+  "titlechanger.category.placeholder": "Configurações de placeholder",
+  "titlechanger.option.generalSettings.enabled": "Ativar TitleChanger",
+  "titlechanger.option.generalSettings.title": "Título",
+  "titlechanger.option.generalSettings.title.@Tooltip[0]": "Insira o título desejado aqui",
+  "titlechanger.option.generalSettings.title.@Tooltip[1]": "Você pode usar variáveis para personalizar o título",
+  "titlechanger.option.generalSettings.updateInterval": "Intervalo de atualização",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "Defina o intervalo para atualizar o título (em milissegundos)",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "Defina como -1 para desativar a atualização automática",
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "Formato de hora padrão",
+  "titlechanger.option.placeholderSettings.playTimeFormat": "Formato de exibição do tempo de jogo",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[0]": "Defina o formato de exibição do tempo de jogo",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' representa horas (use %2h para dois dígitos)",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' representa minutos (use %2m para dois dígitos)",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' representa segundos (use %2s para dois dígitos)",
+  "titlechanger.error.hitokoto": "Não foi possível obter o Hitokoto",
+  "titlechanger.command.extensions": "Extensões instaladas: "
+}

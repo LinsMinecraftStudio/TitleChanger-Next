@@ -1,0 +1,20 @@
+{
+  "titlechanger.title": "TitleChanger 設定",
+  "titlechanger.category.general": "一般設定",
+  "titlechanger.category.placeholder": "佔位符設定",
+  "titlechanger.option.generalSettings.enabled": "啟用 TitleChanger",
+  "titlechanger.option.generalSettings.title": "標題",
+  "titlechanger.option.generalSettings.title.@Tooltip[0]": "在此輸入你想要的標題",
+  "titlechanger.option.generalSettings.title.@Tooltip[1]": "你可以使用變數來自訂標題",
+  "titlechanger.option.generalSettings.updateInterval": "更新間隔",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "設定更新間隔以刷新標題（單位：毫秒）",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "設定為 -1 以停用自動刷新",
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "預設時間格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat": "遊戲時長顯示格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[0]": "設定遊戲時長顯示的格式",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' 代表小時（使用%2h顯示兩位數）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' 代表分鐘（使用%2m顯示兩位數）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' 代表秒數（使用%2s顯示兩位數）",
+  "titlechanger.error.hitokoto": "無法取得一言",
+  "titlechanger.command.extensions": "已安裝的擴展: "
+}

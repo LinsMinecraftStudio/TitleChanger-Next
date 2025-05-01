@@ -1,0 +1,20 @@
+{
+  "titlechanger.title": "TitleChanger 設定",
+  "titlechanger.category.general": "一般設定",
+  "titlechanger.category.placeholder": "プレースホルダー設定",
+  "titlechanger.option.generalSettings.enabled": "TitleChanger を有効にする",
+  "titlechanger.option.generalSettings.title": "タイトル",
+  "titlechanger.option.generalSettings.title.@Tooltip[0]": "ここに表示したいタイトルを入力してください",
+  "titlechanger.option.generalSettings.title.@Tooltip[1]": "変数を使用してタイトルをカスタマイズできます",
+  "titlechanger.option.generalSettings.updateInterval": "更新間隔",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[0]": "タイトルを更新する間隔を設定します（単位：ミリ秒）",
+  "titlechanger.option.generalSettings.updateInterval.@Tooltip[1]": "-1 に設定すると自動更新を無効にします",
+  "titlechanger.option.placeholderSettings.defaultTimeFormat": "デフォルトの時間フォーマット",
+  "titlechanger.option.placeholderSettings.playTimeFormat": "プレイ時間の表示形式",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[0]": "プレイ時間の表示形式を設定します",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' は時間を表します（%2h で2桁表示）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' は分を表します（%2m で2桁表示）",
+  "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' は秒を表します（%2s で2桁表示）",
+  "titlechanger.error.hitokoto": "一言を取得できませんでした",
+  "titlechanger.command.extensions": "インストール済み拡張機能: "
+}
