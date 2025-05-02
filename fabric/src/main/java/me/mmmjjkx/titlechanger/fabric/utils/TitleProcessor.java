@@ -32,18 +32,20 @@ public class TitleProcessor {
                 });
     }
 
+    public String firstParse(String template) {
+        try {
+            return processTemplate(parseTemplate(template));
+        } catch (Exception e) {
+            System.err.println("Error processing template: " + e.getMessage());
+            return template.replaceAll("%.*?%", "ERROR");
+        }
+    }
+
     public void startProcessing(String template, long intervalMs, Consumer<String> resultConsumer) {
         List<TemplatePart> parts = parseTemplate(template);
 
         if (intervalMs < 0) {
-            try {
-                String result = processTemplate(parts);
-                resultConsumer.accept(result);
-            } catch (Exception e) {
-                System.err.println("Error processing template: " + e.getMessage());
-                resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
-            }
-
+            resultConsumer.accept(template);
             return;
         }
 
@@ -118,18 +120,6 @@ public class TitleProcessor {
 
         return "%" + (header != null ? header + "_" : "") + placeholder +
                 (args.length > 0 ? ":" + String.join(",", args) : "") + "%";
-    }
-
-    private int estimateSize(List<TemplatePart> parts) {
-        int size = 0;
-        for (TemplatePart part : parts) {
-            if (part instanceof TextPart) {
-                size += ((TextPart) part).text.length();
-            } else {
-                size += 10;
-            }
-        }
-        return size;
     }
 
     public void shutdown() {

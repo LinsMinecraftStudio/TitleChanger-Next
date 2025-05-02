@@ -51,7 +51,7 @@ tasks.test {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow.jar")
+    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}.jar")
 
     dependencies {
         include(project(":api"))
