@@ -2,6 +2,7 @@
   "titlechanger.title": "Configuração do TitleChanger",
   "titlechanger.category.general": "Configurações gerais",
   "titlechanger.category.placeholder": "Configurações de placeholder",
+  "titlechanger.category.icon": "Configurações de ícone",
   "titlechanger.option.generalSettings.enabled": "Ativar TitleChanger",
   "titlechanger.option.generalSettings.title": "Título",
   "titlechanger.option.generalSettings.title.@Tooltip[0]": "Insira o título desejado aqui",
@@ -15,6 +16,11 @@
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' representa horas (use %2h para dois dígitos)",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' representa minutos (use %2m para dois dígitos)",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' representa segundos (use %2s para dois dígitos)",
+  "titlechanger.option.iconSettings.enabled": "Ativar mudança de ícone",
+  "titlechanger.option.iconSettings.icon": "Arquivo de ícone",
+  "titlechanger.option.iconSettings.icon.@Tooltip": "Defina o arquivo de ícone para alterar o ícone",
+  "titlechanger.option.iconSettings.randomIcons": "Ícones aleatórios",
+  "titlechanger.option.iconSettings.randomIcons.@Tooltip": "Defina como true para escolher ícones aleatoriamente",
   "titlechanger.error.hitokoto": "Não foi possível obter o Hitokoto",
   "titlechanger.command.extensions": "Extensões instaladas: "
 }

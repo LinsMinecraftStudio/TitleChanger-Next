@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "2.0"
+version = "${project.properties["mod_version"]}"
 
 base {
     archivesName = "${project.properties["archives_base_name"]}"
@@ -51,7 +51,7 @@ tasks.test {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}.jar")
+    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))

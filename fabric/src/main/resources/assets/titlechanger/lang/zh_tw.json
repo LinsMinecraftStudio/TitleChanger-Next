@@ -2,6 +2,7 @@
   "titlechanger.title": "TitleChanger 設定",
   "titlechanger.category.general": "一般設定",
   "titlechanger.category.placeholder": "佔位符設定",
+  "titlechanger.category.icon": "圖示設定",
   "titlechanger.option.generalSettings.enabled": "啟用 TitleChanger",
   "titlechanger.option.generalSettings.title": "標題",
   "titlechanger.option.generalSettings.title.@Tooltip[0]": "在此輸入你想要的標題",
@@ -15,6 +16,11 @@
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' 代表小時（使用%2h顯示兩位數）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' 代表分鐘（使用%2m顯示兩位數）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' 代表秒數（使用%2s顯示兩位數）",
+  "titlechanger.option.iconSettings.enabled": "啟用圖示變更",
+  "titlechanger.option.iconSettings.icon": "圖示檔案",
+  "titlechanger.option.iconSettings.icon.@Tooltip": "設定圖示檔案以變更圖示",
+  "titlechanger.option.iconSettings.randomIcons": "隨機圖示",
+  "titlechanger.option.iconSettings.randomIcons.@Tooltip": "設為 啟用 以隨機選擇圖示",
   "titlechanger.error.hitokoto": "無法取得一言",
   "titlechanger.command.extensions": "已安裝的擴充功能: "
 }

@@ -2,6 +2,7 @@
   "titlechanger.title": "TitleChanger Config",
   "titlechanger.category.general": "General Settings",
   "titlechanger.category.placeholder": "Placeholder Settings",
+  "titlechanger.category.icon": "Icon Settings",
   "titlechanger.option.generalSettings.enabled": "Enable TitleChanger",
   "titlechanger.option.generalSettings.title": "Title",
   "titlechanger.option.generalSettings.title.@Tooltip[0]": "Write the title you want to display on the title bar.",
@@ -15,6 +16,11 @@
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' represents hours (use %2h to get 2 digit)",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' represents minutes (use %2m to get 2 digit)",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' represents seconds (use %2s to get 2 digit)",
+  "titlechanger.option.iconSettings.enabled": "Enable Icon Changing",
+  "titlechanger.option.iconSettings.icon": "Icon File",
+  "titlechanger.option.iconSettings.icon.@Tooltip": "Set the icon file to change the icon.",
+  "titlechanger.option.iconSettings.randomIcons": "Random Icons",
+  "titlechanger.option.iconSettings.randomIcons.@Tooltip": "Set to true to choose icon randomly",
   "titlechanger.error.hitokoto": "Cannot get Hitokoto",
   "titlechanger.command.extensions": "Installed Extensions: "
 }

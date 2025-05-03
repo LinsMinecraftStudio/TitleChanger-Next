@@ -2,6 +2,7 @@
   "titlechanger.title": "TitleChanger 配置",
   "titlechanger.category.general": "常规设置",
   "titlechanger.category.placeholder": "占位符设置",
+  "titlechanger.category.icon": "图标设置",
   "titlechanger.option.generalSettings.enabled": "启用 TitleChanger",
   "titlechanger.option.generalSettings.title": "标题",
   "titlechanger.option.generalSettings.title.@Tooltip[0]": "在这里输入你想要的标题",
@@ -15,6 +16,11 @@
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' 代表小时（使用%2h显示两位数）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' 代表分钟（使用%2m显示两位数）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' 代表秒数（使用%2s显示两位数）",
+  "titlechanger.option.iconSettings.enabled": "启用图标更改",
+  "titlechanger.option.iconSettings.icon": "图标文件",
+  "titlechanger.option.iconSettings.icon.@Tooltip": "输入图标文件名称来设置图标",
+  "titlechanger.option.iconSettings.randomIcons": "随机图标",
+  "titlechanger.option.iconSettings.randomIcons.@Tooltip": "设置为启用则会随机选择图标",
   "titlechanger.error.hitokoto": "无法获取一言",
   "titlechanger.command.extensions": "已安装的扩展: "
 }

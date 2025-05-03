@@ -2,6 +2,7 @@ package me.mmmjjkx.titlechanger.fabric.bulitin;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
+import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -35,7 +36,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "hitokoto" -> TitleChangerFabric.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Minecraft.getInstance().getUser().getUuid();
+            case "playeruuid" -> Reflects.getUserUUID(Minecraft.getInstance().getUser());
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
@@ -89,7 +90,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         Minecraft client = Minecraft.getInstance();
         if (client.getConnection() != null) {
             ClientPacketListener connection = client.getConnection();
-            PlayerInfo info = connection.getPlayerInfo(client.getUser().getUuid());
+            PlayerInfo info = connection.getPlayerInfo(client.getUser().getName());
             if (info != null) {
                 return String.valueOf(info.getLatency());
             }
@@ -101,11 +102,10 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
     private String getPlayingMode() {
         Minecraft client = Minecraft.getInstance();
         ClientPacketListener clientPacketListener = client.getConnection();
-
         if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
             if (client.getSingleplayerServer() != null && !client.getSingleplayerServer().isPublished()) {
                 return I18n.get("title.singleplayer");
-            } else if (client.isConnectedToRealms()) {
+            } else if (Reflects.inRealms()) {
                 return I18n.get("title.multiplayer.realms");
             } else if (client.getSingleplayerServer() == null && (client.getCurrentServer() == null || !client.getCurrentServer().isLan())) {
                 return I18n.get("title.multiplayer.other");

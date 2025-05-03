@@ -2,6 +2,7 @@
   "titlechanger.title": "TitleChanger 設定",
   "titlechanger.category.general": "一般設定",
   "titlechanger.category.placeholder": "プレースホルダー設定",
+  "titlechanger.category.icon": "アイコン設定",
   "titlechanger.option.generalSettings.enabled": "TitleChanger を有効にする",
   "titlechanger.option.generalSettings.title": "タイトル",
   "titlechanger.option.generalSettings.title.@Tooltip[0]": "ここに表示したいタイトルを入力してください",
@@ -15,6 +16,11 @@
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[1]": "'%h' は時間を表します（%2h で2桁表示）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[2]": "'%m' は分を表します（%2m で2桁表示）",
   "titlechanger.option.placeholderSettings.playTimeFormat.@Tooltip[3]": "'%s' は秒を表します（%2s で2桁表示）",
+  "titlechanger.option.iconSettings.enabled": "アイコン変更を有効にする",
+  "titlechanger.option.iconSettings.icon": "アイコンファイル",
+  "titlechanger.option.iconSettings.icon.@Tooltip": "アイコンを変更するためのファイルを設定します",
+  "titlechanger.option.iconSettings.randomIcons": "ランダムアイコン",
+  "titlechanger.option.iconSettings.randomIcons.@Tooltip": "true に設定するとアイコンをランダムに選択します",
   "titlechanger.error.hitokoto": "一言を取得できませんでした",
   "titlechanger.command.extensions": "インストール済み拡張機能: "
 }
