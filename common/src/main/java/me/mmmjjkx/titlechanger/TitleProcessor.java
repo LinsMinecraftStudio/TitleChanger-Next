@@ -1,11 +1,10 @@
-package me.mmmjjkx.titlechanger.fabric.utils;
+package me.mmmjjkx.titlechanger;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.function.Consumer;
@@ -14,15 +13,15 @@ import java.util.stream.Collectors;
 public class TitleProcessor {
     private static final Pattern placeholderPattern = Pattern.compile("%(?:(\\w+)_)?(\\w+)(?::([^%]*))?%");
 
-    private final Map<String, TitlePlaceholderExtension> extensions;
+    private Map<String, TitlePlaceholderExtension> extensions;
 
     private final Map<String, List<TemplatePart>> templateCache = new ConcurrentHashMap<>();
+    private final Supplier<Boolean> isFullscreenSupplier;
+
     private ScheduledExecutorService executor;
 
-    public TitleProcessor() {
-        this.extensions = new ConcurrentHashMap<>(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class)
-                .stream()
-                .collect(Collectors.toMap(TitlePlaceholderExtension::getPlaceholderHeader, e -> e)));
+    public TitleProcessor(Supplier<Boolean> isFullscreenSupplier) {
+        this.isFullscreenSupplier = isFullscreenSupplier;
 
         this.executor = Executors.newSingleThreadScheduledExecutor(
                 r -> {
@@ -33,6 +32,12 @@ public class TitleProcessor {
     }
 
     public String firstParse(String template) {
+        if (extensions == null) {
+            this.extensions = new ConcurrentHashMap<>(TitleExtensionSource.getExtensions()
+                    .stream()
+                    .collect(Collectors.toMap(TitlePlaceholderExtension::getPlaceholderHeader, e -> e)));
+        }
+
         try {
             return processTemplate(parseTemplate(template));
         } catch (Exception e) {
@@ -50,7 +55,7 @@ public class TitleProcessor {
         }
 
         executor.scheduleAtFixedRate(() -> {
-            if (Minecraft.getInstance().getWindow().isFullscreen()) {
+            if (isFullscreenSupplier.get()) {
                 return;
             }
 

@@ -1,31 +1,32 @@
-package me.mmmjjkx.titlechanger.fabric;
+package me.mmmjjkx.titlechanger.neoforge;
 
 import com.google.common.base.Strings;
-import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
-import me.mmmjjkx.titlechanger.HttpUtils;
+import com.mojang.logging.LogUtils;
 import me.mmmjjkx.titlechanger.TitleExtensionSource;
+import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
+import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
+import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
-import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionResult;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.ConfigScreenHandler;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,21 +35,25 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-@Environment(EnvType.CLIENT)
-public class TitleChangerFabric implements ClientModInitializer {
-    public static final TitleProcessor titleProcessor;
+@Mod(TitleChangerNeoForge.MODID)
+@OnlyIn(Dist.CLIENT)
+public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
-    private static final Logger LOGGER = Logger.getLogger("TitleChanger");
+    public static final String MODID = "titlechanger";
 
-    private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), "titlechanger/icons");
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), "titlechanger/icons");
+
+    private static LocalDateTime start;
+
+    public static TitleProcessor titleProcessor;
 
     static {
+        TitleExtensionSource.registerExtension(new TCPlaceholders());
+
         titleProcessor = new TitleProcessor(() -> Minecraft.getInstance().getWindow().isFullscreen());
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
@@ -59,7 +64,7 @@ public class TitleChangerFabric implements ClientModInitializer {
             }
 
             if (c.iconSettings.enabled) {
-                Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerFabric.tryGetIcon();
+                Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerNeoForge.tryGetIcon();
                 if (icon != null) {
                     IntBuffer w = icon.getMiddle();
                     IntBuffer h = icon.getRight();
@@ -71,16 +76,25 @@ public class TitleChangerFabric implements ClientModInitializer {
                     }
                 }
             }
+            AutoConfig.getGuiRegistry(TCConfig.class);
 
             return InteractionResult.SUCCESS;
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
-
-        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
     }
 
-    private static LocalDateTime start;
+    public static TCConfig getConfig() {
+        return AutoConfig.getConfigHolder(TCConfig.class).getConfig();
+    }
+
+    public static String getStartTime(String format) {
+        return DateTimeFormatter.ofPattern(format).format(start);
+    }
+
+    public static LocalDateTime getStartTime() {
+        return start;
+    }
 
     @Nullable
     public static Triple<ByteBuffer, IntBuffer, IntBuffer> tryGetIcon() {
@@ -115,7 +129,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                 ByteBuffer icon = STBImage.stbi_load_from_memory(buffer, w, h, channels, 4);
 
                 if (icon == null) {
-                    LOGGER.log(Level.SEVERE, "Failed to load image from path: {} - {}", new Object[]{file, STBImage.stbi_failure_reason()});
+                    LOGGER.error("Failed to load image from path: {} - {}", file, STBImage.stbi_failure_reason());
                     return null;
                 }
 
@@ -128,52 +142,16 @@ public class TitleChangerFabric implements ClientModInitializer {
         return null;
     }
 
-    public static TCConfig getConfig() {
-        return AutoConfig.getConfigHolder(TCConfig.class).getConfig();
-    }
-
-    public static String getStartTime(String format) {
-        return DateTimeFormatter.ofPattern(format).format(start);
-    }
-
-    public static LocalDateTime getStartTime() {
-        return start;
-    }
-
-    @Override
-    public void onInitializeClient() {
-        placeholderUpdates();
-        commandRegister();
-
-        if (!iconFolder.exists()) {
-            iconFolder.mkdirs();
-        }
-    }
-
-    public void commandRegister() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("titlechanger-ext")
-                .executes(ctx -> {
-                    List<TitlePlaceholderExtension> extensions = FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class);
-                    MutableComponent send = Component.translatable("titlechanger.command.extensions");
-                    MutableComponent appends = Component.empty();
-                    for (var ext : extensions) {
-                        Component append = Component.literal(ext.getExtensionName()).withStyle(ChatFormatting.GREEN);
-                        appends.append(append);
-
-                        if (extensions.get(extensions.size() - 1) != ext) {
-                            appends.append(Component.literal(", "));
-                        }
-                    }
-
-                    send.append(appends);
-
-                    ctx.getSource().sendFeedback(send);
-
-                    return 1;
-                })));
-    }
-
-    private void placeholderUpdates() {
+    public TitleChangerNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         start = LocalDateTime.now();
+
+        modContainer.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
+            new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
+                ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfig.getConfigScreen(TCConfig.class, parent);
+                provider.setI13nFunction(a -> "titlechanger");
+
+                return provider.get();
+            }
+        ));
     }
 }

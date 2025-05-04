@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger.fabric.utils;
+package me.mmmjjkx.titlechanger;
 
 public class RopeImplString {
     private static final int MAX_LEAF_LENGTH = 8;

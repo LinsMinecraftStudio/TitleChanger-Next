@@ -1,22 +1,20 @@
-package me.mmmjjkx.titlechanger.fabric.bulitin;
+package me.mmmjjkx.titlechanger.neoforge.bulitin;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
-import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
-import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 public class TCPlaceholders implements TitlePlaceholderExtension {
     private static final String HOUR_REPLACE = "%h";
@@ -35,19 +33,19 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
     public String getPlaceholderValue(String placeholder, String[] args) {
         return switch (placeholder) {
             case "mcver" -> SharedConstants.getCurrentVersion().getName();
-            case "hitokoto" -> TitleChangerFabric.HITOKOTO;
+            case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Reflects.getUserUUID(Minecraft.getInstance().getUser());
+            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
             case "modver" -> {
                 if (args.length == 1) {
                     String modid = args[0];
-                    Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer(modid);
-                    if (optional.isPresent()) {
-                        yield optional.get().getMetadata().getVersion().getFriendlyString();
+                    ModFileInfo info = FMLLoader.getLoadingModList().getModFileById(modid);
+                    if (info != null) {
+                        yield info.versionString();
                     }
 
                     yield "%ERROR: no mod found%";
@@ -85,16 +83,16 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             }
             case "starttime" -> {
                 if (args.length == 1) {
-                    yield TitleChangerFabric.getStartTime(args[0]);
+                    yield TitleChangerNeoForge.getStartTime(args[0]);
                 } else {
-                    yield TitleChangerFabric.getStartTime(TitleChangerFabric.getConfig().placeholderSettings.defaultTimeFormat);
+                    yield TitleChangerNeoForge.getStartTime(TitleChangerNeoForge.getConfig().placeholderSettings.defaultTimeFormat);
                 }
             }
             case "syncedtime" -> {
                 if (args.length == 1) {
                     yield getSyncedTime(args[0]);
                 } else {
-                    yield getSyncedTime(TitleChangerFabric.getConfig().placeholderSettings.defaultTimeFormat);
+                    yield getSyncedTime(TitleChangerNeoForge.getConfig().placeholderSettings.defaultTimeFormat);
                 }
             }
             default -> "%ERROR%";
@@ -120,7 +118,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
             if (client.getSingleplayerServer() != null && !client.getSingleplayerServer().isPublished()) {
                 return I18n.get("title.singleplayer");
-            } else if (Reflects.inRealms()) {
+            } else if (client.getCurrentServer() != null && client.getCurrentServer().isRealm()) {
                 return I18n.get("title.multiplayer.realms");
             } else if (client.getSingleplayerServer() == null && (client.getCurrentServer() == null || !client.getCurrentServer().isLan())) {
                 return I18n.get("title.multiplayer.other");
@@ -140,8 +138,8 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     private String getPlayTime() {
         LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(TitleChangerFabric.getStartTime(), now);
-        String format = TitleChangerFabric.getConfig().placeholderSettings.playTimeFormat;
+        Duration duration = Duration.between(TitleChangerNeoForge.getStartTime(), now);
+        String format = TitleChangerNeoForge.getConfig().placeholderSettings.playTimeFormat;
         format = StringUtils.replace(format, HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
         format = StringUtils.replace(format, MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
         format = StringUtils.replace(format, SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
@@ -158,6 +156,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public List<String> getPlaceholders() {
-        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "x", "y", "z", "luck", "modver");
+        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "x", "y", "z", "luck");
     }
 }

@@ -4,12 +4,13 @@
     "version": "${version}",
     "name": "TitleChanger",
     "description": "Provides a simple and more powerful way to change the title of the game window.",
+    "icon": "icon.png",
     "authors": [
         "lijinhong11"
     ],
     "contact": {
-        "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-New",
-        "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-New"
+        "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
+        "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next"
     },
     "license": "GNU General Public License v3.0",
     "environment": "client",

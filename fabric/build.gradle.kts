@@ -17,6 +17,12 @@ repositories {
     maven("https://maven.terraformersmc.com/releases/")
 }
 
+sourceSets {
+    main {
+        resources.srcDir("../resources")
+    }
+}
+
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -27,6 +33,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
 
+    implementation(project(":common"))
     implementation(project(":api"))
 
     //api
@@ -43,7 +50,10 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(project.properties)
     }
+
     exclude("mappings/mappings.tiny")
+    exclude("META-INF/mods.toml")
+    exclude("titlechanger-neoforge.mixins.json")
 }
 
 tasks.test {
@@ -55,9 +65,8 @@ tasks.shadowJar {
 
     dependencies {
         include(project(":api"))
+        include(project(":common"))
     }
-
-    exclude("mappings/mappings.tiny")
 
     finalizedBy(tasks.remapJar)
 }
