@@ -3,8 +3,7 @@
     "id": "titlechanger",
     "version": "${version}",
     "name": "TitleChanger",
-    "description": "Provides a simple and more powerful way to change the title of the game window.",
-    "icon": "icon.png",
+    "description": "Provides a simple but more powerful way to change the title of the game window.",
     "authors": [
         "lijinhong11"
     ],

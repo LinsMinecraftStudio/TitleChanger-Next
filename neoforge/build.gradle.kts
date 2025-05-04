@@ -27,8 +27,7 @@ base {
     archivesName.set(mod_id)
 }
 
-// Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 //minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
@@ -162,7 +161,7 @@ idea {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("titlechanger-neoforge-${project.version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {
         exclude("fabric.mod.json")

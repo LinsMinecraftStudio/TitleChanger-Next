@@ -66,6 +66,8 @@ tasks.shadowJar {
     dependencies {
         include(project(":api"))
         include(project(":common"))
+
+        exclude("mappings/mappings.tiny")
     }
 
     finalizedBy(tasks.remapJar)

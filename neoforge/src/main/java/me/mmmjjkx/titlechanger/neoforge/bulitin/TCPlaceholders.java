@@ -156,6 +156,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public List<String> getPlaceholders() {
-        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "x", "y", "z", "luck");
+        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "x", "y", "z", "luck", "modver");
     }
 }

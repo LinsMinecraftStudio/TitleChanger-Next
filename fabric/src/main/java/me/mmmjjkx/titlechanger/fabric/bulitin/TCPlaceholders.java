@@ -45,7 +45,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "modver" -> {
                 if (args.length == 1) {
                     String modid = args[0];
-                    Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer(modid);
+                            Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer(modid);
                     if (optional.isPresent()) {
                         yield optional.get().getMetadata().getVersion().getFriendlyString();
                     }
