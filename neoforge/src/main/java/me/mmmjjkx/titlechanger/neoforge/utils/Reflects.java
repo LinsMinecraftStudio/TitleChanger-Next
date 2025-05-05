@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger.fabric.utils;
+package me.mmmjjkx.titlechanger.neoforge.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class Reflects {
@@ -29,7 +30,7 @@ public class Reflects {
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             try {
-                uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, "field_1985", String.class);
+                uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, "uuid", String.class);
             } catch (NoSuchFieldException | IllegalAccessException ex) {
                 throw new RuntimeException(ex);
             }
@@ -48,15 +49,19 @@ public class Reflects {
         if (client.getCurrentServer() != null) {
             if (serverTypeHandleEnabled) {
                 try {
-                    Field type = ServerData.class.getDeclaredField("field_1984");
+                    Field type = ServerData.class.getDeclaredField("type");
                     type.setAccessible(true);
                     Enum<?> type1 = (Enum<?>) type.get(client.getCurrentServer());
-                    return type1.ordinal() == 1;
+                    return type1.ordinal() == 2;
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     return false;
                 }
             } else {
-                return client.isConnectedToRealms();
+                try {
+                    return (boolean) Minecraft.class.getMethod("isConnectedToRealms").invoke(client);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 

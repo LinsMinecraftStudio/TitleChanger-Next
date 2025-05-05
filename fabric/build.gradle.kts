@@ -24,9 +24,6 @@ sourceSets {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
