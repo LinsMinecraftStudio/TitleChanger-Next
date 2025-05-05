@@ -1,5 +1,6 @@
 package me.mmmjjkx.titlechanger;
 
+import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 
 import java.util.*;

@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("fabric-loom").version("1.10-SNAPSHOT")
-    id("com.gradleup.shadow").version("9.0.0-beta12")
+    id("com.gradleup.shadow").version("9.0.0-beta13")
 }
 
 group = "io.github.lijinhong11"

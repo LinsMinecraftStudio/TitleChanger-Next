@@ -3,7 +3,7 @@ package me.mmmjjkx.titlechanger.fabric;
 import com.google.common.base.Strings;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import me.mmmjjkx.titlechanger.HttpUtils;
-import me.mmmjjkx.titlechanger.TitleExtensionSource;
+import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.shedaniel.autoconfig.AutoConfig;

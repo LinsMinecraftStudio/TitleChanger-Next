@@ -2,7 +2,7 @@ package me.mmmjjkx.titlechanger.neoforge;
 
 import com.google.common.base.Strings;
 import com.mojang.logging.LogUtils;
-import me.mmmjjkx.titlechanger.TitleExtensionSource;
+import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
 import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.HttpUtils;

@@ -1,6 +1,4 @@
-package me.mmmjjkx.titlechanger;
-
-import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+package io.github.lijinhong11.titlechanger.api;
 
 import java.util.ArrayList;
 import java.util.List;
