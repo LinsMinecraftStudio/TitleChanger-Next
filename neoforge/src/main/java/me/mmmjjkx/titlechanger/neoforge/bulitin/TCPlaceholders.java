@@ -2,6 +2,7 @@ package me.mmmjjkx.titlechanger.neoforge.bulitin;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
+import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -36,7 +37,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
+            case "playeruuid" -> Reflects.getUserUUID(Minecraft.getInstance().getUser());
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
@@ -118,7 +119,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
             if (client.getSingleplayerServer() != null && !client.getSingleplayerServer().isPublished()) {
                 return I18n.get("title.singleplayer");
-            } else if (client.getCurrentServer() != null && client.getCurrentServer().isRealm()) {
+            } else if (Reflects.inRealms()) {
                 return I18n.get("title.multiplayer.realms");
             } else if (client.getSingleplayerServer() == null && (client.getCurrentServer() == null || !client.getCurrentServer().isLan())) {
                 return I18n.get("title.multiplayer.other");

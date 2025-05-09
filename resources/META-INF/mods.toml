@@ -28,6 +28,6 @@ side="CLIENT"
 [[dependencies."${mod_id}"]]
 modId="cloth_config"
 type="required"
-versionRange="[13.0,)"
+versionRange="[12.0,)"
 ordering="NONE"
 side="CLIENT"
