@@ -39,7 +39,7 @@ Due to well-known performance issues in the old version, I have decided to aband
 2. %hitokoto% — get a sentence from Hitokoto
 4. %playername% — get the name of the player
 5. %playeruuid% — get the uuid of the player
-6. %modver:<modid>% return the version of a mod
+6. %modver:\<modid\>% return the version of a mod
 
 ### Auto updated Placeholders
 1. %syncedtime% — get the time
