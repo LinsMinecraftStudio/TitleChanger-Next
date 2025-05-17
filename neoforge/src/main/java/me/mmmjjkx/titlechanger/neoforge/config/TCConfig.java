@@ -1,10 +1,11 @@
 package me.mmmjjkx.titlechanger.neoforge.config;
 
+import me.mmmjjkx.titlechanger.Constants;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@Config(name = "titlechanger/config")
+@Config(name = Constants.CONFIG_FILE)
 public class TCConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("general")
@@ -41,9 +42,11 @@ public class TCConfig implements ConfigData {
         public boolean enabled = false;
 
         @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.RequiresRestart
         public String icon = "example.png";
 
         @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.RequiresRestart
         public boolean randomIcons = false;
     }
 }

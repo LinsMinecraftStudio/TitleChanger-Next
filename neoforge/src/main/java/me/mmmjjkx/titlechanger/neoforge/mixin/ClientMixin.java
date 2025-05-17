@@ -1,16 +1,25 @@
 package me.mmmjjkx.titlechanger.neoforge.mixin;
 
 import com.mojang.blaze3d.platform.Window;
+import me.mmmjjkx.titlechanger.HttpUtils;
+import me.mmmjjkx.titlechanger.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
+import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
+import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.main.GameConfig;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -35,7 +44,6 @@ public abstract class ClientMixin {
         }
     }
 
-    //It makes the title show when the game window shown. Yay!
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;newWindow(Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/blaze3d/platform/Window;"), index = 2)
     private String modifyStartingWindow(String title) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {

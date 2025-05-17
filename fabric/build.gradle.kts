@@ -30,7 +30,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
 
-    implementation(project(":common"))
+    implementation(project(":"))
     implementation(project(":api"))
 
     //api
@@ -62,7 +62,7 @@ tasks.shadowJar {
 
     dependencies {
         include(project(":api"))
-        include(project(":common"))
+        include(project(":"))
 
         exclude("mappings/mappings.tiny")
     }

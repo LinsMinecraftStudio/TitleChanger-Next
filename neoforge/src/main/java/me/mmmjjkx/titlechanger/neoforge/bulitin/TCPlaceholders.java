@@ -109,7 +109,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
                 return String.valueOf(info.getLatency());
             }
         }
-
+        
         return "0";
     }
 

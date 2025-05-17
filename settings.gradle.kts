@@ -9,8 +9,5 @@ pluginManagement {
 rootProject.name = "titlechanger-container"
 
 include("api")
-include("common")
 include("fabric")
-include("neoforge")
-
 include("neoforge")

@@ -5,7 +5,7 @@ plugins {
     id("eclipse")
     id("idea")
     id("maven-publish")
-    id("net.neoforged.gradle.userdev") version "7.0.142"
+    id("net.neoforged.gradle.userdev") version "7.0.184"
     id("com.gradleup.shadow") version "9.0.0-beta13"
 }
 
@@ -46,7 +46,7 @@ runs {
 
         dependencies {
             runtime(project(":api"))
-            runtime(project(":common"))
+            runtime(project(":"))
         }
     }
 
@@ -88,7 +88,7 @@ dependencies {
     implementation("net.neoforged:neoforge:$neo_version")
 
     implementation(project(":api"))
-    implementation(project(":common"))
+    implementation(project(":"))
 
     api("me.shedaniel.cloth:cloth-config-neoforge:13.0.138")
 
@@ -168,7 +168,7 @@ tasks.shadowJar {
         exclude("titlechanger-fabric.mixins.json")
 
         include(project(":api"))
-        include(project(":common"))
+        include(project(":"))
     }
 }
 

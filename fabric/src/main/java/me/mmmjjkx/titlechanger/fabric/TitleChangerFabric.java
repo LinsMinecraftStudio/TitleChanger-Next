@@ -2,23 +2,21 @@ package me.mmmjjkx.titlechanger.fabric;
 
 import com.google.common.base.Strings;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.HttpUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
+import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionResult;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +32,6 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,10 +43,12 @@ public class TitleChangerFabric implements ClientModInitializer {
 
     private static final Logger LOGGER = Logger.getLogger("TitleChanger");
 
-    private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), "titlechanger/icons");
+    private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
 
     static {
-        titleProcessor = new TitleProcessor(() -> Minecraft.getInstance().getWindow().isFullscreen());
+        titleProcessor = new TitleProcessor();
+
+        AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
             titleProcessor.shutdown();
@@ -132,6 +131,10 @@ public class TitleChangerFabric implements ClientModInitializer {
         return AutoConfig.getConfigHolder(TCConfig.class).getConfig();
     }
 
+    public static TCResourceSettings getResourceSettings() {
+        return AutoConfig.getConfigHolder(TCResourceSettings.class).getConfig();
+    }
+
     public static String getStartTime(String format) {
         return DateTimeFormatter.ofPattern(format).format(start);
     }
@@ -143,34 +146,10 @@ public class TitleChangerFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         placeholderUpdates();
-        commandRegister();
 
         if (!iconFolder.exists()) {
             iconFolder.mkdirs();
         }
-    }
-
-    public void commandRegister() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("titlechanger-ext")
-                .executes(ctx -> {
-                    List<TitlePlaceholderExtension> extensions = FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class);
-                    MutableComponent send = Component.translatable("titlechanger.command.extensions");
-                    MutableComponent appends = Component.empty();
-                    for (var ext : extensions) {
-                        Component append = Component.literal(ext.getExtensionName()).withStyle(ChatFormatting.GREEN);
-                        appends.append(append);
-
-                        if (extensions.get(extensions.size() - 1) != ext) {
-                            appends.append(Component.literal(", "));
-                        }
-                    }
-
-                    send.append(appends);
-
-                    ctx.getSource().sendFeedback(send);
-
-                    return 1;
-                })));
     }
 
     private void placeholderUpdates() {
