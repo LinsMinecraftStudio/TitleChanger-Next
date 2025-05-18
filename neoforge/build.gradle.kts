@@ -1,10 +1,9 @@
 import java.util.Properties
 
 plugins {
-    id("java-library")
-    id("eclipse")
-    id("idea")
-    id("maven-publish")
+    `java-library`
+    java
+    idea
     id("net.neoforged.gradle.userdev") version "7.0.184"
     id("com.gradleup.shadow") version "9.0.0-beta13"
 }
@@ -88,7 +87,7 @@ dependencies {
     implementation("net.neoforged:neoforge:$neo_version")
 
     implementation(project(":api"))
-    implementation(project(":"))
+    api(project(":"))
 
     api("me.shedaniel.cloth:cloth-config-neoforge:13.0.138")
 
@@ -108,13 +107,6 @@ dependencies {
 
     // Example mod dependency using a file as dependency
     // implementation(files("libs/coolmod-${minecraft_version}-${coolmod_version}.jar"))
-
-    // Example project dependency using a sister or child project:
-    // implementation(project(":myproject"))
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -136,23 +128,10 @@ tasks.withType<ProcessResources>().configureEach {
     exclude("titlechanger-fabric.mixins.json")
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        maven(url = "file://${project.projectDir}/repo")
-    }
-}
-
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
 }
 
-// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
         isDownloadSources = true
@@ -161,6 +140,8 @@ idea {
 }
 
 tasks.shadowJar {
+    dependsOn(project(":").tasks.shadowJar)
+
     archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {

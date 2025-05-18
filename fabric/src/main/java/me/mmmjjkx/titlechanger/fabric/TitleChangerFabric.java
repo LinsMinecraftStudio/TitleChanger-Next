@@ -8,14 +8,20 @@ import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
+import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.InteractionResult;
 import org.apache.commons.lang3.tuple.Triple;
@@ -44,6 +50,8 @@ public class TitleChangerFabric implements ClientModInitializer {
     private static final Logger LOGGER = Logger.getLogger("TitleChanger");
 
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
+
+    private boolean checkUpdate = false;
 
     static {
         titleProcessor = new TitleProcessor();
@@ -146,6 +154,30 @@ public class TitleChangerFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         placeholderUpdates();
+
+        ScreenEvents.BEFORE_INIT.register((client, screen, w, h) -> {
+            if (screen instanceof TitleScreen) {
+                if (getResourceSettings().checkUpdates && !checkUpdate) {
+                    String ver = HttpUtils.getLastestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().getName());
+                    if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
+                        client.setScreen(new UpdatableScreen(m -> {
+                            if (m == UpdateCheckMode.ALLOW) {
+                                Util.getPlatform().openUri("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId);
+                            }
+
+                            if (m == UpdateCheckMode.NEVER) {
+                                getResourceSettings().checkUpdates = false;
+                                AutoConfig.getConfigHolder(TCResourceSettings.class).save();
+                            }
+
+                            Minecraft.getInstance().setScreen(new TitleScreen());
+                        }, getResourceSettings().modpackName));
+                    }
+
+                    checkUpdate = true;
+                }
+            }
+        });
 
         if (!iconFolder.exists()) {
             iconFolder.mkdirs();

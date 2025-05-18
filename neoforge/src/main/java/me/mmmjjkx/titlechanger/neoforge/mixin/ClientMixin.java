@@ -1,25 +1,16 @@
 package me.mmmjjkx.titlechanger.neoforge.mixin;
 
 import com.mojang.blaze3d.platform.Window;
-import me.mmmjjkx.titlechanger.HttpUtils;
-import me.mmmjjkx.titlechanger.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
-import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
-import net.minecraft.SharedConstants;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.main.GameConfig;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

@@ -3,27 +3,25 @@ package me.mmmjjkx.titlechanger.neoforge;
 import com.google.common.base.Strings;
 import com.mojang.logging.LogUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
+import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
-import me.mmmjjkx.titlechanger.UpdateCheckMode;
+import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
 import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
-import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import net.minecraft.SharedConstants;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -46,6 +44,7 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 @Mod(TitleChangerNeoForge.MODID)
@@ -161,10 +160,12 @@ public class TitleChangerNeoForge {
         return null;
     }
 
-    public TitleChangerNeoForge(IEventBus modEventBus, ModContainer modContainer) {
+    public TitleChangerNeoForge(ModContainer modContainer) {
         start = LocalDateTime.now();
 
         NeoForge.EVENT_BUS.register(this);
+
+        File welcome = new File(FMLPaths.CONFIGDIR.get().toFile(), "titlechanger/welcome_txt/welcome.txt");
 
         modContainer.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
             new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
@@ -179,6 +180,12 @@ public class TitleChangerNeoForge {
     @SubscribeEvent
     public void onOpen(ScreenEvent.Opening e) {
         if (e.getNewScreen() instanceof TitleScreen) {
+            Pair<String, List<String>> pair = Constants.readWelcomeText(FMLPaths.CONFIGDIR.get().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+            String title = pair.left();
+            List<String> lines = pair.right();
+            e.setNewScreen(new LaunchScreen(new TitleScreen(), Component.literal(title), lines));
+
+            /*
             if (TitleChangerNeoForge.getResourceSettings().checkUpdates && !checkUpdate) {
                 String ver = HttpUtils.getLastestModrinthVersion("neoforge", TitleChangerNeoForge.getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().getName());
                 if (ver != null && !ver.equals(TitleChangerNeoForge.getResourceSettings().modpackVersion)) {
@@ -187,12 +194,19 @@ public class TitleChangerNeoForge {
                             Util.getPlatform().openUri("https://modrinth.com/project/" + TitleChangerNeoForge.getResourceSettings().modrinthProjectId);
                         }
 
-                        Minecraft.getInstance().setScreen(new TitleScreen());
-                    }));
+                        if (m == UpdateCheckMode.NEVER) {
+                            TitleChangerNeoForge.getResourceSettings().checkUpdates = false;
+                            AutoConfig.getConfigHolder(TCResourceSettings.class).save();
+                        }
 
-                    checkUpdate = true;
+                        Minecraft.getInstance().setScreen(new TitleScreen());
+                    }, TitleChangerNeoForge.getResourceSettings().modpackName));
                 }
+
+                checkUpdate = true;
             }
+
+             */
         }
     }
 }

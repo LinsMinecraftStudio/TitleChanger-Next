@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    java
     id("fabric-loom").version("1.10-SNAPSHOT")
     id("com.gradleup.shadow").version("9.0.0-beta13")
 }
@@ -58,6 +58,8 @@ tasks.test {
 }
 
 tasks.shadowJar {
+    dependsOn(project(":").tasks.shadowJar)
+
     archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow-raw.jar")
 
     dependencies {

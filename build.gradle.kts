@@ -1,6 +1,6 @@
 plugins {
-    java
-    `java-library`
+    id("java")
+    id("java-library")
     id("fabric-loom").version("1.10-SNAPSHOT")
     id("com.gradleup.shadow").version("9.0.0-beta13")
 }
@@ -16,13 +16,22 @@ dependencies {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("titlechanger-common.jar")
+    archiveFileName = "${project.name}-${project.version}.jar"
 
     dependencies {
         include(project(":api"))
+        exclude("mappings/mappings.tiny")
     }
 }
 
 tasks.build {
     dependsOn(tasks.shadowJar)
+}
+
+tasks.remapJar {
+    enabled = false
+}
+
+tasks.remapSourcesJar {
+    enabled = false
 }

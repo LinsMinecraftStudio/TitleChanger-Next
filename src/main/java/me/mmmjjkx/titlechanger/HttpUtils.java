@@ -1,6 +1,7 @@
 package me.mmmjjkx.titlechanger;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -11,9 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -54,8 +53,8 @@ public class HttpUtils {
     public static String getLastestModrinthVersion(String loader, String packId, String mcv) {
         try (CloseableHttpClient client = HttpClients.createMinimal()) {
             URI uri = new URIBuilder(String.format(MODRINTH_API_URL, packId))
-                    .addParameter("loaders", loader)
-                    .addParameter("game_versions", mcv)
+                    .addParameter("loaders", "[\"%s\"]".formatted(loader))
+                    .addParameter("game_versions", "[\"%s\"".formatted(mcv))
                     .build();
 
             HttpGet request = new HttpGet(uri);
@@ -63,9 +62,16 @@ public class HttpUtils {
 
             CloseableHttpResponse rep = client.execute(request);
             String entity = EntityUtils.toString(rep.getEntity());
-            JsonObject obj = JsonParser.parseString(entity).getAsJsonArray().get(0).getAsJsonObject();
+            System.out.println(entity);
+            JsonArray list = JsonParser.parseString(entity).getAsJsonArray();
+
+            if (list.get(0) == null) {
+                return null;
+            }
+
+            JsonObject obj = list.get(0).getAsJsonObject();
             return obj.get("version_number").getAsString();
-        } catch (IOException | URISyntaxException e) {
+        } catch (Exception e) {
             return null;
         }
     }

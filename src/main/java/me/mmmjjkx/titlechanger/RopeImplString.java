@@ -87,20 +87,6 @@ public class RopeImplString {
         return new InternalNode(left, right);
     }
 
-    public char charAt(int index) {
-        if (index < 0 || index >= root.weight) {
-            throw new IndexOutOfBoundsException();
-        }
-        return root.index(index);
-    }
-
-    public String substring(int start, int end) {
-        if (start < 0 || end > root.weight || start > end) {
-            throw new IndexOutOfBoundsException();
-        }
-        return root.substring(start, end);
-    }
-
     public void concat(RopeImplString other) {
         this.root = new InternalNode(this.root, other.root);
     }

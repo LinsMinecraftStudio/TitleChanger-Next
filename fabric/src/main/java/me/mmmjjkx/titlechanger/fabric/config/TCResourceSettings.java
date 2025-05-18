@@ -11,10 +11,8 @@ public class TCResourceSettings implements ConfigData {
     public String modpackVersion = "1.0.0";
     @Comment("Only usable in modrinth")
     public boolean checkUpdates = false;
-    @Comment("The project id of the modpack in modrinth")
+    @Comment("The project ID of the modpack in modrinth")
     public String modrinthProjectId = "";
 
     public boolean enableWelcomeScreen = false;
-    public boolean alwaysLaunchWelcomeScreen = false;
-    public boolean welcomeScreenOpened = false;
 }

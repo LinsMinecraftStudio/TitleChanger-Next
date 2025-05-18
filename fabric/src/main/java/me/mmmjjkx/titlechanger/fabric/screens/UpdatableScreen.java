@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger.neoforge.screens;
+package me.mmmjjkx.titlechanger.fabric.screens;
 
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import net.minecraft.client.gui.GuiGraphics;

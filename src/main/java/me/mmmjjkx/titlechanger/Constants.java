@@ -1,10 +1,14 @@
 package me.mmmjjkx.titlechanger;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
     public static final String SPLASH_TEXT_FILE = "splash.txt";
@@ -42,7 +46,6 @@ public class Constants {
             - &dLight Purple
             - &eYellow
             - &fWhite (Actually colorized)
-            - &gMinecoin Gold
             - &lBold
             - &uUnderlined
             - &oItalic
@@ -50,28 +53,26 @@ public class Constants {
             - &kObfuscated
             - &rReset
             
-            <h1>This is a header with level 1
+            [h1] This is a header with level 1
             A text here
             
-            <h2>This is a header with level 2
+            [h2] This is a header with level 2
             
-            <h3>This is a header with level 3
+            [h3] This is a header with level 3
             
             Here's a clickable link
-            <https://modrinth.com/mod/titlechanger-next>
+            https://modrinth.com/mod/titlechanger-next
             
-            You can also click the link <https://modrinth.com/mod/titlechanger-next;here>
+            You can also click the link [here;https://modrinth.com/mod/titlechanger-next]
             """;
 
-    private static final String WELCOME_SCREEN_TEXT_ERR = """
-            Failed to load welcome text.
-            That means the file with the name exists.
-            But the file isn't readable!
-            """;
+    private static final List<String> WELCOME_SCREEN_TEXT_ERR = List.of(
+            "Failed to load welcome text.",
+            "That means the file with the name exists.",
+            "But the file isn't readable!");
 
-    public static String readWelcomeText() {
-        String lang = Minecraft.getInstance().getLanguageManager().getSelected();
-        File cfg = new File(Minecraft.getInstance().gameDirectory, "config/titlechanger/welcome");
+    public static Pair<String, List<String>> readWelcomeText(File cfgDir, String lang) {
+        File cfg = new File(cfgDir, "titlechanger/welcome");
         if (!cfg.exists()) {
             cfg.mkdirs();
         }
@@ -79,14 +80,26 @@ public class Constants {
         String name = lang.equalsIgnoreCase("en_US") ? "welcome_text.txt" : "welcome_text_" + lang + ".txt";
         File file = new File(cfg, name);
 
+        List<String> raw;
+
         if (file.exists()) {
             try {
-                return String.join("\n", Files.readAllLines(file.toPath()));
+                raw = Files.readAllLines(file.toPath());
+                String title = raw.get(0).replace("[TITLE] ", "");
+                return Pair.of(title, raw.subList(1, raw.size()));
             } catch (IOException e) {
-                return WELCOME_SCREEN_TEXT_ERR;
+                return Pair.of("ERROR", WELCOME_SCREEN_TEXT_ERR);
             }
         } else {
-            return WELCOME_SCREEN_TEXT_DEFAULT;
+            raw = Arrays.asList(WELCOME_SCREEN_TEXT_DEFAULT.split("\n"));
+            try {
+                file.createNewFile();
+                Files.write(file.toPath(), raw);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        return Pair.of(raw.get(0).replace("[TITLE] ", ""), raw.subList(1, raw.size()));
     }
 }

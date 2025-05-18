@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger;
+package me.mmmjjkx.titlechanger.enums;
 
 public enum UpdateCheckMode {
     ALLOW,
