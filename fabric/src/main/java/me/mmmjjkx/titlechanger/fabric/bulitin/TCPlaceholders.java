@@ -42,6 +42,8 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
+            case "modpackName" -> TitleChangerNeoForge.getResourceSettings().modpackName;
+            case "modpackVersion" -> TitleChangerNeoForge.getResourceSettings().modpackVersion;
             case "modver" -> {
                 if (args.length == 1) {
                     String modid = args[0];
@@ -158,6 +160,22 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public List<String> getPlaceholders() {
-        return List.of("mcver", "hitokoto", "playingmode", "syncedtime", "playeruuid", "fps", "playername", "ping", "playtime", "starttime", "x", "y", "z", "luck", "modver");
+        return List.of(
+                "mcver",
+                "hitokoto",
+                "playingmode",
+                "syncedtime",
+                "playeruuid",
+                "fps",
+                "playername",
+                "ping",
+                "playtime",
+                "starttime",
+                "x", "y", "z",
+                "luck",
+                "modver",
+                "modpackName",
+                "modpackVersion"
+        );
     }
 }
