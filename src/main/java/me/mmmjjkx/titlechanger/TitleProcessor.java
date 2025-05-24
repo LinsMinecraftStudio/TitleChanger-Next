@@ -2,10 +2,11 @@ package me.mmmjjkx.titlechanger;
 
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.texts.RopeImplString;
+import net.minecraft.client.Minecraft;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.function.Consumer;
@@ -17,13 +18,10 @@ public class TitleProcessor {
     private Map<String, TitlePlaceholderExtension> extensions;
 
     private final Map<String, List<TemplatePart>> templateCache = new ConcurrentHashMap<>();
-    private final Supplier<Boolean> isFullscreenSupplier;
 
     private ScheduledExecutorService executor;
 
-    public TitleProcessor(Supplier<Boolean> isFullscreenSupplier) {
-        this.isFullscreenSupplier = isFullscreenSupplier;
-
+    public TitleProcessor() {
         this.executor = Executors.newSingleThreadScheduledExecutor(
                 r -> {
                     Thread t = new Thread(r, "TitleChanger-Processor");
@@ -56,7 +54,7 @@ public class TitleProcessor {
         }
 
         executor.scheduleAtFixedRate(() -> {
-            if (isFullscreenSupplier.get()) {
+            if (Minecraft.getInstance().getWindow().isFullscreen()) {
                 return;
             }
 

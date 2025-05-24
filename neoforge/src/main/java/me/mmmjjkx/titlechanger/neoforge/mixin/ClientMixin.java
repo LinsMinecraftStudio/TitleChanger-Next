@@ -35,7 +35,6 @@ public abstract class ClientMixin {
         }
     }
 
-    //It makes the title show when the game window shown. Yay!
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;newWindow(Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/blaze3d/platform/Window;"), index = 2)
     private String modifyStartingWindow(String title) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {

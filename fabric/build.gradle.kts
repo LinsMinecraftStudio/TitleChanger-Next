@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    java
     id("fabric-loom").version("1.10-SNAPSHOT")
     id("com.gradleup.shadow").version("9.0.0-beta13")
 }
@@ -30,7 +30,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
 
-    implementation(project(":common"))
+    implementation(project(":"))
     implementation(project(":api"))
 
     //api
@@ -58,11 +58,13 @@ tasks.test {
 }
 
 tasks.shadowJar {
+    dependsOn(project(":").tasks.shadowJar)
+
     archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))
-        include(project(":common"))
+        include(project(":"))
 
         exclude("mappings/mappings.tiny")
     }

@@ -1,11 +1,10 @@
 import java.util.Properties
 
 plugins {
-    id("java-library")
-    id("eclipse")
-    id("idea")
-    id("maven-publish")
-    id("net.neoforged.gradle.userdev") version "7.0.142"
+    `java-library`
+    java
+    idea
+    id("net.neoforged.gradle.userdev") version "7.0.184"
     id("com.gradleup.shadow") version "9.0.0-beta13"
 }
 
@@ -46,13 +45,13 @@ runs {
 
         dependencies {
             runtime(project(":api"))
-            runtime(project(":common"))
+            runtime(project(":"))
         }
     }
 
     create("server") {
         systemProperty("forge.enabledGameTestNamespaces", mod_id)
-        programArgument("--nogui")
+        argument("--nogui")
     }
 
     create("gameTestServer") {
@@ -64,7 +63,7 @@ runs {
         // workingDirectory project.file("run-data")
 
         // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll(listOf(
+        arguments.addAll(listOf(
             "--mod", mod_id,
             "--all", "--output", file("src/generated/resources/").absolutePath,
             "--existing", file("../resources/").absolutePath))
@@ -88,7 +87,7 @@ dependencies {
     implementation("net.neoforged:neoforge:$neo_version")
 
     implementation(project(":api"))
-    implementation(project(":common"))
+    implementation(project(":"))
 
     api("me.shedaniel.cloth:cloth-config-neoforge:13.0.138")
 
@@ -108,13 +107,6 @@ dependencies {
 
     // Example mod dependency using a file as dependency
     // implementation(files("libs/coolmod-${minecraft_version}-${coolmod_version}.jar"))
-
-    // Example project dependency using a sister or child project:
-    // implementation(project(":myproject"))
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -136,23 +128,10 @@ tasks.withType<ProcessResources>().configureEach {
     exclude("titlechanger-fabric.mixins.json")
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        maven(url = "file://${project.projectDir}/repo")
-    }
-}
-
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
 }
 
-// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
         isDownloadSources = true
@@ -161,6 +140,8 @@ idea {
 }
 
 tasks.shadowJar {
+    dependsOn(project(":").tasks.shadowJar)
+
     archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {
@@ -168,7 +149,7 @@ tasks.shadowJar {
         exclude("titlechanger-fabric.mixins.json")
 
         include(project(":api"))
-        include(project(":common"))
+        include(project(":"))
     }
 }
 

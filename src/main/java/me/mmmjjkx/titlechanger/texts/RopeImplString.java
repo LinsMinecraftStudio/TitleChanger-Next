@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger;
+package me.mmmjjkx.titlechanger.texts;
 
 public class RopeImplString {
     private static final int MAX_LEAF_LENGTH = 8;
@@ -85,20 +85,6 @@ public class RopeImplString {
         Node left = buildRope(s, start, mid);
         Node right = buildRope(s, mid, end);
         return new InternalNode(left, right);
-    }
-
-    public char charAt(int index) {
-        if (index < 0 || index >= root.weight) {
-            throw new IndexOutOfBoundsException();
-        }
-        return root.index(index);
-    }
-
-    public String substring(int start, int end) {
-        if (start < 0 || end > root.weight || start > end) {
-            throw new IndexOutOfBoundsException();
-        }
-        return root.substring(start, end);
     }
 
     public void concat(RopeImplString other) {
