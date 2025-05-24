@@ -27,7 +27,7 @@ Copied and edited from https://github.com/zlepper/itlt
 Respect to the original license.
  */
 
-package me.mmmjjkx.titlechanger.neoforge.screens;
+package me.mmmjjkx.titlechanger.fabric.screens;
 
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -35,23 +35,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
-import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
-import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
-import me.mmmjjkx.titlechanger.neoforge.utils.ComponentUtils;
-import me.shedaniel.autoconfig.AutoConfig;
+import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
+import me.mmmjjkx.titlechanger.fabric.screens.widget.ScrollPanel;
+import me.mmmjjkx.titlechanger.fabric.utils.ComponentUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.LanguageSelectScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.locale.Language;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
-import net.neoforged.neoforge.common.CommonHooks;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -119,8 +117,8 @@ public class LaunchScreen extends Screen {
         pose.scale(1.5f, 1.5f, 1f);
         guiGraphics.drawString(this.font,
                 Language.getInstance().getVisualOrder(this.title.get()),
-                ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                5f,
+                (int) ((this.width / 3f) - font.width(this.title.get()) / 2f),
+                5,
                 0xFFFFFF,
                 true
         );
@@ -136,37 +134,6 @@ public class LaunchScreen extends Screen {
         ScrollableTextPanel(final Minecraft mcInstance, final int width, final int height, final int top, final int left) {
             super(mcInstance, width, height, top, left);
         }
-
-        //Compatibility
-        public boolean mouseScrolled(double d, double e, double f) {
-            if (f != 0) {
-                this.scrollDistance += (float) (-f * getScrollAmount());
-                applyScrollLimits();
-                return true;
-            }
-            return false;
-        }
-
-        private int getMaxScroll() {
-            return this.getContentHeight() - (this.height - this.border);
-        }
-
-        private void applyScrollLimits() {
-            int max = getMaxScroll();
-
-            if (max < 0) {
-                max /= 2;
-            }
-
-            if (this.scrollDistance < 0.0F) {
-                this.scrollDistance = 0.0F;
-            }
-
-            if (this.scrollDistance > max) {
-                this.scrollDistance = max;
-            }
-        }
-        //
 
         public void setText(final List<String> lines) {
             this.lines = wordWrapAndFormat(lines);
@@ -193,7 +160,7 @@ public class LaunchScreen extends Screen {
                         };
                         poseStack.scale(scale, scale, 1.0F);
                         poseStack.translate(0.0F, scale, 0.0F);
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding) / scale, relativeY / scale, 0xFFFFFF, true);
+                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFF, true);
                         poseStack.popPose();
                     } else {
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
@@ -206,8 +173,8 @@ public class LaunchScreen extends Screen {
 
         // todo: check if this is the right priority and change it if necessary so narration works
         @Override
-        public @NotNull NarrationPriority narrationPriority() {
-            return NarrationPriority.NONE;
+        public @NotNull NarratableEntry.NarrationPriority narrationPriority() {
+            return NarratableEntry.NarrationPriority.NONE;
         }
 
         @Override
@@ -230,14 +197,14 @@ public class LaunchScreen extends Screen {
                 // apply formatting codes where appropriate
                 line = line.replaceAll("(?i)&([a-f]|[0-9]|l|m|n|o|r|k)", "§$1");
                 line = line.replace("\\§", "&"); // allow formatting escaping with a backslash (for example, “\&a”)
-                line = TitleChangerNeoForge.titleProcessor.firstParse(line); //allow parsing placeholders
+                line = TitleChangerFabric.titleProcessor.firstParse(line); //allow parsing placeholders
 
                 Heading heading = Heading.tryGetFromString(line);
                 if (heading != Heading.NONE) {
                     line = StringUtils.replace(line, heading.getMark() + " ", "", 1);
                 }
 
-                var lineWithFormattedLinks = CommonHooks.newChatWithLinks(line, false);
+                var lineWithFormattedLinks = ComponentUtils.newChatWithLinks(line, false);
                 Matcher matcher = Constants.LINK_PATTERN.matcher(line);
                 if (matcher.find()) {
                     lineWithFormattedLinks = ComponentUtils.parseLinks(line); //why someone needs write 2 styles of links

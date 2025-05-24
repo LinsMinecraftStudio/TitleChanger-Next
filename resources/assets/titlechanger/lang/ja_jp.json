@@ -22,5 +22,8 @@
   "titlechanger.option.iconSettings.randomIcons": "ランダムアイコン",
   "titlechanger.option.iconSettings.randomIcons.@Tooltip": "true に設定するとアイコンをランダムに選択します",
   "titlechanger.error.hitokoto": "一言を取得できませんでした",
-  "titlechanger.command.extensions": "インストール済み拡張機能: "
+  "titlechanger.command.extensions": "インストール済み拡張機能: ",
+  "titlechanger.update-checker.available": "%1$sに利用可能なアップデートがあります！",
+  "titlechanger.update-checker.available.desc": "ダウンロードしますか？",
+  "titlechanger.update-checker.never": "二度と表示しない"
 }

@@ -2,6 +2,7 @@ package me.mmmjjkx.titlechanger;
 
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.texts.RopeImplString;
 import net.minecraft.client.Minecraft;
 
 import java.util.*;

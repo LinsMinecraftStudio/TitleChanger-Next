@@ -22,5 +22,8 @@
   "titlechanger.option.iconSettings.randomIcons": "隨機圖示",
   "titlechanger.option.iconSettings.randomIcons.@Tooltip": "設為 啟用 以隨機選擇圖示",
   "titlechanger.error.hitokoto": "無法取得一言",
-  "titlechanger.command.extensions": "已安裝的擴充功能: "
+  "titlechanger.command.extensions": "已安裝的擴充功能: ",
+  "titlechanger.update-checker.available": "%1$s 有可用更新！",
+  "titlechanger.update-checker.available.desc": "是否要下載？",
+  "titlechanger.update-checker.never": "不再顯示"
 }

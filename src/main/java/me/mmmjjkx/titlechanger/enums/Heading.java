@@ -17,11 +17,11 @@ public enum Heading {
     }
 
     public static Heading tryGetFromString(String str) {
-        if (str.startsWith("[h1]")) {
+        if (str.startsWith("[h1] ")) {
             return L1;
-        } else if (str.startsWith("[h2]")) {
+        } else if (str.startsWith("[h2] ")) {
             return L2;
-        } else if (str.startsWith("[h3]")) {
+        } else if (str.startsWith("[h3] ")) {
             return L3;
         } else {
             return NONE;

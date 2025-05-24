@@ -22,5 +22,8 @@
   "titlechanger.option.iconSettings.randomIcons": "Ícones aleatórios",
   "titlechanger.option.iconSettings.randomIcons.@Tooltip": "Defina como true para escolher ícones aleatoriamente",
   "titlechanger.error.hitokoto": "Não foi possível obter o Hitokoto",
-  "titlechanger.command.extensions": "Extensões instaladas: "
+  "titlechanger.command.extensions": "Extensões instaladas: ",
+  "titlechanger.update-checker.available": "%1$s tem atualizações disponíveis!",
+  "titlechanger.update-checker.available.desc": "Você quer baixá-las?",
+  "titlechanger.update-checker.never": "Nunca mostrar isso novamente"
 }

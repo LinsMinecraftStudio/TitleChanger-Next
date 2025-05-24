@@ -2,12 +2,14 @@ package me.mmmjjkx.titlechanger.fabric;
 
 import com.google.common.base.Strings;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.HttpUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
+import me.mmmjjkx.titlechanger.fabric.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -23,7 +25,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -38,6 +42,7 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,6 +162,22 @@ public class TitleChangerFabric implements ClientModInitializer {
 
         ScreenEvents.BEFORE_INIT.register((client, screen, w, h) -> {
             if (screen instanceof TitleScreen) {
+                if (getResourceSettings().enableWelcomeScreen) {
+                    Minecraft.getInstance().setScreen(new LaunchScreen(new TitleScreen(), () -> {
+                        Pair<String, List<String>> pair = Constants.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                        String title = pair.left();
+                        return Component.literal(parseWelcomeTitle(title));
+                    }, () -> {
+                        Pair<String, List<String>> pair = Constants.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                        return pair.right();
+                    }, () -> {
+                        getResourceSettings().enableWelcomeScreen = false;
+                        AutoConfig.getConfigHolder(TCResourceSettings.class).save();
+                    }));
+
+                    checkUpdate = true; //skip check update
+                }
+
                 if (getResourceSettings().checkUpdates && !checkUpdate) {
                     String ver = HttpUtils.getLastestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().getName());
                     if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
@@ -186,5 +207,11 @@ public class TitleChangerFabric implements ClientModInitializer {
 
     private void placeholderUpdates() {
         start = LocalDateTime.now();
+    }
+
+    public static String parseWelcomeTitle(String title) {
+        title = StringUtils.replace(title, "%modpackName%", getResourceSettings().modpackName);
+        title = StringUtils.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
+        return title;
     }
 }

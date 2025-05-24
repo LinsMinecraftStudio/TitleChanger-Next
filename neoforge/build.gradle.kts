@@ -51,7 +51,7 @@ runs {
 
     create("server") {
         systemProperty("forge.enabledGameTestNamespaces", mod_id)
-        programArgument("--nogui")
+        argument("--nogui")
     }
 
     create("gameTestServer") {
@@ -63,7 +63,7 @@ runs {
         // workingDirectory project.file("run-data")
 
         // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll(listOf(
+        arguments.addAll(listOf(
             "--mod", mod_id,
             "--all", "--output", file("src/generated/resources/").absolutePath,
             "--existing", file("../resources/").absolutePath))
@@ -87,7 +87,7 @@ dependencies {
     implementation("net.neoforged:neoforge:$neo_version")
 
     implementation(project(":api"))
-    api(project(":"))
+    implementation(project(":"))
 
     api("me.shedaniel.cloth:cloth-config-neoforge:13.0.138")
 
