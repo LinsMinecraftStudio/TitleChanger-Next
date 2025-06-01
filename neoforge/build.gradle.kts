@@ -109,10 +109,6 @@ dependencies {
     // implementation(files("libs/coolmod-${minecraft_version}-${coolmod_version}.jar"))
 }
 
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
-// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.withType<ProcessResources>().configureEach {
     val loadedProperties = Properties().apply {
         load(project.rootProject.file("gradle.properties").inputStream())

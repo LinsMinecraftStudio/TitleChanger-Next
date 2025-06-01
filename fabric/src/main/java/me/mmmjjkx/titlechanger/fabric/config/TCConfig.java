@@ -1,5 +1,6 @@
 package me.mmmjjkx.titlechanger.fabric.config;
 
+import me.mmmjjkx.titlechanger.enums.SplashTextMode;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -14,9 +15,13 @@ public class TCConfig implements ConfigData {
     @ConfigEntry.Category("placeholder")
     public Placeholder placeholderSettings = new Placeholder();
 
-    @ConfigEntry.Gui.TransitiveObject
-    @ConfigEntry.Category("icon")
+    @ConfigEntry.Gui.CollapsibleObject
+    @ConfigEntry.Category("advanced")
     public Icon iconSettings = new Icon();
+
+    @ConfigEntry.Gui.CollapsibleObject
+    @ConfigEntry.Category("advanced")
+    public SplashText splashTextSettings = new SplashText();
 
     public static class General implements ConfigData {
         @ConfigEntry.Gui.RequiresRestart
@@ -45,5 +50,13 @@ public class TCConfig implements ConfigData {
 
         @ConfigEntry.Gui.Tooltip
         public boolean randomIcons = false;
+    }
+
+    public static class SplashText implements ConfigData {
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enabled = false;
+
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        public SplashTextMode mode = SplashTextMode.REPLACE;
     }
 }

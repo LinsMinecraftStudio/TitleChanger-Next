@@ -58,13 +58,15 @@ public class TitleProcessor {
                 return;
             }
 
-            try {
-                String result = processTemplate(parts);
-                resultConsumer.accept(result);
-            } catch (Exception e) {
-                System.err.println("Error processing template: " + e.getMessage());
-                resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
-            }
+            CompletableFuture.runAsync(() -> {
+                try {
+                    String result = processTemplate(parts);
+                    resultConsumer.accept(result);
+                } catch (Exception e) {
+                    System.err.println("Error processing template: " + e.getMessage());
+                    resultConsumer.accept(template.replaceAll("%.*?%", "ERROR"));
+                }
+            });
         }, 10, intervalMs, TimeUnit.MILLISECONDS);
     }
 
