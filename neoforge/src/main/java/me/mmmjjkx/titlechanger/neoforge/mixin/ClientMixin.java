@@ -36,7 +36,7 @@ public abstract class ClientMixin {
     }
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;newWindow(Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/blaze3d/platform/Window;"), index = 2)
-    private String modifyStartingWindow(String title) {
+    private String startingSettings(String title) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
             return title;
         }

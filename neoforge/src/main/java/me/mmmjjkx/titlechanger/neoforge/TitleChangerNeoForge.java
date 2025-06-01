@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
+import me.mmmjjkx.titlechanger.FileUtils;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
@@ -185,11 +186,11 @@ public class TitleChangerNeoForge {
         if (e.getNewScreen() instanceof TitleScreen) {
             if (getResourceSettings().enableWelcomeScreen) {
                 e.setNewScreen(new LaunchScreen(new TitleScreen(), () -> {
-                    Pair<String, List<String>> pair = Constants.readWelcomeText(FMLPaths.CONFIGDIR.get().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                    Pair<String, List<String>> pair = FileUtils.readWelcomeText(FMLPaths.CONFIGDIR.get().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
                     String title = pair.left();
                     return Component.literal(parseWelcomeTitle(title));
                 }, () -> {
-                    Pair<String, List<String>> pair = Constants.readWelcomeText(FMLPaths.CONFIGDIR.get().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                    Pair<String, List<String>> pair = FileUtils.readWelcomeText(FMLPaths.CONFIGDIR.get().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
                     return pair.right();
                 }, () -> {
                     getResourceSettings().enableWelcomeScreen = false;

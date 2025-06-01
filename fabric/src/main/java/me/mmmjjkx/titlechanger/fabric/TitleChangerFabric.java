@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
+import me.mmmjjkx.titlechanger.FileUtils;
 import me.mmmjjkx.titlechanger.HttpUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
@@ -164,11 +165,11 @@ public class TitleChangerFabric implements ClientModInitializer {
             if (screen instanceof TitleScreen) {
                 if (getResourceSettings().enableWelcomeScreen) {
                     Minecraft.getInstance().setScreen(new LaunchScreen(new TitleScreen(), () -> {
-                        Pair<String, List<String>> pair = Constants.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                        Pair<String, List<String>> pair = FileUtils.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
                         String title = pair.left();
                         return Component.literal(parseWelcomeTitle(title));
                     }, () -> {
-                        Pair<String, List<String>> pair = Constants.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
+                        Pair<String, List<String>> pair = FileUtils.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
                         return pair.right();
                     }, () -> {
                         getResourceSettings().enableWelcomeScreen = false;
