@@ -26,7 +26,11 @@ base {
     archivesName.set(mod_id)
 }
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 //minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
@@ -57,19 +61,7 @@ runs {
     create("gameTestServer") {
         systemProperty("forge.enabledGameTestNamespaces", mod_id)
     }
-
-    create("data") {
-        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-        // workingDirectory project.file("run-data")
-
-        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        arguments.addAll(listOf(
-            "--mod", mod_id,
-            "--all", "--output", file("src/generated/resources/").absolutePath,
-            "--existing", file("../resources/").absolutePath))
-    }
 }
-
 
 sourceSets {
     main {
@@ -89,7 +81,7 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":"))
 
-    api("me.shedaniel.cloth:cloth-config-neoforge:13.0.138")
+    api("me.shedaniel.cloth:cloth-config-neoforge:15.0.140")
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -116,7 +108,7 @@ tasks.withType<ProcessResources>().configureEach {
 
     inputs.properties(loadedProperties)
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand(loadedProperties)
     }
 

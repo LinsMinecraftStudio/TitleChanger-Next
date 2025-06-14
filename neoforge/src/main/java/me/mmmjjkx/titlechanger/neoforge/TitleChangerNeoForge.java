@@ -31,8 +31,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -171,14 +171,12 @@ public class TitleChangerNeoForge {
 
         NeoForge.EVENT_BUS.register(this);
 
-        modContainer.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
-            new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> {
-                ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfig.getConfigScreen(TCConfig.class, parent);
-                provider.setI13nFunction(a -> "titlechanger");
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((container, parent) -> {
+            ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfig.getConfigScreen(TCConfig.class, parent);
+            provider.setI13nFunction(a -> "titlechanger");
 
-                return provider.get();
-            }
-        ));
+            return provider.get();
+        }));
     }
 
     @SubscribeEvent

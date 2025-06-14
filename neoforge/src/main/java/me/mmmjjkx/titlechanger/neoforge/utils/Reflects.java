@@ -2,20 +2,18 @@ package me.mmmjjkx.titlechanger.neoforge.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ServerData;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
-
 public class Reflects {
+    /*
     private static final VarHandle uuidHandle;
 
     private static final boolean serverTypeHandleEnabled;
+     */
 
     static {
+        /*
         //i hate mojang do that
         VarHandle uuidTemp = null;
         boolean b1 = false;
@@ -30,7 +28,7 @@ public class Reflects {
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             try {
-                uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, "uuid", String.class);
+                uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, "field_1985", String.class);
             } catch (NoSuchFieldException | IllegalAccessException ex) {
                 throw new RuntimeException(ex);
             }
@@ -38,31 +36,18 @@ public class Reflects {
 
         uuidHandle = uuidTemp;
         serverTypeHandleEnabled = b1;
+         */
     }
 
     public static String getUserUUID(User usr) {
-        return uuidHandle.get(usr).toString();
+        return usr.getProfileId().toString();
     }
 
     public static boolean inRealms() {
-        Minecraft client = Minecraft.getInstance();
-        if (client.getCurrentServer() != null) {
-            if (serverTypeHandleEnabled) {
-                try {
-                    Field type = ServerData.class.getDeclaredField("type");
-                    type.setAccessible(true);
-                    Enum<?> type1 = (Enum<?>) type.get(client.getCurrentServer());
-                    return type1.ordinal() == 2;
-                } catch (IllegalAccessException | NoSuchFieldException e) {
-                    return false;
-                }
-            } else {
-                try {
-                    return (boolean) Minecraft.class.getMethod("isConnectedToRealms").invoke(client);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        ClientPacketListener clientPacketListener = Minecraft.getInstance().getConnection();
+        if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
+            ServerData serverData = Minecraft.getInstance().getCurrentServer();
+            return serverData != null && serverData.isRealm();
         }
 
         return false;

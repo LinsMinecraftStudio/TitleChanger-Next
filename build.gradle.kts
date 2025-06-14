@@ -15,6 +15,12 @@ dependencies {
     implementation(project(":api"))
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 tasks.shadowJar {
     archiveFileName = "${project.name}-${project.version}.jar"
 

@@ -11,6 +11,12 @@ base {
     archivesName = "${project.properties["archives_base_name"]}"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenCentral()
     maven("https://maven.shedaniel.me/")
@@ -34,11 +40,11 @@ dependencies {
     implementation(project(":api"))
 
     //api
-    modApi("me.shedaniel.cloth:cloth-config-fabric:11.1.136") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:15.0.140") {
         exclude("net.fabricmc.fabric-api")
     }
 
-    modApi("com.terraformersmc:modmenu:7.2.2") {
+    modApi("com.terraformersmc:modmenu:11.0.3") {
         exclude("net.fabricmc.fabric-api")
     }
 }
@@ -49,7 +55,7 @@ tasks.processResources {
     }
 
     exclude("mappings/mappings.tiny")
-    exclude("META-INF/mods.toml")
+    exclude("META-INF/neoforge.mods.toml")
     exclude("titlechanger-neoforge.mixins.json")
 }
 

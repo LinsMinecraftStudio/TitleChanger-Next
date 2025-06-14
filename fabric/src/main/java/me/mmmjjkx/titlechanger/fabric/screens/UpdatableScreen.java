@@ -70,7 +70,8 @@ public class UpdatableScreen extends Screen {
      */
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderDirtBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.titleTop(), 16777215);
         this.multilineMessage.renderCentered(guiGraphics, this.width / 2, this.messageTop());
         super.render(guiGraphics, mouseX, mouseY, partialTick);

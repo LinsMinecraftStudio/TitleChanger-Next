@@ -43,8 +43,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.LanguageSelectScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.LanguageSelectScreen;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -107,24 +107,24 @@ public class LaunchScreen extends Screen {
 
     @Override
     public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
-        this.renderDirtBackground(guiGraphics);
+        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         this.scrollableTextPanel.setText(this.text.get());
         this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
+
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.scale(1.5f, 1.5f, 1f);
         guiGraphics.drawString(this.font,
-                Language.getInstance().getVisualOrder(this.title.get()),
+                this.title.get(),
                 (int) ((this.width / 3f) - font.width(this.title.get()) / 2f),
                 5,
                 0xFFFFFF,
-                true
+                false
         );
         pose.popPose();
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     public class ScrollableTextPanel extends ScrollPanel {
@@ -229,7 +229,7 @@ public class LaunchScreen extends Screen {
 
             // if the last line isn't a heading, add a single line at the end of the panel for
             // aesthetical (looks nicer) and functional reasons (hard to click links on last line otherwise)
-            if (resized.get(resized.size() - 1).first == Heading.NONE) {
+            if (resized.getLast().first == Heading.NONE) {
                 resized.add(Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
             }
 
