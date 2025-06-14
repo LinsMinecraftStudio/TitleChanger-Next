@@ -40,11 +40,11 @@ dependencies {
     implementation(project(":api"))
 
     //api
-    modApi("me.shedaniel.cloth:cloth-config-fabric:15.0.140") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:18.0.145") {
         exclude("net.fabricmc.fabric-api")
     }
 
-    modApi("com.terraformersmc:modmenu:11.0.3") {
+    modApi("com.terraformersmc:modmenu:12.0.0") {
         exclude("net.fabricmc.fabric-api")
     }
 }

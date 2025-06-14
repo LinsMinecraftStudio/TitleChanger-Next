@@ -32,7 +32,6 @@ package me.mmmjjkx.titlechanger.neoforge.screens;
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
@@ -142,11 +141,12 @@ public class LaunchScreen extends Screen {
             return (lines.size() * font.lineHeight) + font.lineHeight;
         }
 
-        protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, @NotNull Tesselator tesselator, int mouseX, int mouseY) {
+        @Override
+        protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
                     PoseStack poseStack = guiGraphics.pose();
-                    RenderSystem.enableBlend();
+                    RenderSystem.enableScissor(mouseX, mouseY, width, height);
                     if (line.first != Heading.NONE) {
                         poseStack.pushPose();
                         float scale = switch (line.first) {
@@ -162,7 +162,7 @@ public class LaunchScreen extends Screen {
                     } else {
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
                     }
-                    RenderSystem.disableBlend();
+                    RenderSystem.disableScissor();
                 }
                 relativeY += font.lineHeight;
             }

@@ -7,6 +7,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
+import java.net.URI;
 import java.util.regex.Matcher;
 
 public class ComponentUtils {
@@ -28,18 +29,16 @@ public class ComponentUtils {
 
         Component head = Component.literal(stringParts[0]);
 
-        ClickEvent.Action action;
+        ClickEvent clickEvent;
 
         if (link.startsWith("file://")) {
             link = link.replaceFirst("file://", "");
-            action = ClickEvent.Action.OPEN_FILE;
             File file = new File(FMLPaths.GAMEDIR.get().toFile(), link);
-            link = file.getAbsolutePath();
+            clickEvent = new ClickEvent.OpenFile(file);
         } else {
-            action = ClickEvent.Action.OPEN_URL;
+            clickEvent = new ClickEvent.OpenUrl(URI.create(link));
         }
 
-        ClickEvent clickEvent = new ClickEvent(action, link);
         MutableComponent component = Component.literal(text).withStyle(ChatFormatting.UNDERLINE);
         Style style = component.getStyle().withClickEvent(clickEvent).withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE));
         component.setStyle(style);

@@ -81,7 +81,7 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":"))
 
-    api("me.shedaniel.cloth:cloth-config-neoforge:15.0.140")
+    api("me.shedaniel.cloth:cloth-config-neoforge:18.0.145")
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

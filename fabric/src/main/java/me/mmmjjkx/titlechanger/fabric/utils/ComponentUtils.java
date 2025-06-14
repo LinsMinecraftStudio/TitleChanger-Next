@@ -31,18 +31,16 @@ public class ComponentUtils {
 
         Component head = Component.literal(stringParts[0]);
 
-        ClickEvent.Action action;
+        ClickEvent clickEvent;
 
         if (link.startsWith("file://")) {
             link = link.replaceFirst("file://", "");
-            action = ClickEvent.Action.OPEN_FILE;
             File file = new File(FabricLoader.getInstance().getGameDir().toFile(), link);
-            link = file.getAbsolutePath();
+            clickEvent = new ClickEvent.OpenFile(file);
         } else {
-            action = ClickEvent.Action.OPEN_URL;
+            clickEvent = new ClickEvent.OpenUrl(URI.create(link));
         }
 
-        ClickEvent clickEvent = new ClickEvent(action, link);
         MutableComponent component = Component.literal(text).withStyle(ChatFormatting.UNDERLINE);
         Style style = component.getStyle().withClickEvent(clickEvent).withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE));
         component.setStyle(style);
@@ -108,7 +106,7 @@ public class ComponentUtils {
                     uri = new URI("http://" + url);
                 }
                 // Set the click event
-                ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, uri.toString());
+                ClickEvent click = new ClickEvent.OpenUrl(uri);
                 link.setStyle(link.getStyle().withClickEvent(click).withUnderlined(true).withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE)));
             } catch (URISyntaxException e) {
                 // Bad syntax bail out!
