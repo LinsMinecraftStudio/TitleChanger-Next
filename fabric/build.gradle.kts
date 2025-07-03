@@ -81,5 +81,5 @@ tasks.shadowJar {
 tasks.remapJar {
     dependsOn(tasks.shadowJar)
     inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
-    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}.jar")
+    archiveFileName.set("titlechanger-fabric-${project.version}.jar")
 }
