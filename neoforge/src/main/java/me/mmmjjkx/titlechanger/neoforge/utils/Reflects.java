@@ -1,55 +1,66 @@
 package me.mmmjjkx.titlechanger.neoforge.utils;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.User;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.network.chat.ClickEvent;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+
+@SuppressWarnings("unchecked")
 public class Reflects {
-    /*
-    private static final VarHandle uuidHandle;
-
-    private static final boolean serverTypeHandleEnabled;
-     */
+    private static Constructor<ClickEvent> openUrlConstructor = null;
+    private static Constructor<ClickEvent> openFileConstructor = null;
+    private static Constructor<ClickEvent> commonConstructor = null;
 
     static {
-        /*
-        //i hate mojang do that
-        VarHandle uuidTemp = null;
-        boolean b1 = false;
-        try {
-            for (Field field : User.class.getDeclaredFields()) {
-                if (field.getType() == UUID.class) {
-                    field.setAccessible(true);
-                    uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, field.getName(), UUID.class);
-                    b1 = true;
-                    break;
-                }
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        Constructor<ClickEvent> constructor = ConstructorUtils.getAccessibleConstructor(ClickEvent.class, ClickEvent.Action.class, String.class);
+
+        if (constructor == null) {
             try {
-                uuidTemp = MethodHandles.privateLookupIn(User.class, MethodHandles.lookup()).findVarHandle(User.class, "field_1985", String.class);
-            } catch (NoSuchFieldException | IllegalAccessException ex) {
-                throw new RuntimeException(ex);
+                Constructor<ClickEvent> constructor1 = (Constructor<ClickEvent>) ConstructorUtils.getAccessibleConstructor(Class.forName("net.minecraft.network.chat.ClickEvent$OpenFile"), File.class);
+                Constructor<ClickEvent> constructor2 = (Constructor<ClickEvent>) ConstructorUtils.getAccessibleConstructor(Class.forName("net.minecraft.network.chat.ClickEvent$OpenUrl"), URI.class);
+
+                openFileConstructor = constructor1;
+                openUrlConstructor = constructor2;
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            commonConstructor = constructor;
+        }
+    }
+
+    public static ClickEvent createOpenUrl(String url) {
+        if (commonConstructor == null) {
+            try {
+                return openUrlConstructor.newInstance(URI.create(url));
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                return commonConstructor.newInstance(ClickEvent.Action.OPEN_URL, url);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
-
-        uuidHandle = uuidTemp;
-        serverTypeHandleEnabled = b1;
-         */
     }
 
-    public static String getUserUUID(User usr) {
-        return usr.getProfileId().toString();
-    }
-
-    public static boolean inRealms() {
-        ClientPacketListener clientPacketListener = Minecraft.getInstance().getConnection();
-        if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
-            ServerData serverData = Minecraft.getInstance().getCurrentServer();
-            return serverData != null && serverData.isRealm();
+    public static ClickEvent createOpenFile(File file) {
+        if (commonConstructor == null) {
+            try {
+                return openFileConstructor.newInstance(file);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                return commonConstructor.newInstance(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        return false;
     }
 }

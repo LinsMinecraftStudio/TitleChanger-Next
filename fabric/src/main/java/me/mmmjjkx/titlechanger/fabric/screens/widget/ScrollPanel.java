@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Abstract scroll panel class.
@@ -28,7 +29,6 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     protected final int left;
     private boolean scrolling;
     protected float scrollDistance;
-    protected boolean captureMouse = true;
     protected final int border;
 
     private final int barWidth;
@@ -243,7 +243,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public List<? extends GuiEventListener> children() {
+    public @NotNull List<? extends GuiEventListener> children() {
         return Collections.emptyList();
     }
 }

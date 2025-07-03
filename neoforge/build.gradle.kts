@@ -81,7 +81,7 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":"))
 
-    api("me.shedaniel.cloth:cloth-config-neoforge:18.0.145")
+    api("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -104,7 +104,7 @@ dependencies {
 tasks.withType<ProcessResources>().configureEach {
     val loadedProperties = Properties().apply {
         load(project.rootProject.file("gradle.properties").inputStream())
-    }.toMutableMap() as MutableMap<String, Any>
+    }.toMutableMap() as MutableMap<String, *>
 
     inputs.properties(loadedProperties)
 

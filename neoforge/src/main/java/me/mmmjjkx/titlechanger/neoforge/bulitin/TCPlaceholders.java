@@ -37,7 +37,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Reflects.getUserUUID(Minecraft.getInstance().getUser());
+            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();
@@ -121,7 +121,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         if (clientPacketListener != null && clientPacketListener.getConnection().isConnected()) {
             if (client.getSingleplayerServer() != null && !client.getSingleplayerServer().isPublished()) {
                 return I18n.get("title.singleplayer");
-            } else if (Reflects.inRealms()) {
+            } else if (clientPacketListener.getServerData() != null && clientPacketListener.getServerData().isRealm()) {
                 return I18n.get("title.multiplayer.realms");
             } else if (client.getSingleplayerServer() == null && (client.getCurrentServer() == null || !client.getCurrentServer().isLan())) {
                 return I18n.get("title.multiplayer.other");

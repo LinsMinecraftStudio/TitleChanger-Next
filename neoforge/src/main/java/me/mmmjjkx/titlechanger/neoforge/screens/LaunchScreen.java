@@ -32,6 +32,7 @@ package me.mmmjjkx.titlechanger.neoforge.screens;
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
@@ -106,10 +107,10 @@ public class LaunchScreen extends Screen {
     public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
         renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         this.scrollableTextPanel.setText(this.text.get());
         this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
@@ -141,12 +142,14 @@ public class LaunchScreen extends Screen {
             return (lines.size() * font.lineHeight) + font.lineHeight;
         }
 
-        @Override
+        protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
+            drawPanel(guiGraphics, entryRight, relativeY, mouseX, mouseY);
+        }
+
         protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
                     PoseStack poseStack = guiGraphics.pose();
-                    RenderSystem.enableScissor(mouseX, mouseY, width, height);
                     if (line.first != Heading.NONE) {
                         poseStack.pushPose();
                         float scale = switch (line.first) {
@@ -157,12 +160,11 @@ public class LaunchScreen extends Screen {
                         };
                         poseStack.scale(scale, scale, 1.0F);
                         poseStack.translate(0.0F, scale, 0.0F);
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding) / scale, relativeY / scale, 0xFFFFFF, true);
+                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding) / scale, relativeY / scale, 0xFFFFFFFF, true);
                         poseStack.popPose();
                     } else {
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
+                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFFFF);
                     }
-                    RenderSystem.disableScissor();
                 }
                 relativeY += font.lineHeight;
             }

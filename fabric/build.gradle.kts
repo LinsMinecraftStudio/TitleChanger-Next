@@ -5,10 +5,10 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "${project.properties["mod_version"]}"
+version = "${properties["mod_version"]}"
 
 base {
-    archivesName = "${project.properties["archives_base_name"]}"
+    archivesName = "titlechanger-fabric"
 }
 
 java {
@@ -32,7 +32,7 @@ sourceSets {
 dependencies {
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"]}")
+    modImplementation("net.fabricmc:fabric-loader:${properties["fabric_loader_version"]}")
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
 
@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":api"))
 
     //api
-    modApi("me.shedaniel.cloth:cloth-config-fabric:18.0.145") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${properties["cloth_config_version"]}") {
         exclude("net.fabricmc.fabric-api")
     }
 
@@ -66,7 +66,7 @@ tasks.test {
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("${project.properties["archives_base_name"]}-${project.version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-fabric-${project.version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))

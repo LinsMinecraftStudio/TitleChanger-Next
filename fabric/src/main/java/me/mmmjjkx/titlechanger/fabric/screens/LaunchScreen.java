@@ -32,7 +32,6 @@ package me.mmmjjkx.titlechanger.fabric.screens;
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
@@ -109,20 +108,20 @@ public class LaunchScreen extends Screen {
     public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
         renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         this.scrollableTextPanel.setText(this.text.get());
         this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.scale(1.5f, 1.5f, 1f);
         guiGraphics.drawString(this.font,
                 this.title.get(),
-                (int) ((this.width / 3f) - font.width(this.title.get()) / 2f),
+                (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
                 5,
                 0xFFFFFF,
-                false
+                true
         );
         pose.popPose();
     }
@@ -149,7 +148,6 @@ public class LaunchScreen extends Screen {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
                     PoseStack poseStack = guiGraphics.pose();
-                    RenderSystem.enableScissor(mouseX, mouseY, width, height);
                     if (line.first != Heading.NONE) {
                         poseStack.pushPose();
                         float scale = switch (line.first) {
@@ -165,7 +163,6 @@ public class LaunchScreen extends Screen {
                     } else {
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
                     }
-                    RenderSystem.disableScissor();
                 }
                 relativeY += font.lineHeight;
             }

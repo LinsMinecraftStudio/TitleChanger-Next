@@ -36,9 +36,9 @@ public class ComponentUtils {
         if (link.startsWith("file://")) {
             link = link.replaceFirst("file://", "");
             File file = new File(FabricLoader.getInstance().getGameDir().toFile(), link);
-            clickEvent = new ClickEvent.OpenFile(file);
+            clickEvent = Reflects.createOpenFile(file);
         } else {
-            clickEvent = new ClickEvent.OpenUrl(URI.create(link));
+            clickEvent = Reflects.createOpenUrl(link);
         }
 
         MutableComponent component = Component.literal(text).withStyle(ChatFormatting.UNDERLINE);
@@ -106,7 +106,7 @@ public class ComponentUtils {
                     uri = new URI("http://" + url);
                 }
                 // Set the click event
-                ClickEvent click = new ClickEvent.OpenUrl(uri);
+                ClickEvent click = Reflects.createOpenUrl(uri.toString());
                 link.setStyle(link.getStyle().withClickEvent(click).withUnderlined(true).withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE)));
             } catch (URISyntaxException e) {
                 // Bad syntax bail out!
