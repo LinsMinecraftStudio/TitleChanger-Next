@@ -5,7 +5,6 @@ import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -34,7 +33,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
     @Override
     public String getPlaceholderValue(String placeholder, String[] args) {
         return switch (placeholder) {
-            case "mcver" -> SharedConstants.getCurrentVersion().getName();
+            case "mcver" -> Reflects.getCurrentVersion();
             case "hitokoto" -> TitleChangerFabric.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();

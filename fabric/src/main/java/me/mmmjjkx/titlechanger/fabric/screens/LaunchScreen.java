@@ -30,13 +30,12 @@ Respect to the original license.
 package me.mmmjjkx.titlechanger.fabric.screens;
 
 import com.ibm.icu.impl.Pair;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import me.mmmjjkx.titlechanger.fabric.screens.widget.ScrollPanel;
 import me.mmmjjkx.titlechanger.fabric.utils.ComponentUtils;
+import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -113,9 +112,9 @@ public class LaunchScreen extends Screen {
         this.scrollableTextPanel.setText(this.text.get());
         this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.scale(1.5f, 1.5f, 1f);
+        Object pose = guiGraphics.pose();
+        Reflects.pushPose(pose);
+        Reflects.scale(pose, 1.5f, 1.5f, 1f);
         guiGraphics.drawString(this.font,
                 this.title.get(),
                 (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
@@ -123,7 +122,7 @@ public class LaunchScreen extends Screen {
                 0xFFFFFF,
                 true
         );
-        pose.popPose();
+        Reflects.popPose(pose);
     }
 
     public class ScrollableTextPanel extends ScrollPanel {
@@ -147,19 +146,19 @@ public class LaunchScreen extends Screen {
         protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
-                    PoseStack poseStack = guiGraphics.pose();
+                    Object poseStack = guiGraphics.pose();
                     if (line.first != Heading.NONE) {
-                        poseStack.pushPose();
+                        Reflects.pushPose(poseStack);
                         float scale = switch (line.first) {
                             case L1 -> 1.8F;
                             case L2 -> 1.6F;
                             case L3 -> 1.4F;
                             default -> 1.0F;
                         };
-                        poseStack.scale(scale, scale, 1.0F);
-                        poseStack.translate(0.0F, scale, 0.0F);
+                        Reflects.scale(poseStack, scale, scale, 1.0F);
+                        Reflects.translate(poseStack, 0.0F, scale, 0.0F);
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFF, true);
-                        poseStack.popPose();
+                        Reflects.popPose(poseStack);
                     } else {
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
                     }

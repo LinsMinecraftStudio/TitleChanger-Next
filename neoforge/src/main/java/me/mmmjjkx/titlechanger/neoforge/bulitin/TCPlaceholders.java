@@ -33,7 +33,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
     @Override
     public String getPlaceholderValue(String placeholder, String[] args) {
         return switch (placeholder) {
-            case "mcver" -> SharedConstants.getCurrentVersion().getName();
+            case "mcver" -> Reflects.getCurrentVersion();
             case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
             case "playingmode" -> getPlayingMode();
             case "playername" -> Minecraft.getInstance().getUser().getName();

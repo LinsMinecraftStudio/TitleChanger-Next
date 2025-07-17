@@ -14,6 +14,7 @@ import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -199,7 +200,7 @@ public class TitleChangerNeoForge {
             }
 
             if (getResourceSettings().checkUpdates && !checkUpdate) {
-                String ver = HttpUtils.getLastestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().getName());
+                String ver = HttpUtils.getLastestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
                 if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
                     e.setNewScreen(new UpdatableScreen(m -> {
                         if (m == UpdateCheckMode.ALLOW) {

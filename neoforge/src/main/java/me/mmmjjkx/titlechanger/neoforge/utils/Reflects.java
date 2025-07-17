@@ -1,7 +1,11 @@
 package me.mmmjjkx.titlechanger.neoforge.utils;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.SharedConstants;
+import net.minecraft.WorldVersion;
 import net.minecraft.network.chat.ClickEvent;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.joml.Matrix3x2fStack;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -61,6 +65,49 @@ public class Reflects {
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static String getCurrentVersion() {
+        WorldVersion version = SharedConstants.getCurrentVersion();
+        Class<WorldVersion> clazz = WorldVersion.class;
+
+        try {
+            return (String) clazz.getMethod("name").invoke(version);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return version.getName();
+        }
+    }
+
+    public static void pushPose(Object pose) {
+        if (pose instanceof PoseStack ps) {
+            ps.pushPose();
+        } else if (pose instanceof Matrix3x2fStack m) {
+            m.pushMatrix();
+        }
+    }
+
+    public static void scale(Object pose, float x, float y, float z) {
+        if (pose instanceof PoseStack ps) {
+            ps.scale(x, y, z);
+        } else if (pose instanceof Matrix3x2fStack m) {
+            m.scale(x, y);
+        }
+    }
+
+    public static void translate(Object pose, float x, float y, float z) {
+        if (pose instanceof PoseStack ps) {
+            ps.translate(x, y, z);
+        } else if (pose instanceof Matrix3x2fStack m) {
+            m.translate(x, y);
+        }
+    }
+
+    public static void popPose(Object pose) {
+        if (pose instanceof PoseStack ps) {
+            ps.popPose();
+        } else if (pose instanceof Matrix3x2fStack m) {
+            m.popMatrix();
         }
     }
 }

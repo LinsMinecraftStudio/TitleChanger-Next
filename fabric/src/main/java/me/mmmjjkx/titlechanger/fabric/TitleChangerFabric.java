@@ -13,6 +13,7 @@ import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.fabric.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
+import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -21,7 +22,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -180,7 +180,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                 }
 
                 if (getResourceSettings().checkUpdates && !checkUpdate) {
-                    String ver = HttpUtils.getLastestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().getName());
+                    String ver = HttpUtils.getLastestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
                     if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
                         client.setScreen(new UpdatableScreen(m -> {
                             if (m == UpdateCheckMode.ALLOW) {
