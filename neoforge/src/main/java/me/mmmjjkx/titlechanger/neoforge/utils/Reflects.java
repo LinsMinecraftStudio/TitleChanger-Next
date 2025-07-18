@@ -73,9 +73,9 @@ public class Reflects {
         Class<WorldVersion> clazz = WorldVersion.class;
 
         try {
-            return (String) clazz.getMethod("name").invoke(version);
+            return (String) clazz.getMethod("getName").invoke(version);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            return version.getName();
+            return version.name();
         }
     }
 

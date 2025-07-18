@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "1.0-SNAPSHOT"
+version = properties["mod_version"]!!
 
 dependencies {
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")

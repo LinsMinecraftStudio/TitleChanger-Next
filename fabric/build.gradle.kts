@@ -1,3 +1,7 @@
+import java.util.Properties
+import kotlin.apply
+import kotlin.collections.toMutableMap
+
 plugins {
     java
     id("fabric-loom").version("1.10-SNAPSHOT")
@@ -5,7 +9,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "${properties["mod_version"]}"
+version = "${project.rootProject.properties["mod_version"]}"
 
 base {
     archivesName = "titlechanger-fabric"
@@ -51,7 +55,7 @@ dependencies {
 
 tasks.processResources {
     filesMatching("fabric.mod.json") {
-        expand(project.properties)
+        expand(mapOf("version" to project.version, "cloth_config_version" to properties["cloth_config_version"]))
     }
 
     exclude("mappings/mappings.tiny")

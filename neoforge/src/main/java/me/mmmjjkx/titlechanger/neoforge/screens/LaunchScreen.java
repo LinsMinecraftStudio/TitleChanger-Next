@@ -30,7 +30,6 @@ Respect to the original license.
 package me.mmmjjkx.titlechanger.neoforge.screens;
 
 import com.ibm.icu.impl.Pair;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.Heading;
@@ -116,9 +115,9 @@ public class LaunchScreen extends Screen {
         Reflects.pushPose(pose);
         Reflects.scale(pose, 1.5f, 1.5f, 1f);
         guiGraphics.drawString(this.font,
-                Language.getInstance().getVisualOrder(this.title.get()),
-                ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                5f,
+                this.title.get(),
+                (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                5,
                 0xFFFFFF,
                 true
         );
@@ -160,7 +159,7 @@ public class LaunchScreen extends Screen {
                         };
                         Reflects.scale(poseStack, scale, scale, 1.0F);
                         Reflects.translate(poseStack, 0.0F, scale, 0.0F);
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding) / scale, relativeY / scale, 0xFFFFFFFF, true);
+                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF, true);
                         Reflects.popPose(poseStack);
                     } else {
                         guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFFFF);
