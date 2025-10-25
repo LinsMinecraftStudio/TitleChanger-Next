@@ -52,13 +52,51 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 public class LaunchScreen extends Screen {
+    private static final MethodHandle DRAW_STRING;
+    private static final MethodHandle POSE_METHOD;
+
+    static {
+        DRAW_STRING = Arrays.stream(GuiGraphics.class.getMethods())
+                .filter(m -> m.getName().equals("method_51430") || m.getName().equals("drawString"))
+                .filter(m -> {
+                    Class<?> ret = m.getReturnType();
+                    return ret == int.class || ret == void.class;
+                })
+                .findFirst()
+                .map(m -> {
+                    try {
+                        return MethodHandles.lookup().unreflect(m);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElse(null);
+
+        POSE_METHOD = Arrays.stream(GuiGraphics.class.getMethods())
+                .filter(m -> m.getName().equals("method_51448") || m.getName().equals("pose"))
+                .filter(m -> m.getParameterCount() == 0)
+                .findFirst()
+                .map(m -> {
+                    try {
+                        return MethodHandles.lookup().unreflect(m);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElse(null);
+    }
+
     private final Screen previousScreen;
     private final Minecraft mcInstance = Minecraft.getInstance();
     private final Supplier<List<String>> text;
@@ -66,7 +104,28 @@ public class LaunchScreen extends Screen {
     private final Runnable onDone;
     private ScrollableTextPanel scrollableTextPanel;
 
-    public LaunchScreen(final Screen previousScreen, Supplier<Component> title, Supplier<List<String>> text, Runnable onDone) {
+    private static Object getPoseFromGuiGraphics(GuiGraphics guiGraphics) {
+        try {
+            if (POSE_METHOD != null) {
+                return POSE_METHOD.invoke(guiGraphics);
+            } else {
+                // Fallback: try to use reflection to find any pose-related method
+                Method[] methods = GuiGraphics.class.getMethods();
+                for (Method method : methods) {
+                    if ((method.getName().equals("method_51448") || method.getName().equals("pose"))
+                            && method.getParameterCount() == 0) {
+                        return method.invoke(guiGraphics);
+                    }
+                }
+                throw new RuntimeException("No pose method found in GuiGraphics");
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to get pose from GuiGraphics: " + e.getMessage(), e);
+        }
+    }
+
+    public LaunchScreen(final Screen previousScreen, Supplier<Component> title, Supplier<List<String>> text,
+            Runnable onDone) {
         super(title.get());
 
         this.title = title;
@@ -92,11 +151,13 @@ public class LaunchScreen extends Screen {
                 .build();
 
         final Button languageButton = Button.builder(Component.translatable("options.language"), onPress -> {
-            LanguageSelectScreen languageSelect = new LanguageSelectScreen(this, mcInstance.options, mcInstance.getLanguageManager());
+            LanguageSelectScreen languageSelect = new LanguageSelectScreen(this, mcInstance.options,
+                    mcInstance.getLanguageManager());
             mcInstance.setScreen(languageSelect);
         }).bounds(this.width / 2 - 160, this.height - 30, 150, 20).build();
 
-        this.scrollableTextPanel = new ScrollableTextPanel(mcInstance, this.width - 40, this.height - 40 - doneButton.getHeight(), 25, 20);
+        this.scrollableTextPanel = new ScrollableTextPanel(this.width - 40, this.height - 40 - doneButton.getHeight(),
+                25, 20);
 
         this.addRenderableWidget(doneButton);
         this.addRenderableWidget(languageButton);
@@ -104,24 +165,30 @@ public class LaunchScreen extends Screen {
     }
 
     @Override
-    public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-
+    public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY,
+            final float partialTicks) {
+        this.scrollableTextPanel.setText(this.text.get());
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        this.scrollableTextPanel.setText(this.text.get());
-        this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
+        Object pose = getPoseFromGuiGraphics(guiGraphics);
 
-        Object pose = guiGraphics.pose();
         Reflects.pushPose(pose);
         Reflects.scale(pose, 1.5f, 1.5f, 1f);
-        guiGraphics.drawString(this.font,
-                this.title.get(),
-                (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                5,
-                0xFFFFFF,
-                true
-        );
+        try {
+            DRAW_STRING.invoke(guiGraphics, this.font,
+                    this.title.get().getVisualOrderText(),
+                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                    5,
+                    0xFFFFFFFF,
+                    true);
+        } catch (Throwable e) {
+            guiGraphics.drawString(this.font,
+                    this.title.get().getVisualOrderText(),
+                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                    5,
+                    0xFFFFFFFF,
+                    true);
+        }
         Reflects.popPose(pose);
     }
 
@@ -129,8 +196,8 @@ public class LaunchScreen extends Screen {
         private List<Pair<Heading, ComponentUtils.LineStyles>> lines = Collections.emptyList();
         public int padding = 6;
 
-        ScrollableTextPanel(final Minecraft mcInstance, final int width, final int height, final int top, final int left) {
-            super(mcInstance, width, height, top, left);
+        ScrollableTextPanel(final int width, final int height, final int top, final int left) {
+            super(width, height, top, left);
         }
 
         public void setText(final List<String> lines) {
@@ -146,31 +213,42 @@ public class LaunchScreen extends Screen {
         protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
-                    Object poseStack = guiGraphics.pose();
                     if (line.first != Heading.NONE) {
-                        Reflects.pushPose(poseStack);
+                        Object poseObj = getPoseFromGuiGraphics(guiGraphics);
+                        Reflects.pushPose(poseObj);
                         float scale = switch (line.first) {
                             case L1 -> 1.8F;
                             case L2 -> 1.6F;
                             case L3 -> 1.4F;
                             default -> 1.0F;
                         };
-                        Reflects.scale(poseStack, scale, scale, 1.0F);
-                        Reflects.translate(poseStack, 0.0F, scale, 0.0F);
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFF, true);
-                        Reflects.popPose(poseStack);
+                        Reflects.scale(poseObj, scale, scale, 1.0F);
+                        Reflects.translate(poseObj, 0.0F, scale, 0.0F);
+                        try {
+                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(),
+                                    (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF, true);
+                        } catch (Throwable e) {
+                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(),
+                                    (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF, true);
+                        }
+                        Reflects.popPose(poseObj);
                     } else {
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFF);
+                        try {
+                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(), left + padding,
+                                    relativeY, 0xFFFFFFFF, false);
+                        } catch (Throwable e) {
+                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(),
+                                    (left + padding), relativeY, 0xFFFFFFFF, true);
+                        }
                     }
                 }
                 relativeY += font.lineHeight;
             }
         }
 
-        // todo: check if this is the right priority and change it if necessary so narration works
         @Override
         public @NotNull NarratableEntry.NarrationPriority narrationPriority() {
-            return NarratableEntry.NarrationPriority.NONE;
+            return NarrationPriority.FOCUSED;
         }
 
         @Override
@@ -193,7 +271,7 @@ public class LaunchScreen extends Screen {
                 // apply formatting codes where appropriate
                 line = line.replaceAll("(?i)&([a-f]|[0-9]|l|m|n|o|r|k)", "§$1");
                 line = line.replace("\\§", "&"); // allow formatting escaping with a backslash (for example, “\&a”)
-                line = TitleChangerFabric.titleProcessor.firstParse(line); //allow parsing placeholders
+                line = TitleChangerFabric.titleProcessor.firstParseNoCache(line); // allow parsing placeholders
 
                 Heading heading = Heading.tryGetFromString(line);
                 if (heading != Heading.NONE) {
@@ -203,28 +281,36 @@ public class LaunchScreen extends Screen {
                 var lineWithFormattedLinks = ComponentUtils.newChatWithLinks(line, false);
                 Matcher matcher = Constants.LINK_PATTERN.matcher(line);
                 if (matcher.find()) {
-                    lineWithFormattedLinks = ComponentUtils.parseLinks(line); //why someone needs write 2 styles of links
+                    lineWithFormattedLinks = ComponentUtils.parseLinks(line); // why someone needs write 2 styles of
+                                                                              // links
                 }
 
                 final int maxTextLength = this.width - padding * 2;
                 if (maxTextLength >= 0) {
-                    Language.getInstance().getVisualOrder(font.getSplitter().splitLines(lineWithFormattedLinks, maxTextLength, Style.EMPTY)).forEach(
-                            formattedCharSequence -> resized.add(Pair.of(heading, ComponentUtils.getLine(formattedCharSequence)))
-                    );
+                    Language.getInstance()
+                            .getVisualOrder(
+                                    font.getSplitter().splitLines(lineWithFormattedLinks, maxTextLength, Style.EMPTY))
+                            .forEach(
+                                    formattedCharSequence -> resized
+                                            .add(Pair.of(heading, ComponentUtils.getLine(formattedCharSequence))));
                 }
 
                 lineCounter += resized.size() - lineCounter;
 
-                // add a blank line after headings to avoid overlapping with any text that may be directly below it.
+                // add a blank line after headings to avoid overlapping with any text that may
+                // be directly below it.
                 if (heading != Heading.NONE) {
-                    resized.add(Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
+                    resized.add(
+                            Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
                 }
 
                 lineCounter++;
             }
 
-            // if the last line isn't a heading, add a single line at the end of the panel for
-            // aesthetical (looks nicer) and functional reasons (hard to click links on last line otherwise)
+            // if the last line isn't a heading, add a single line at the end of the panel
+            // for
+            // aesthetical (looks nicer) and functional reasons (hard to click links on last
+            // line otherwise)
             if (resized.getLast().first == Heading.NONE) {
                 resized.add(Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
             }
@@ -236,7 +322,13 @@ public class LaunchScreen extends Screen {
         public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
             final Style component = findTextLine((int) mouseX, (int) mouseY);
             if (component != null) {
-                LaunchScreen.this.handleComponentClicked(component);
+                try {
+                    LaunchScreen.this.handleComponentClicked(component);
+                } catch (Exception e) {
+                    if (component.getClickEvent() != null) {
+                        defaultHandleClickEvent(component.getClickEvent(), Minecraft.getInstance(), LaunchScreen.this);
+                    }
+                }
                 return true;
             }
             return super.mouseClicked(mouseX, mouseY, button);

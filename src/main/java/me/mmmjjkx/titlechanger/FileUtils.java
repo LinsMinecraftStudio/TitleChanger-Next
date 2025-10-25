@@ -13,19 +13,19 @@ import java.util.logging.Level;
 public class FileUtils {
     public static List<String> readSplashText(File cfgDir) {
         File splash = new File(cfgDir, "titlechanger/splash.txt");
-         if (splash.exists()) {
+        if (splash.exists()) {
             try {
                 return Files.readAllLines(splash.toPath());
             } catch (IOException e) {
                 return List.of("");
             }
         } else {
-             try {
-                 splash.createNewFile();
-             } catch (IOException e) {
-                 Constants.LOGGER.log(Level.SEVERE, "Failed to create splash.txt", e);
-             }
-             return List.of("");
+            try {
+                splash.createNewFile();
+            } catch (IOException e) {
+                Constants.LOGGER.log(Level.SEVERE, "Failed to create splash.txt", e);
+            }
+            return List.of("");
         }
     }
 

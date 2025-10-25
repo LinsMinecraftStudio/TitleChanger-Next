@@ -1,9 +1,9 @@
 package me.mmmjjkx.titlechanger.neoforge.bulitin;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -18,29 +18,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TCPlaceholders implements TitlePlaceholderExtension {
-    private static final String HOUR_REPLACE = "%h";
-    private static final String MINUTE_REPLACE = "%m";
-    private static final String SECOND_REPLACE = "%s";
-    private static final String HOUR_REPLACE_N2 = "%2h";
-    private static final String MINUTE_REPLACE_N2 = "%2m";
-    private static final String SECOND_REPLACE_N2 = "%2s";
-
     @Override
     public String getPlaceholderHeader() {
         return ""; // no header needed in core
     }
 
     @Override
-    public String getPlaceholderValue(String placeholder, String[] args) {
+    public String getStaticPlaceholderValue(String placeholder, String[] args) {
         return switch (placeholder) {
             case "mcver" -> Reflects.getCurrentVersion();
             case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
-            case "playingmode" -> getPlayingMode();
-            case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
-            case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
-            case "ping" -> getPing();
-            case "playtime" -> getPlayTime();
             case "modpackName" -> TitleChangerNeoForge.getResourceSettings().modpackName;
             case "modpackVersion" -> TitleChangerNeoForge.getResourceSettings().modpackVersion;
             case "modver" -> {
@@ -54,8 +41,28 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
                     yield "%ERROR: no mod found%";
                 }
 
-                yield "%ERROR: no modid specified%";
+                yield "%ERROR: modid not specified%";
             }
+            case "starttime" -> {
+                if (args.length == 1) {
+                    yield TitleChangerNeoForge.getStartTime(args[0]);
+                } else {
+                    yield TitleChangerNeoForge.getStartTime(TitleChangerNeoForge.getConfig().placeholderSettings.defaultTimeFormat);
+                }
+            }
+            default -> Constants.NO_RESULT;
+        };
+    }
+
+    @Override
+    public String getDynamicPlaceholderValue(String placeholder, String[] args) {
+        return switch (placeholder) {
+            case "playingmode" -> getPlayingMode();
+            case "playername" -> Minecraft.getInstance().getUser().getName();
+            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
+            case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
+            case "ping" -> getPing();
+            case "playtime" -> getPlayTime();
             case "luck" -> {
                 if (Minecraft.getInstance().player != null) {
                     yield String.valueOf(Minecraft.getInstance().player.getLuck());
@@ -84,13 +91,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
                 yield "?";
             }
-            case "starttime" -> {
-                if (args.length == 1) {
-                    yield TitleChangerNeoForge.getStartTime(args[0]);
-                } else {
-                    yield TitleChangerNeoForge.getStartTime(TitleChangerNeoForge.getConfig().placeholderSettings.defaultTimeFormat);
-                }
-            }
             case "syncedtime" -> {
                 if (args.length == 1) {
                     yield getSyncedTime(args[0]);
@@ -98,7 +98,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
                     yield getSyncedTime(TitleChangerNeoForge.getConfig().placeholderSettings.defaultTimeFormat);
                 }
             }
-            default -> "%ERROR%";
+            default -> Constants.NO_RESULT;
         };
     }
 
@@ -143,18 +143,13 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(TitleChangerNeoForge.getStartTime(), now);
         String format = TitleChangerNeoForge.getConfig().placeholderSettings.playTimeFormat;
-        format = StringUtils.replace(format, HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
-        format = StringUtils.replace(format, MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
-        format = StringUtils.replace(format, SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
-        format = StringUtils.replace(format, HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
-        format = StringUtils.replace(format, MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
-        format = StringUtils.replace(format, SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
+        format = StringUtils.replace(format, Constants.HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
+        format = StringUtils.replace(format, Constants.MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
+        format = StringUtils.replace(format, Constants.SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
+        format = StringUtils.replace(format, Constants.HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
+        format = StringUtils.replace(format, Constants.MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
+        format = StringUtils.replace(format, Constants.SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
         return format;
-    }
-
-    @Override
-    public String getExtensionName() {
-        return "titlechanger";
     }
 
     @Override

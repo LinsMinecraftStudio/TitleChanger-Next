@@ -1,8 +1,6 @@
 package me.mmmjjkx.titlechanger.fabric.utils;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.SharedConstants;
-import net.minecraft.WorldVersion;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.ClickEvent;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.joml.Matrix3x2fStack;
@@ -10,27 +8,23 @@ import org.joml.Matrix3x2fStack;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 
-@SuppressWarnings("unchecked")
 public class Reflects {
-    private static Constructor<ClickEvent> openUrlConstructor = null;
-    private static Constructor<ClickEvent> openFileConstructor = null;
-    private static Constructor<ClickEvent> commonConstructor = null;
+    private static Constructor<?> openUrlConstructor = null;
+    private static Constructor<?> openFileConstructor = null;
+    private static Constructor<?> commonConstructor = null;
 
     static {
         Constructor<ClickEvent> constructor = ConstructorUtils.getAccessibleConstructor(ClickEvent.class, ClickEvent.Action.class, String.class);
 
         if (constructor == null) {
-            try {
-                Constructor<ClickEvent> constructor1 = (Constructor<ClickEvent>) ConstructorUtils.getAccessibleConstructor(Class.forName("net.minecraft.class_2558$class_10607"), File.class);
-                Constructor<ClickEvent> constructor2 = (Constructor<ClickEvent>) ConstructorUtils.getAccessibleConstructor(Class.forName("net.minecraft.class_2558$class_10608"), URI.class);
+            Constructor<?> constructor1 = ConstructorUtils.getAccessibleConstructor(ClickEvent.OpenFile.class/*Class.forName("net.minecraft.class_2558$class_10607")*/, File.class);
+            Constructor<?> constructor2 = ConstructorUtils.getAccessibleConstructor(ClickEvent.OpenUrl.class/*Class.forName("net.minecraft.class_2558$class_10608")*/, URI.class);
 
-                openFileConstructor = constructor1;
-                openUrlConstructor = constructor2;
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            openFileConstructor = constructor1;
+            openUrlConstructor = constructor2;
         } else {
             commonConstructor = constructor;
         }
@@ -39,13 +33,13 @@ public class Reflects {
     public static ClickEvent createOpenUrl(String url) {
         if (commonConstructor == null) {
             try {
-                return openUrlConstructor.newInstance(URI.create(url));
+                return (ClickEvent) openUrlConstructor.newInstance(URI.create(url));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
             try {
-                return commonConstructor.newInstance(ClickEvent.Action.OPEN_URL, url);
+                return (ClickEvent) commonConstructor.newInstance(ClickEvent.Action.OPEN_URL, url);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
@@ -55,13 +49,13 @@ public class Reflects {
     public static ClickEvent createOpenFile(File file) {
         if (commonConstructor == null) {
             try {
-                return openFileConstructor.newInstance(file);
+                return (ClickEvent) openFileConstructor.newInstance(file);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
             try {
-                return commonConstructor.newInstance(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath());
+                return (ClickEvent) commonConstructor.newInstance(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
@@ -69,45 +63,61 @@ public class Reflects {
     }
 
     public static String getCurrentVersion() {
-        WorldVersion version = SharedConstants.getCurrentVersion();
-        Class<WorldVersion> clazz = WorldVersion.class;
-
-        try {
-            return (String) clazz.getMethod("getName").invoke(version);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            return version.name();
-        }
+        return FabricLoader.getInstance()
+                .getModContainer("minecraft")
+                .map(c -> c.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
     }
 
     public static void pushPose(Object pose) {
-        if (pose instanceof PoseStack ps) {
-            ps.pushPose();
-        } else if (pose instanceof Matrix3x2fStack m) {
+        if (pose instanceof Matrix3x2fStack m) {
             m.pushMatrix();
+        } else {
+            try {
+                Method m = pose.getClass().getMethod("method_22903");
+                m.invoke(pose);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public static void scale(Object pose, float x, float y, float z) {
-        if (pose instanceof PoseStack ps) {
-            ps.scale(x, y, z);
-        } else if (pose instanceof Matrix3x2fStack m) {
+        if (pose instanceof Matrix3x2fStack m) {
             m.scale(x, y);
+        } else {
+            try {
+                Method m = pose.getClass().getMethod("method_22905", float.class, float.class, float.class);
+                m.invoke(pose, x, y, z);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public static void translate(Object pose, float x, float y, float z) {
-        if (pose instanceof PoseStack ps) {
-            ps.translate(x, y, z);
-        } else if (pose instanceof Matrix3x2fStack m) {
+        if (pose instanceof Matrix3x2fStack m) {
             m.translate(x, y);
+        } else {
+            try {
+                Method m = pose.getClass().getMethod("method_46416", float.class, float.class, float.class);
+                m.invoke(pose, x, y, z);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public static void popPose(Object pose) {
-        if (pose instanceof PoseStack ps) {
-            ps.popPose();
-        } else if (pose instanceof Matrix3x2fStack m) {
+        if (pose instanceof Matrix3x2fStack m) {
             m.popMatrix();
+        } else {
+            try {
+                Method m = pose.getClass().getMethod("method_22909");
+                m.invoke(pose);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

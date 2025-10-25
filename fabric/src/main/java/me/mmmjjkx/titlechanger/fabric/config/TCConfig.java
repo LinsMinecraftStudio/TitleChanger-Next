@@ -24,7 +24,6 @@ public class TCConfig implements ConfigData {
     public SplashText splashTextSettings = new SplashText();
 
     public static class General implements ConfigData {
-        @ConfigEntry.Gui.RequiresRestart
         public boolean enabled = true;
 
         @ConfigEntry.Gui.Tooltip(count = 2)

@@ -3,23 +3,28 @@ package me.mmmjjkx.titlechanger.neoforge.mixin;
 import com.mojang.blaze3d.platform.Window;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Mixin(Minecraft.class)
 public abstract class ClientMixin {
-    @Shadow public abstract Window getWindow();
+    @Shadow
+    @Final
+    private Window window;
 
     @Redirect(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
     public void updateTitleTC(Minecraft instance) {
@@ -41,13 +46,12 @@ public abstract class ClientMixin {
             return title;
         }
 
-        CompletableFuture.runAsync(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        return TitleChangerNeoForge.titleProcessor.firstParse(TitleChangerNeoForge.getConfig().generalSettings.title);
+    }
 
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setWindowActive(Z)V"))
+    private void setup(GameConfig gameConfig, CallbackInfo ci) {
+        CompletableFuture.runAsync(() -> {
             if (TitleChangerNeoForge.getConfig().iconSettings.enabled) {
                 Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerNeoForge.tryGetIcon();
                 if (icon != null) {
@@ -57,18 +61,12 @@ public abstract class ClientMixin {
                         GLFWImage iconImage = icons.get(0);
                         iconImage.set(w.get(0), h.get(0), icon.getLeft());
 
-                        GLFW.glfwSetWindowIcon(getWindow().getWindow(), icons);
+                        GLFW.glfwSetWindowIcon(window.getWindow(), icons);
                     }
                 }
             }
 
-            TitleChangerNeoForge.titleProcessor.startProcessing(
-                    TitleChangerNeoForge.getConfig().generalSettings.title,
-                    TitleChangerNeoForge.getConfig().generalSettings.updateInterval,
-                    Minecraft.getInstance().getWindow()::setTitle
-            );
+            TitleChangerNeoForge.titleProcessor.startProcessing(TitleChangerNeoForge.getConfig().generalSettings.updateInterval, window::setTitle);
         });
-
-        return TitleChangerNeoForge.titleProcessor.firstParse(TitleChangerNeoForge.getConfig().generalSettings.title);
     }
 }

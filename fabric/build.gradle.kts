@@ -1,11 +1,7 @@
-import java.util.Properties
-import kotlin.apply
-import kotlin.collections.toMutableMap
-
 plugins {
     java
     id("fabric-loom").version("1.10-SNAPSHOT")
-    id("com.gradleup.shadow").version("9.0.0-beta13")
+    id("com.gradleup.shadow").version("9.0.0")
 }
 
 group = "io.github.lijinhong11"
@@ -25,6 +21,7 @@ repositories {
     mavenCentral()
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
+    maven("https://maven.parchmentmc.org")
 }
 
 sourceSets {
@@ -35,7 +32,11 @@ sourceSets {
 
 dependencies {
     minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+
+        parchment("org.parchmentmc.data:parchment-${properties["minecraft_version"]}:${properties["neogradle.subsystems.parchment.mappingsVersion"]}@zip")
+    })
     modImplementation("net.fabricmc:fabric-loader:${properties["fabric_loader_version"]}")
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"]}")
@@ -46,10 +47,12 @@ dependencies {
     //api
     modApi("me.shedaniel.cloth:cloth-config-fabric:${properties["cloth_config_version"]}") {
         exclude("net.fabricmc.fabric-api")
+        exclude("net.fabricmc", "fabric-loader")
     }
 
-    modApi("com.terraformersmc:modmenu:12.0.0") {
+    modApi("com.terraformersmc:modmenu:${properties["modmenu_version"]}") {
         exclude("net.fabricmc.fabric-api")
+        exclude("net.fabricmc", "fabric-loader")
     }
 }
 
@@ -70,7 +73,7 @@ tasks.test {
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("titlechanger-fabric-${project.version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-fabric-1.21.X-${project.version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))
@@ -85,5 +88,5 @@ tasks.shadowJar {
 tasks.remapJar {
     dependsOn(tasks.shadowJar)
     inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
-    archiveFileName.set("titlechanger-fabric-${project.version}.jar")
+    archiveFileName.set("titlechanger-fabric-1.21.X-${project.version}.jar")
 }

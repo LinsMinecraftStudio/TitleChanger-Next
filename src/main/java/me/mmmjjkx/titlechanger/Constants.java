@@ -1,10 +1,14 @@
 package me.mmmjjkx.titlechanger;
 
+import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
+
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Constants {
+    public static final String NO_RESULT = "NO_RESULT" + TitleExtensionSource.class.hashCode();
+
     public static final Logger LOGGER = Logger.getLogger("TitleChanger");
 
     public static final String RESOURCE_SETTINGS_FILE = "titlechanger/resource_settings";
@@ -74,4 +78,11 @@ public class Constants {
     public static final List<String> WELCOME_SCREEN_TEXT_ERR = List.of(
             "Failed to load welcome text.",
             "See log file for details");
+
+    public static final String HOUR_REPLACE = "%h";
+    public static final String MINUTE_REPLACE = "%m";
+    public static final String SECOND_REPLACE = "%s";
+    public static final String HOUR_REPLACE_N2 = "%2h";
+    public static final String MINUTE_REPLACE_N2 = "%2m";
+    public static final String SECOND_REPLACE_N2 = "%2s";
 }

@@ -1,14 +1,17 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
+
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
 description='''${mod_description}'''
+
 [[mixins]]
 config="${mod_id}-neoforge.mixins.json"
+
 [[dependencies."${mod_id}"]]
 modId="neoforge"
 type="required"
@@ -18,7 +21,6 @@ side="CLIENT"
 issueTrackerURL = "https://github.com/LinsMinecraftStudio/TitleChanger-Next/issues/"
 displayURL = "https://modrinth.com/mod/titlechanger-next"
 logoFile="icon.png"
-
 [[dependencies."${mod_id}"]]
 modId="minecraft"
 type="required"
@@ -28,6 +30,6 @@ side="CLIENT"
 [[dependencies."${mod_id}"]]
 modId="cloth_config"
 type="required"
-versionRange="[15.0,)"
+versionRange="[15.0.140,)"
 ordering="NONE"
 side="CLIENT"

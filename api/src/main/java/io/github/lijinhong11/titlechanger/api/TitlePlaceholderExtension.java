@@ -5,9 +5,9 @@ import java.util.List;
 public interface TitlePlaceholderExtension {
     String getPlaceholderHeader();
 
-    String getPlaceholderValue(String placeholder, String[] args);
+    String getStaticPlaceholderValue(String placeholder, String[] args);
 
-    String getExtensionName();
+    String getDynamicPlaceholderValue(String placeholder, String[] args);
 
     List<String> getPlaceholders();
 }

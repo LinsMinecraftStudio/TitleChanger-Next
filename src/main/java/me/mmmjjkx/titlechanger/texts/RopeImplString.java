@@ -4,10 +4,39 @@ public class RopeImplString {
     private static final int MAX_LEAF_LENGTH = 8;
     private Node root;
 
+    public RopeImplString(String initial) {
+        this.root = buildRope(initial, 0, initial.length());
+    }
+
+    private Node buildRope(String s, int start, int end) {
+        int length = end - start;
+        if (length <= MAX_LEAF_LENGTH) {
+            return new LeafNode(s.substring(start, end));
+        }
+        int mid = start + length / 2;
+        Node left = buildRope(s, start, mid);
+        Node right = buildRope(s, mid, end);
+        return new InternalNode(left, right);
+    }
+
+    public void concat(RopeImplString other) {
+        this.root = new InternalNode(this.root, other.root);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        root.collectLeaves(builder);
+        return builder.toString();
+    }
+
     private abstract static class Node {
         int weight;
+
         abstract char index(int i);
+
         abstract String substring(int start, int end);
+
         abstract void collectLeaves(StringBuilder builder);
     }
 
@@ -70,31 +99,5 @@ public class RopeImplString {
             left.collectLeaves(builder);
             right.collectLeaves(builder);
         }
-    }
-
-    public RopeImplString(String initial) {
-        this.root = buildRope(initial, 0, initial.length());
-    }
-
-    private Node buildRope(String s, int start, int end) {
-        int length = end - start;
-        if (length <= MAX_LEAF_LENGTH) {
-            return new LeafNode(s.substring(start, end));
-        }
-        int mid = start + length / 2;
-        Node left = buildRope(s, start, mid);
-        Node right = buildRope(s, mid, end);
-        return new InternalNode(left, right);
-    }
-
-    public void concat(RopeImplString other) {
-        this.root = new InternalNode(this.root, other.root);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        root.collectLeaves(builder);
-        return builder.toString();
     }
 }

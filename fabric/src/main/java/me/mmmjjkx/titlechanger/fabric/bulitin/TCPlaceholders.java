@@ -1,6 +1,7 @@
 package me.mmmjjkx.titlechanger.fabric.bulitin;
 
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,35 +19,33 @@ import java.util.List;
 import java.util.Optional;
 
 public class TCPlaceholders implements TitlePlaceholderExtension {
-    private static final String HOUR_REPLACE = "%h";
-    private static final String MINUTE_REPLACE = "%m";
-    private static final String SECOND_REPLACE = "%s";
-    private static final String HOUR_REPLACE_N2 = "%2h";
-    private static final String MINUTE_REPLACE_N2 = "%2m";
-    private static final String SECOND_REPLACE_N2 = "%2s";
-
     @Override
     public String getPlaceholderHeader() {
         return ""; // no header needed in core
     }
 
     @Override
-    public String getPlaceholderValue(String placeholder, String[] args) {
+    public String getStaticPlaceholderValue(String placeholder, String[] args) {
+        if (!isIASInstalled()) {
+            switch (placeholder) {
+                case "playername" -> {
+                    return Minecraft.getInstance().getUser().getName();
+                }
+                case "playeruuid" -> {
+                    return Minecraft.getInstance().getUser().getProfileId().toString();
+                }
+            }
+        }
+
         return switch (placeholder) {
             case "mcver" -> Reflects.getCurrentVersion();
             case "hitokoto" -> TitleChangerFabric.HITOKOTO;
-            case "playingmode" -> getPlayingMode();
-            case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
-            case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
-            case "ping" -> getPing();
-            case "playtime" -> getPlayTime();
             case "modpackName" -> TitleChangerFabric.getResourceSettings().modpackName;
             case "modpackVersion" -> TitleChangerFabric.getResourceSettings().modpackVersion;
             case "modver" -> {
                 if (args.length == 1) {
                     String modid = args[0];
-                            Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer(modid);
+                    Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer(modid);
                     if (optional.isPresent()) {
                         yield optional.get().getMetadata().getVersion().getFriendlyString();
                     }
@@ -56,6 +55,35 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
                 yield "%ERROR: no modid specified%";
             }
+            case "starttime" -> {
+                if (args.length == 1) {
+                    yield TitleChangerFabric.getStartTime(args[0]);
+                } else {
+                    yield TitleChangerFabric.getStartTime(TitleChangerFabric.getConfig().placeholderSettings.defaultTimeFormat);
+                }
+            }
+            default -> Constants.NO_RESULT;
+        };
+    }
+
+    @Override
+    public String getDynamicPlaceholderValue(String placeholder, String[] args) {
+        if (isIASInstalled()) {
+            switch (placeholder) {
+                case "playername" -> {
+                    return Minecraft.getInstance().getUser().getName();
+                }
+                case "playeruuid" -> {
+                    return Minecraft.getInstance().getUser().getProfileId().toString();
+                }
+            }
+        }
+
+        return switch (placeholder) {
+            case "playingmode" -> getPlayingMode();
+            case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
+            case "ping" -> getPing();
+            case "playtime" -> getPlayTime();
             case "luck" -> {
                 if (Minecraft.getInstance().player != null) {
                     yield String.valueOf(Minecraft.getInstance().player.getLuck());
@@ -84,13 +112,6 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
                 yield "?";
             }
-            case "starttime" -> {
-                if (args.length == 1) {
-                    yield TitleChangerFabric.getStartTime(args[0]);
-                } else {
-                    yield TitleChangerFabric.getStartTime(TitleChangerFabric.getConfig().placeholderSettings.defaultTimeFormat);
-                }
-            }
             case "syncedtime" -> {
                 if (args.length == 1) {
                     yield getSyncedTime(args[0]);
@@ -98,8 +119,12 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
                     yield getSyncedTime(TitleChangerFabric.getConfig().placeholderSettings.defaultTimeFormat);
                 }
             }
-            default -> "%ERROR%";
+            default -> Constants.NO_RESULT;
         };
+    }
+
+    private boolean isIASInstalled() {
+        return FabricLoader.getInstance().isModLoaded("ias");
     }
 
     private String getPing() {
@@ -143,18 +168,13 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(TitleChangerFabric.getStartTime(), now);
         String format = TitleChangerFabric.getConfig().placeholderSettings.playTimeFormat;
-        format = StringUtils.replace(format, HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
-        format = StringUtils.replace(format, MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
-        format = StringUtils.replace(format, SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
-        format = StringUtils.replace(format, HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
-        format = StringUtils.replace(format, MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
-        format = StringUtils.replace(format, SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
+        format = StringUtils.replace(format, Constants.HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
+        format = StringUtils.replace(format, Constants.MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
+        format = StringUtils.replace(format, Constants.SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
+        format = StringUtils.replace(format, Constants.HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
+        format = StringUtils.replace(format, Constants.MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
+        format = StringUtils.replace(format, Constants.SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
         return format;
-    }
-
-    @Override
-    public String getExtensionName() {
-        return "titlechanger";
     }
 
     @Override

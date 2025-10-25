@@ -12,10 +12,6 @@ public enum Heading {
         this.mark = mark;
     }
 
-    public String getMark() {
-        return mark;
-    }
-
     public static Heading tryGetFromString(String str) {
         if (str.startsWith("[h1] ")) {
             return L1;
@@ -26,5 +22,9 @@ public enum Heading {
         } else {
             return NONE;
         }
+    }
+
+    public String getMark() {
+        return mark;
     }
 }

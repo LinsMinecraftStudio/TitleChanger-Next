@@ -35,6 +35,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,30 +47,29 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Environment(EnvType.CLIENT)
 public class TitleChangerFabric implements ClientModInitializer {
-    public static final TitleProcessor titleProcessor;
+    public static TitleProcessor titleProcessor;
     public static final String HITOKOTO;
 
-    private static final Logger LOGGER = Logger.getLogger("TitleChanger");
+    public static final Logger LOGGER = LoggerFactory.getLogger("titlechanger");
 
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
 
     private boolean checkUpdate = false;
 
     static {
-        titleProcessor = new TitleProcessor();
+        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
 
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
-            titleProcessor.shutdown();
+            titleProcessor.restart();
 
             if (c.generalSettings.enabled) {
-                titleProcessor.startProcessing(c.generalSettings.title, 1000, t -> Minecraft.getInstance().getWindow().setTitle(t));
+                titleProcessor.refresh(c.generalSettings.title);
+                titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
             }
 
             if (c.iconSettings.enabled) {
@@ -89,8 +90,6 @@ public class TitleChangerFabric implements ClientModInitializer {
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
-
-        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
     }
 
     private static LocalDateTime start;
@@ -128,7 +127,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                 ByteBuffer icon = STBImage.stbi_load_from_memory(buffer, w, h, channels, 4);
 
                 if (icon == null) {
-                    LOGGER.log(Level.SEVERE, "Failed to load image from path: {} - {}", new Object[]{file, STBImage.stbi_failure_reason()});
+                    LOGGER.error("Failed to load image from path: {} - {}", file, STBImage.stbi_failure_reason());
                     return null;
                 }
 
@@ -159,6 +158,7 @@ public class TitleChangerFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        titleProcessor = new TitleProcessor();
         placeholderUpdates();
 
         ScreenEvents.BEFORE_INIT.register((client, screen, w, h) -> {

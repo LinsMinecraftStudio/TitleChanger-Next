@@ -7,7 +7,7 @@ package me.mmmjjkx.titlechanger.fabric.screens.widget;
 
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
  * Abstract scroll panel class.
  */
 public abstract class ScrollPanel extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
-    private final Minecraft client;
     protected final int width;
     protected final int height;
     protected final int top;
@@ -38,30 +37,27 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     private final int barBorderColor;
 
     /**
-     * @param client the minecraft instance this ScrollPanel should use
      * @param width  the width
      * @param height the height
      * @param top    the offset from the top (y coord)
      * @param left   the offset from the left (x coord)
      */
-    public ScrollPanel(Minecraft client, int width, int height, int top, int left) {
-        this(client, width, height, top, left, 4);
+    public ScrollPanel(int width, int height, int top, int left) {
+        this(width, height, top, left, 4);
     }
 
     /**
-     * @param client the minecraft instance this ScrollPanel should use
      * @param width  the width
      * @param height the height
      * @param top    the offset from the top (y coord)
      * @param left   the offset from the left (x coord)
      * @param border the size of the border
      */
-    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border) {
-        this(client, width, height, top, left, border, 6);
+    public ScrollPanel(int width, int height, int top, int left, int border) {
+        this(width, height, top, left, border, 6);
     }
 
     /**
-     * @param client   the minecraft instance this ScrollPanel should use
      * @param width    the width
      * @param height   the height
      * @param top      the offset from the top (y coord)
@@ -69,14 +65,13 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
      * @param border   the size of the border
      * @param barWidth the width of the scroll bar
      */
-    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border, int barWidth) {
-        this(client, width, height, top, left, border, barWidth, 0xFF000000, 0xFF808080, 0xFFC0C0C0);
+    public ScrollPanel(int width, int height, int top, int left, int border, int barWidth) {
+        this(width, height, top, left, border, barWidth, 0xFF000000, 0xFF808080, 0xFFC0C0C0);
     }
 
     /**
      * Base constructor
      *
-     * @param client         the minecraft instance this ScrollPanel should use
      * @param width          the width
      * @param height         the height
      * @param top            the offset from the top (y coord)
@@ -87,8 +82,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
      * @param barColor       the color for the scroll bar handle
      * @param barBorderColor the border color for the scroll bar handle
      */
-    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border, int barWidth, int barBgColor, int barColor, int barBorderColor) {
-        this.client = client;
+    public ScrollPanel(int width, int height, int top, int left, int border, int barWidth, int barBgColor, int barColor, int barBorderColor) {
         this.width = width;
         this.height = height;
         this.top = top;

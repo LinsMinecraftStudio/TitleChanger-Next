@@ -1,11 +1,10 @@
 import java.util.Properties
 
 plugins {
-    `java-library`
     java
-    idea
-    id("net.neoforged.gradle.userdev") version "7.0.184"
-    id("com.gradleup.shadow") version "9.0.0-beta13"
+    id("net.neoforged.gradle.userdev") version "7.0.192"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
+    id("com.gradleup.shadow") version "9.0.0"
 }
 
 val mod_version: String by project
@@ -81,7 +80,8 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":"))
 
-    api("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
+    compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
+    localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -120,17 +120,10 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
 }
 
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
-    }
-}
-
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
+    archiveFileName.set("titlechanger-neoforge-1.21.X-${project.version}.jar")
 
     dependencies {
         exclude("fabric.mod.json")

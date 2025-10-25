@@ -38,7 +38,7 @@ public class HttpUtils {
             http.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenAcceptAsync(body -> {
-                        Map<?,?> map = new Gson().fromJson(body, Map.class);
+                        Map<?, ?> map = new Gson().fromJson(body, Map.class);
                         String hitokoto = (String) map.get("hitokoto");
                         String from = (String) map.get("from");
                         hikotoko.set(hitokoto + " —— " + from);

@@ -19,7 +19,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -56,7 +55,7 @@ import java.util.Random;
 
 @Mod(TitleChangerNeoForge.MODID)
 @OnlyIn(Dist.CLIENT)
-@SuppressWarnings({"unsafe", "deprecation"})
+@SuppressWarnings({"unsafe"})
 public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
@@ -73,15 +72,14 @@ public class TitleChangerNeoForge {
     static {
         TitleExtensionSource.registerExtension(new TCPlaceholders());
 
-        titleProcessor = new TitleProcessor();
-
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
-            titleProcessor.shutdown();
+            titleProcessor.restart();
 
             if (c.generalSettings.enabled) {
-                titleProcessor.startProcessing(c.generalSettings.title, 1000, t -> Minecraft.getInstance().getWindow().setTitle(t));
+                titleProcessor.refresh(c.generalSettings.title);
+                titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
             }
 
             if (c.iconSettings.enabled) {
@@ -103,6 +101,8 @@ public class TitleChangerNeoForge {
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
+
+        titleProcessor = new TitleProcessor();
     }
 
     public static TCConfig getConfig() {

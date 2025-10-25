@@ -51,19 +51,76 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 public class LaunchScreen extends Screen {
+    private static final MethodHandle DRAW_STRING;
+    private static final MethodHandle GET_POSE;
+
+    static {
+        DRAW_STRING = Arrays.stream(GuiGraphics.class.getMethods())
+                .filter(m -> m.getName().equals("drawString"))
+                .filter(m -> {
+                    Class<?> ret = m.getReturnType();
+                    return (ret == int.class || ret == void.class) && (m.getParameters().length == 5 && m.getParameters()[1].getType() == FormattedCharSequence.class);
+                })
+                .findFirst()
+                .map(m -> {
+                    try {
+                        return MethodHandles.lookup().unreflect(m);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElse(null);
+
+        GET_POSE = Arrays.stream(GuiGraphics.class.getMethods())
+                .filter(m -> m.getName().equals("pose"))
+                .filter(m -> m.getParameterCount() == 0)
+                .findFirst()
+                .map(m -> {
+                    try {
+                        return MethodHandles.lookup().unreflect(m);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElse(null);
+    }
+
     private final Screen previousScreen;
     private final Minecraft mcInstance = Minecraft.getInstance();
     private final Supplier<List<String>> text;
     private final Supplier<Component> title;
     private final Runnable onDone;
     private ScrollableTextPanel scrollableTextPanel;
+
+    private static Object getPoseFromGuiGraphics(GuiGraphics guiGraphics) {
+        try {
+            if (GET_POSE != null) {
+                return GET_POSE.invoke(guiGraphics);
+            } else {
+                Method[] methods = GuiGraphics.class.getMethods();
+                for (Method method : methods) {
+                    if ((method.getName().equals("method_51448") || method.getName().equals("pose"))
+                            && method.getParameterCount() == 0) {
+                        return method.invoke(guiGraphics);
+                    }
+                }
+                throw new RuntimeException("No pose method found in GuiGraphics");
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException("Failed to get pose from GuiGraphics: " + e.getMessage(), e);
+        }
+    }
 
     public LaunchScreen(final Screen previousScreen, Supplier<Component> title, Supplier<List<String>> text, Runnable onDone) {
         super(title.get());
@@ -97,30 +154,37 @@ public class LaunchScreen extends Screen {
 
         this.scrollableTextPanel = new ScrollableTextPanel(mcInstance, this.width - 40, this.height - 40 - doneButton.getHeight(), 25, 20);
 
+        this.addRenderableWidget(this.scrollableTextPanel);
         this.addRenderableWidget(doneButton);
         this.addRenderableWidget(languageButton);
-        this.addRenderableWidget(this.scrollableTextPanel);
     }
 
     @Override
     public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-
+        this.scrollableTextPanel.setText(this.text.get());
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        this.scrollableTextPanel.setText(this.text.get());
-        this.scrollableTextPanel.render(guiGraphics, mouseX, mouseY, partialTicks);
+        Object pose = getPoseFromGuiGraphics(guiGraphics);
 
-        Object pose = guiGraphics.pose();
         Reflects.pushPose(pose);
         Reflects.scale(pose, 1.5f, 1.5f, 1f);
-        guiGraphics.drawString(this.font,
-                this.title.get(),
-                (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                5,
-                0xFFFFFF,
-                true
-        );
+
+        try {
+            DRAW_STRING.invoke(guiGraphics, this.font,
+                    this.title.get().getVisualOrderText(),
+                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                    5,
+                    0xFFFFFFFF
+            );
+        } catch (Throwable e) {
+            guiGraphics.drawString(this.font,
+                    this.title.get().getVisualOrderText(),
+                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                    5,
+                    0xFFFFFFFF
+            );
+        }
+
         Reflects.popPose(pose);
     }
 
@@ -146,10 +210,11 @@ public class LaunchScreen extends Screen {
         }
 
         protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
+            guiGraphics.enableScissor(this.left, this.top, this.right, this.bottom);
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
-                    Object poseStack = guiGraphics.pose();
                     if (line.first != Heading.NONE) {
+                        Object poseStack = getPoseFromGuiGraphics(guiGraphics);
                         Reflects.pushPose(poseStack);
                         float scale = switch (line.first) {
                             case L1 -> 1.8F;
@@ -159,20 +224,28 @@ public class LaunchScreen extends Screen {
                         };
                         Reflects.scale(poseStack, scale, scale, 1.0F);
                         Reflects.translate(poseStack, 0.0F, scale, 0.0F);
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF, true);
+                        try {
+                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF);
+                        } catch (Throwable e) {
+                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF);
+                        }
                         Reflects.popPose(poseStack);
                     } else {
-                        guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), left + padding, relativeY, 0xFFFFFFFF);
+                        try {
+                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(), (left + padding), relativeY, 0xFFFFFFFF);
+                        } catch (Throwable e) {
+                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding), relativeY, 0xFFFFFFFF);
+                        }
                     }
                 }
                 relativeY += font.lineHeight;
             }
+            guiGraphics.disableScissor();
         }
 
-        // todo: check if this is the right priority and change it if necessary so narration works
         @Override
         public @NotNull NarrationPriority narrationPriority() {
-            return NarrationPriority.NONE;
+            return NarrationPriority.FOCUSED;
         }
 
         @Override
@@ -195,7 +268,7 @@ public class LaunchScreen extends Screen {
                 // apply formatting codes where appropriate
                 line = line.replaceAll("(?i)&([a-f]|[0-9]|l|m|n|o|r|k)", "§$1");
                 line = line.replace("\\§", "&"); // allow formatting escaping with a backslash (for example, “\&a”)
-                line = TitleChangerNeoForge.titleProcessor.firstParse(line); //allow parsing placeholders
+                line = TitleChangerNeoForge.titleProcessor.firstParseNoCache(line); //allow parsing placeholders
 
                 Heading heading = Heading.tryGetFromString(line);
                 if (heading != Heading.NONE) {
@@ -238,7 +311,13 @@ public class LaunchScreen extends Screen {
         public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
             final Style component = findTextLine((int) mouseX, (int) mouseY);
             if (component != null) {
-                LaunchScreen.this.handleComponentClicked(component);
+                try {
+                    LaunchScreen.this.handleComponentClicked(component);
+                } catch (Exception e) {
+                    if (component.getClickEvent() != null) {
+                        defaultHandleClickEvent(component.getClickEvent(), Minecraft.getInstance(), LaunchScreen.this);
+                    }
+                }
                 return true;
             }
             return super.mouseClicked(mouseX, mouseY, button);
