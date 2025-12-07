@@ -31,7 +31,7 @@ package me.mmmjjkx.titlechanger.fabric.screens;
 
 import com.ibm.icu.impl.Pair;
 import me.mmmjjkx.titlechanger.Constants;
-import me.mmmjjkx.titlechanger.enums.Heading;
+import me.mmmjjkx.titlechanger.enums.formatting.Heading;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import me.mmmjjkx.titlechanger.fabric.screens.widget.ScrollPanel;
 import me.mmmjjkx.titlechanger.fabric.utils.ComponentUtils;

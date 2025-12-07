@@ -17,9 +17,13 @@ open class FetchVersionPlugin : Plugin<Project> {
                     return@beforeProject
                 }
 
+                if (target.gradle.startParameter.isOffline) {
+                    return@beforeProject
+                }
+
                 val cacheFile = File(project.layout.buildDirectory.get().asFile, "dependency_sync.cache")
                 if (!cacheFile.exists()) {
-                    cacheFile.mkdirs()
+                    cacheFile.parentFile.mkdirs()
                     cacheFile.createNewFile()
                 }
 
@@ -119,7 +123,7 @@ open class FetchVersionPlugin : Plugin<Project> {
             throw RuntimeException("Failed to fetch $baseUrl")
         }
 
-        val regex = Regex("(\\d{2}.\\d.\\d{1,3})(-beta|)")
+        val regex = Regex("(\\d{2}.\\d{1,2}.\\d{1,3})(-beta|)")
         val versions = regex.findAll(html)
             .map { it.groupValues[0] }
             .filter {

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -100,6 +101,10 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             }
             default -> Constants.NO_RESULT;
         };
+    }
+
+    private boolean isIASInstalled() {
+        return ModList.get().isLoaded("ias");
     }
 
     private String getPing() {

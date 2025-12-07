@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger.enums;
+package me.mmmjjkx.titlechanger.enums.formatting;
 
 public enum Heading {
     L1("[h1]"),
@@ -13,11 +13,11 @@ public enum Heading {
     }
 
     public static Heading tryGetFromString(String str) {
-        if (str.startsWith("[h1] ")) {
+        if (str.startsWith(L1.mark)) {
             return L1;
-        } else if (str.startsWith("[h2] ")) {
+        } else if (str.startsWith(L2.mark)) {
             return L2;
-        } else if (str.startsWith("[h3] ")) {
+        } else if (str.startsWith(L3.mark)) {
             return L3;
         } else {
             return NONE;

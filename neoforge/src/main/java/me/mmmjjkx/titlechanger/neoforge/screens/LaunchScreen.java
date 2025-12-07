@@ -32,7 +32,7 @@ package me.mmmjjkx.titlechanger.neoforge.screens;
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
-import me.mmmjjkx.titlechanger.enums.Heading;
+import me.mmmjjkx.titlechanger.enums.formatting.Heading;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import me.mmmjjkx.titlechanger.neoforge.utils.ComponentUtils;
 import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;

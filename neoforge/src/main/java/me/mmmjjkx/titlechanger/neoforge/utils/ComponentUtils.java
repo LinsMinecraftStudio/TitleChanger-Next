@@ -1,6 +1,7 @@
 package me.mmmjjkx.titlechanger.neoforge.utils;
 
 import me.mmmjjkx.titlechanger.Constants;
+import me.mmmjjkx.titlechanger.enums.formatting.Alignment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
@@ -54,14 +55,18 @@ public class ComponentUtils {
     }
 
     public static LineStyles getLine(FormattedCharSequence line) {
-        return new LineStyles(line, 1F);
+        return new LineStyles(line, 1F, Alignment.LEFT);
     }
 
     public static LineStyles getLine(FormattedCharSequence line, float scale) {
-        return new LineStyles(line, scale);
+        return new LineStyles(line, scale, Alignment.LEFT);
+    }
+
+    public static LineStyles getLine(FormattedCharSequence line, float scale, Alignment alignment) {
+        return new LineStyles(line, scale, alignment);
     }
 
     //We will use it to add more things in the future,
     //So just let it there.
-    public record LineStyles(FormattedCharSequence text, float scale) { }
+    public record LineStyles(FormattedCharSequence text, float scale, Alignment alignment) { }
 }
