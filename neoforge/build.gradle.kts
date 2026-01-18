@@ -2,7 +2,7 @@ import java.util.Properties
 
 plugins {
     java
-    id("net.neoforged.gradle.userdev") version "7.0.192"
+    id("net.neoforged.gradle.userdev") version "7.1.20"
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
     id("com.gradleup.shadow") version "9.0.0"
 }

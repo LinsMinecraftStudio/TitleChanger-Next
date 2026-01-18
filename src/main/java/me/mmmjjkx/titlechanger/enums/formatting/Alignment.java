@@ -3,7 +3,7 @@ package me.mmmjjkx.titlechanger.enums.formatting;
 public enum Alignment {
     LEFT("[left]"),
     CENTER("[center]"),
-    RIGHT("right");
+    RIGHT("[right]");
 
     private final String mark;
 

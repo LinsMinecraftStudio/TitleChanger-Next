@@ -36,9 +36,13 @@ public class ComponentUtils {
         if (link.startsWith("file://")) {
             link = link.replaceFirst("file://", "");
             File file = new File(FabricLoader.getInstance().getGameDir().toFile(), link);
-            clickEvent = Reflects.createOpenFile(file);
+            clickEvent = new ClickEvent.OpenFile(file);
         } else {
-            clickEvent = Reflects.createOpenUrl(link);
+            try {
+                clickEvent = new ClickEvent.OpenUrl(new URI(link));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         MutableComponent component = Component.literal(text).withStyle(ChatFormatting.UNDERLINE);
@@ -46,11 +50,11 @@ public class ComponentUtils {
         component.setStyle(style);
 
         MutableComponent container = Component.empty();
-        container = container.append(head).append(component);
+        container.append(head).append(component);
 
         if (stringParts.length == 2 && Constants.LINK_PATTERN.matcher(stringParts[1]).find()) {
             Component tail = parseLinks(stringParts[1]);
-            container = container.append(tail);
+            container.append(tail);
         }
 
         return container;

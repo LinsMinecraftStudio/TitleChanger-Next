@@ -42,6 +42,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.LanguageSelectScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
@@ -308,42 +309,41 @@ public class LaunchScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
+        public boolean mouseClicked(final MouseButtonEvent e, boolean doubleClick) {
+            double mouseX = e.x();
+            double mouseY = e.y();
             final Style component = findTextLine((int) mouseX, (int) mouseY);
             if (component != null) {
-                try {
-                    LaunchScreen.this.handleComponentClicked(component);
-                } catch (Exception e) {
-                    if (component.getClickEvent() != null) {
-                        defaultHandleClickEvent(component.getClickEvent(), Minecraft.getInstance(), LaunchScreen.this);
-                    }
+                if (component.getClickEvent() != null) {
+                    defaultHandleClickEvent(component.getClickEvent(), Minecraft.getInstance(), LaunchScreen.this);
                 }
                 return true;
             }
-            return super.mouseClicked(mouseX, mouseY, button);
+            return super.mouseClicked(e, doubleClick);
         }
 
         @Nullable
         private Style findTextLine(final int mouseX, final int mouseY) {
-            if (!isMouseOver(mouseX, mouseY)) {
+            if (!isMouseOver(mouseX, mouseY))
                 return null;
-            }
 
-            final double offset = (mouseY - top) + border + scrollDistance + 1;
-            if (offset <= 0) return null;
+            double offset = (mouseY - top - padding - border) + scrollDistance;
 
-            final int lineIdx = (int) (offset / font.lineHeight);
-
-            if (lineIdx >= lines.size() || lineIdx < 1) {
+            if (offset <= 0)
                 return null;
-            }
 
-            final FormattedCharSequence line = lines.get(lineIdx - 1).second.text();
+            int lineIdx = (int) (offset / font.lineHeight);
+            if (lineIdx >= lines.size() || lineIdx < 0)
+                return null;
 
+            FormattedCharSequence line = lines.get(lineIdx);
             if (line != null) {
-                return font.getSplitter().componentStyleAtWidth(line, mouseX - left - border);
+                var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
+                        // TODO 1.21.11: The calculating of Y needs to be validated, it should be relative to the vertical line origin
+                        font, mouseX - left - border - 1, (int) (offset - (lineIdx * font.lineHeight)));
+                styleFinder.accept(TextAlignment.LEFT, 0, 0, line);
+                return styleFinder.result();
             }
-
             return null;
         }
     }

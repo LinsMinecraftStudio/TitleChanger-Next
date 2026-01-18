@@ -3,14 +3,13 @@ package me.mmmjjkx.titlechanger.fabric.bulitin;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
-import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,7 +37,10 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         }
 
         return switch (placeholder) {
-            case "mcver" -> Reflects.getCurrentVersion();
+            case "mcver" -> FabricLoader.getInstance()
+                    .getModContainer("minecraft")
+                    .map(c -> c.getMetadata().getVersion().getFriendlyString())
+                    .orElse("unknown");
             case "hitokoto" -> TitleChangerFabric.HITOKOTO;
             case "modpackName" -> TitleChangerFabric.getResourceSettings().modpackName;
             case "modpackVersion" -> TitleChangerFabric.getResourceSettings().modpackVersion;
@@ -168,12 +170,12 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(TitleChangerFabric.getStartTime(), now);
         String format = TitleChangerFabric.getConfig().placeholderSettings.playTimeFormat;
-        format = StringUtils.replace(format, Constants.HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
-        format = StringUtils.replace(format, Constants.MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
-        format = StringUtils.replace(format, Constants.SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
-        format = StringUtils.replace(format, Constants.HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
-        format = StringUtils.replace(format, Constants.MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
-        format = StringUtils.replace(format, Constants.SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
+        format = Strings.CS.replace(format, Constants.HOUR_REPLACE, String.valueOf(duration.toHoursPart()));
+        format = Strings.CS.replace(format, Constants.MINUTE_REPLACE, String.valueOf(duration.toMinutesPart()));
+        format = Strings.CS.replace(format, Constants.SECOND_REPLACE, String.valueOf(duration.toSecondsPart()));
+        format = Strings.CS.replace(format, Constants.HOUR_REPLACE_N2, String.format("%02d", duration.toHoursPart()));
+        format = Strings.CS.replace(format, Constants.MINUTE_REPLACE_N2, String.format("%02d", duration.toMinutesPart()));
+        format = Strings.CS.replace(format, Constants.SECOND_REPLACE_N2, String.format("%02d", duration.toSecondsPart()));
         return format;
     }
 

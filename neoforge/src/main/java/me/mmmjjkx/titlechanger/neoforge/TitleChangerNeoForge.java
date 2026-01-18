@@ -1,6 +1,5 @@
 package me.mmmjjkx.titlechanger.neoforge;
 
-import com.google.common.base.Strings;
 import com.mojang.logging.LogUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
@@ -16,14 +15,15 @@ import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -34,7 +34,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -55,7 +55,7 @@ import java.util.Random;
 
 @Mod(TitleChangerNeoForge.MODID)
 @OnlyIn(Dist.CLIENT)
-@SuppressWarnings({"unsafe"})
+@SuppressWarnings({"unsafe", "deprecation"})
 public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
@@ -91,11 +91,10 @@ public class TitleChangerNeoForge {
                         GLFWImage iconImage = icons.get(0);
                         iconImage.set(w.get(0), h.get(0), icon.getLeft());
 
-                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().getWindow(), icons);
+                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().handle(), icons);
                     }
                 }
             }
-            AutoConfig.getGuiRegistry(TCConfig.class);
 
             return InteractionResult.SUCCESS;
         });
@@ -139,7 +138,7 @@ public class TitleChangerNeoForge {
                 file = icons[r.nextInt(icons.length)];
             }
 
-            if (Strings.isNullOrEmpty(file)) {
+            if (file == null || file.isBlank()) {
                 return null;
             }
 
@@ -173,7 +172,7 @@ public class TitleChangerNeoForge {
         NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((container, parent) -> {
-            ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfig.getConfigScreen(TCConfig.class, parent);
+            ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
             provider.setI13nFunction(a -> "titlechanger");
 
             return provider.get();
@@ -222,8 +221,8 @@ public class TitleChangerNeoForge {
     }
 
     public static String parseWelcomeTitle(String title) {
-        title = StringUtils.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = StringUtils.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
+        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
+        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
         return title;
     }
 }

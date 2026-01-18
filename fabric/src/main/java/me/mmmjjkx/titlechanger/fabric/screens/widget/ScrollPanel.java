@@ -7,19 +7,20 @@ package me.mmmjjkx.titlechanger.fabric.screens.widget;
 
 import java.util.Collections;
 import java.util.List;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.input.MouseButtonEvent;
 
 /**
  * Abstract scroll panel class.
  */
 public abstract class ScrollPanel extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
+    private final Minecraft client;
     protected final int width;
     protected final int height;
     protected final int top;
@@ -28,6 +29,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     protected final int left;
     private boolean scrolling;
     protected float scrollDistance;
+    protected boolean captureMouse = true;
     protected final int border;
 
     private final int barWidth;
@@ -37,27 +39,30 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     private final int barBorderColor;
 
     /**
+     * @param client the minecraft instance this ScrollPanel should use
      * @param width  the width
      * @param height the height
      * @param top    the offset from the top (y coord)
      * @param left   the offset from the left (x coord)
      */
-    public ScrollPanel(int width, int height, int top, int left) {
-        this(width, height, top, left, 4);
+    public ScrollPanel(Minecraft client, int width, int height, int top, int left) {
+        this(client, width, height, top, left, 4);
     }
 
     /**
+     * @param client the minecraft instance this ScrollPanel should use
      * @param width  the width
      * @param height the height
      * @param top    the offset from the top (y coord)
      * @param left   the offset from the left (x coord)
      * @param border the size of the border
      */
-    public ScrollPanel(int width, int height, int top, int left, int border) {
-        this(width, height, top, left, border, 6);
+    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border) {
+        this(client, width, height, top, left, border, 6);
     }
 
     /**
+     * @param client   the minecraft instance this ScrollPanel should use
      * @param width    the width
      * @param height   the height
      * @param top      the offset from the top (y coord)
@@ -65,13 +70,14 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
      * @param border   the size of the border
      * @param barWidth the width of the scroll bar
      */
-    public ScrollPanel(int width, int height, int top, int left, int border, int barWidth) {
-        this(width, height, top, left, border, barWidth, 0xFF000000, 0xFF808080, 0xFFC0C0C0);
+    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border, int barWidth) {
+        this(client, width, height, top, left, border, barWidth, 0xFF000000, 0xFF808080, 0xFFC0C0C0);
     }
 
     /**
      * Base constructor
      *
+     * @param client         the minecraft instance this ScrollPanel should use
      * @param width          the width
      * @param height         the height
      * @param top            the offset from the top (y coord)
@@ -82,7 +88,8 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
      * @param barColor       the color for the scroll bar handle
      * @param barBorderColor the border color for the scroll bar handle
      */
-    public ScrollPanel(int width, int height, int top, int left, int border, int barWidth, int barBgColor, int barColor, int barBorderColor) {
+    public ScrollPanel(Minecraft client, int width, int height, int top, int left, int border, int barWidth, int barBgColor, int barColor, int barBorderColor) {
+        this.client = client;
         this.width = width;
         this.height = height;
         this.top = top;
@@ -112,7 +119,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
      */
     protected abstract void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY);
 
-    protected boolean clickPanel(double mouseX, double mouseY, int button) {
+    protected boolean clickPanel(double mouseX, double mouseY, MouseButtonEvent event) {
         return false;
     }
 
@@ -124,7 +131,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
         int max = getMaxScroll();
 
         if (max < 0) {
-            max /= 2;
+            max = 0;
         }
 
         if (this.scrollDistance < 0.0F) {
@@ -157,24 +164,24 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button))
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (super.mouseClicked(event, doubleClick))
             return true;
 
-        this.scrolling = button == 0 && mouseX >= barLeft && mouseX < right && mouseY >= top && mouseY < bottom;
+        this.scrolling = event.button() == 0 && event.x() >= barLeft && event.x() < right && event.y() >= top && event.y() < bottom;
         if (this.scrolling) {
             return true;
         }
-        int mouseListY = ((int) mouseY) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
-        if (mouseX >= left && mouseX < right && mouseListY < 0) {
-            return this.clickPanel(mouseX - left, mouseY - this.top + (int) this.scrollDistance - border, button);
+        int mouseListY = ((int) event.y()) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
+        if (event.x() >= left && event.x() < right && mouseListY < 0) {
+            return this.clickPanel(event.x() - left, event.y() - this.top + (int) this.scrollDistance - border, event);
         }
         return false;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (super.mouseReleased(mouseX, mouseY, button))
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (super.mouseReleased(event))
             return true;
         boolean ret = this.scrolling;
         this.scrolling = false;
@@ -193,11 +200,11 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (this.scrolling) {
             int maxScroll = height - getBarHeight();
             double moved = deltaY / maxScroll;
-            this.scrollDistance += (float) (getMaxScroll() * moved);
+            this.scrollDistance += getMaxScroll() * moved;
             applyScrollLimits();
             return true;
         }
@@ -237,7 +244,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public @NotNull List<? extends GuiEventListener> children() {
+    public List<? extends GuiEventListener> children() {
         return Collections.emptyList();
     }
 }

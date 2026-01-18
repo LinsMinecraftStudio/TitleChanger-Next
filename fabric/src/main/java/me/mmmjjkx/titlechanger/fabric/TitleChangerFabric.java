@@ -1,6 +1,5 @@
 package me.mmmjjkx.titlechanger.fabric;
 
-import com.google.common.base.Strings;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
@@ -22,13 +21,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -81,7 +80,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                         GLFWImage iconImage = icons.get(0);
                         iconImage.set(w.get(0), h.get(0), icon.getLeft());
 
-                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().getWindow(), icons);
+                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().handle(), icons);
                     }
                 }
             }
@@ -112,7 +111,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                 file = icons[r.nextInt(icons.length)];
             }
 
-            if (Strings.isNullOrEmpty(file)) {
+            if (file == null || file.isBlank()) {
                 return null;
             }
 
@@ -211,8 +210,8 @@ public class TitleChangerFabric implements ClientModInitializer {
     }
 
     public static String parseWelcomeTitle(String title) {
-        title = StringUtils.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = StringUtils.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
+        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
+        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
         return title;
     }
 }

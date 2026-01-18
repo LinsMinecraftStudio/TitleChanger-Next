@@ -33,7 +33,7 @@ public abstract class ClientMixin {
         }
     }
 
-    @Redirect(method = "updateLevelInEngines", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
+    @Redirect(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
     public void updateTitleTC2(Minecraft instance) {
         if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
             instance.updateTitle();
@@ -62,7 +62,7 @@ public abstract class ClientMixin {
                         GLFWImage iconImage = icons.get(0);
                         iconImage.set(w.get(0), h.get(0), icon.getLeft());
 
-                        GLFW.glfwSetWindowIcon(window.getWindow(), icons);
+                        GLFW.glfwSetWindowIcon(window.handle(), icons);
                     }
                 }
             }

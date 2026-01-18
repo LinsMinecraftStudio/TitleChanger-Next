@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+@Deprecated
 public class Reflects {
     private static Constructor<?> openUrlConstructor = null;
     private static Constructor<?> openFileConstructor = null;
@@ -60,13 +61,6 @@ public class Reflects {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public static String getCurrentVersion() {
-        return FabricLoader.getInstance()
-                .getModContainer("minecraft")
-                .map(c -> c.getMetadata().getVersion().getFriendlyString())
-                .orElse("unknown");
     }
 
     public static void pushPose(Object pose) {
