@@ -5,13 +5,13 @@ import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.FileUtils;
-import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
-import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
-import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
-import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
+import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
+import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
+import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
+import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -199,7 +199,7 @@ public class TitleChangerNeoForge {
             }
 
             if (getResourceSettings().checkUpdates && !checkUpdate) {
-                String ver = HttpUtils.getLastestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
+                String ver = HttpUtils.getLatestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
                 if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
                     e.setNewScreen(new UpdatableScreen(m -> {
                         if (m == UpdateCheckMode.ALLOW) {

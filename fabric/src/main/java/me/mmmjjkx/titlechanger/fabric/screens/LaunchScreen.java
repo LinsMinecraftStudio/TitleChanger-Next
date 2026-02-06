@@ -37,6 +37,7 @@ import me.mmmjjkx.titlechanger.fabric.screens.widget.ScrollPanel;
 import me.mmmjjkx.titlechanger.fabric.utils.ComponentUtils;
 import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
@@ -348,7 +349,7 @@ public class LaunchScreen extends Screen {
             if (lineIdx >= lines.size() || lineIdx < 0)
                 return null;
 
-            FormattedCharSequence line = lines.get(lineIdx);
+            FormattedCharSequence line = lines.get(lineIdx).second.text();
             if (line != null) {
                 var styleFinder = new ActiveTextCollector.ClickableStyleFinder(
                         // TODO 1.21.11: The calculating of Y needs to be validated, it should be relative to the vertical line origin

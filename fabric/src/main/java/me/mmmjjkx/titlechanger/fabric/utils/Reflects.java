@@ -1,6 +1,5 @@
 package me.mmmjjkx.titlechanger.fabric.utils;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.ClickEvent;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.joml.Matrix3x2fStack;

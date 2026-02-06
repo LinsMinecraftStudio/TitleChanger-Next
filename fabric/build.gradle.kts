@@ -73,7 +73,7 @@ tasks.test {
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("titlechanger-fabric-1.21.X-${project.version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-fabric-${project.version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))

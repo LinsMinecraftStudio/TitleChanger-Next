@@ -1,10 +1,12 @@
 package me.mmmjjkx.titlechanger.neoforge.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -17,7 +19,7 @@ public class UpdatableScreen extends Screen {
 
     protected final Consumer<UpdateCheckMode> callback;
 
-    private MultiLineLabel multilineMessage = MultiLineLabel.EMPTY;
+    private final MultiLineTextWidget multilineMessage;
 
     protected Component yesButton;
     protected Component noButton;
@@ -33,6 +35,7 @@ public class UpdatableScreen extends Screen {
         this.message = message;
         this.yesButton = yesButton;
         this.noButton = noButton;
+        this.multilineMessage = new MultiLineTextWidget(message, this.font);
     }
 
     @Override
@@ -43,7 +46,7 @@ public class UpdatableScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.multilineMessage = MultiLineLabel.create(this.font, this.message, this.width - 50);
+        this.multilineMessage.setMaxWidth(this.width - 50);
         int i = Mth.clamp(this.messageTop() + this.messageHeight() + 20, this.height / 6 + 96, this.height - 24);
         this.addButtons(i);
     }
@@ -73,7 +76,7 @@ public class UpdatableScreen extends Screen {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.titleTop(), 16777215);
-        this.multilineMessage.renderCentered(guiGraphics, this.width / 2, this.messageTop());
+        this.multilineMessage.render(guiGraphics, this.width / 2, this.messageTop(), partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
@@ -87,7 +90,7 @@ public class UpdatableScreen extends Screen {
     }
 
     private int messageHeight() {
-        return this.multilineMessage.getLineCount() * 9;
+        return this.multilineMessage.getHeight();
     }
 
     @Override
@@ -101,12 +104,12 @@ public class UpdatableScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 256) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == InputConstants.KEY_ESCAPE) {
             this.callback.accept(UpdateCheckMode.ALLOW_BUT_CANCEL);
             return true;
         } else {
-            return super.keyPressed(keyCode, scanCode, modifiers);
+            return super.keyPressed(event);
         }
     }
 }

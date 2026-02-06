@@ -61,7 +61,7 @@ public abstract class ClientMixin {
                         GLFWImage iconImage = icons.get(0);
                         iconImage.set(w.get(0), h.get(0), icon.getLeft());
 
-                        GLFW.glfwSetWindowIcon(window.getWindow(), icons);
+                        GLFW.glfwSetWindowIcon(window.handle(), icons);
                     }
                 }
             }

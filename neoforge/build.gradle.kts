@@ -1,4 +1,4 @@
-import java.util.Properties
+import java.util.*
 
 plugins {
     java
@@ -45,11 +45,6 @@ runs {
 
     create("client") {
         systemProperty("forge.enabledGameTestNamespaces", mod_id)
-
-        dependencies {
-            runtime(project(":api"))
-            runtime(project(":"))
-        }
     }
 
     create("server") {
@@ -123,7 +118,7 @@ tasks.withType<JavaCompile> {
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("titlechanger-neoforge-1.21.X-${project.version}.jar")
+    archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {
         exclude("fabric.mod.json")

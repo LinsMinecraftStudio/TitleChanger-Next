@@ -2,16 +2,21 @@ package me.mmmjjkx.titlechanger;
 
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
+import me.mmmjjkx.titlechanger.enums.TriState;
 import me.mmmjjkx.titlechanger.texts.RopeImplString;
 import net.minecraft.client.Minecraft;
-import me.mmmjjkx.titlechanger.enums.TriState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TitleProcessor {
     private static final Pattern placeholderPattern = Pattern.compile("%(?:(\\w+)_)?(\\w+)(?::([^%]*))?%");

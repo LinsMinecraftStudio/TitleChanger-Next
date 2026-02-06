@@ -4,18 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -50,22 +46,31 @@ public class HttpUtils {
     }
 
     @Nullable
-    public static String getLastestModrinthVersion(String loader, String packId, String mcv) {
-        try (CloseableHttpClient client = HttpClients.createMinimal()) {
-            URI uri = new URIBuilder(String.format(MODRINTH_API_URL, packId))
-                    .addParameter("loaders", "[\"%s\"]".formatted(loader))
-                    .addParameter("game_versions", "[\"%s\"".formatted(mcv))
+    public static String getLatestModrinthVersion(String loader, String packId, String mcv) {
+        try {
+            String loaders = "[\"" + loader + "\"]";
+            String gameVersions = "[\"" + mcv + "\"]";
+
+            URI uri = new URI(
+                    String.format(MODRINTH_API_URL, packId)
+                            + "?loaders=" + URLEncoder.encode(loaders, StandardCharsets.UTF_8)
+                            + "&game_versions=" + URLEncoder.encode(gameVersions, StandardCharsets.UTF_8)
+            );
+
+            HttpClient client = HttpClient.newHttpClient();
+
+            HttpRequest request = HttpRequest.newBuilder(uri)
+                    .header("Content-Type", "application/json")
+                    .GET()
                     .build();
 
-            HttpGet request = new HttpGet(uri);
-            request.setHeader("Content-Type", "application/json");
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            CloseableHttpResponse rep = client.execute(request);
-            String entity = EntityUtils.toString(rep.getEntity());
-            System.out.println(entity);
-            JsonArray list = JsonParser.parseString(entity).getAsJsonArray();
+            String body = response.body();
 
-            if (list.get(0) == null) {
+            JsonArray list = JsonParser.parseString(body).getAsJsonArray();
+            if (list.isEmpty()) {
                 return null;
             }
 

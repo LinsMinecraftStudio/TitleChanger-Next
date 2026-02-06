@@ -1,18 +1,17 @@
 package me.mmmjjkx.titlechanger.fabric;
 
+import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.FileUtils;
 import me.mmmjjkx.titlechanger.HttpUtils;
-import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import me.mmmjjkx.titlechanger.TitleProcessor;
+import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.fabric.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
-import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
-import me.mmmjjkx.titlechanger.fabric.utils.Reflects;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -179,7 +178,10 @@ public class TitleChangerFabric implements ClientModInitializer {
                 }
 
                 if (getResourceSettings().checkUpdates && !checkUpdate) {
-                    String ver = HttpUtils.getLastestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
+                    String ver = HttpUtils.getLatestModrinthVersion("fabric", getResourceSettings().modrinthProjectId, FabricLoader.getInstance()
+                            .getModContainer("minecraft")
+                            .map(c -> c.getMetadata().getVersion().getFriendlyString())
+                            .orElse("unknown"));
                     if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
                         client.setScreen(new UpdatableScreen(m -> {
                             if (m == UpdateCheckMode.ALLOW) {

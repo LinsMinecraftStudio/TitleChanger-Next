@@ -5,8 +5,6 @@
 
 package me.mmmjjkx.titlechanger.fabric.screens.widget;
 
-import java.util.Collections;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -15,6 +13,9 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Abstract scroll panel class.

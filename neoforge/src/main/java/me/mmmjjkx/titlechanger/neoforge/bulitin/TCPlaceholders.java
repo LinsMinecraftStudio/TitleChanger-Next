@@ -34,7 +34,7 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
             case "modver" -> {
                 if (args.length == 1) {
                     String modid = args[0];
-                    ModFileInfo info = FMLLoader.getLoadingModList().getModFileById(modid);
+                    ModFileInfo info = FMLLoader.getCurrent().getLoadingModList().getModFileById(modid);
                     if (info != null) {
                         yield info.versionString();
                     }
