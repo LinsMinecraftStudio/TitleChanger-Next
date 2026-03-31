@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "titlechanger",
-    "version": "${version}",
+    "version": "${mod_version}",
     "name": "TitleChanger",
     "description": "Provides a simple but more powerful way to change the title of the game window.",
     "authors": [
@@ -11,7 +11,7 @@
         "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
         "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next"
     },
-    "license": "GNU General Public License v3.0",
+    "license": "LICENSE.txt",
     "environment": "client",
     "entrypoints": {
         "client": [

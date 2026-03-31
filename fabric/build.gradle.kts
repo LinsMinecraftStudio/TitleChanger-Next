@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "${project.rootProject.properties["mod_version"]}"
+version = "${project.rootProject.rootProject.properties["mod_version"]}"
 
 base {
     archivesName = "titlechanger-fabric"
@@ -58,7 +58,7 @@ dependencies {
 
 tasks.processResources {
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version, "cloth_config_version" to properties["cloth_config_version"]))
+        expand(project.rootProject.rootProject.properties)
     }
 
     exclude("mappings/mappings.tiny")
@@ -73,7 +73,7 @@ tasks.test {
 tasks.shadowJar {
     dependsOn(project(":").tasks.shadowJar)
 
-    archiveFileName.set("titlechanger-fabric-${project.version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-fabric-${version}-shadow-raw.jar")
 
     dependencies {
         include(project(":api"))
@@ -88,5 +88,5 @@ tasks.shadowJar {
 tasks.remapJar {
     dependsOn(tasks.shadowJar)
     inputFile.set(tasks.shadowJar.flatMap { it.archiveFile })
-    archiveFileName.set("titlechanger-fabric-1.21.X-${project.version}.jar")
+    archiveFileName.set("titlechanger-fabric-${version}.jar")
 }
