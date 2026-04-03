@@ -1,8 +1,8 @@
-package me.mmmjjkx.titlechanger.fabric.utils;
+package me.mmmjjkx.titlechanger.utils;
 
 import me.mmmjjkx.titlechanger.Constants;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -13,9 +13,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ComponentUtils {
+    static final Pattern URL_PATTERN = Pattern.compile(
+            //         schema                          ipv4            OR        namespace                 port     path         ends
+            //   |-----------------|        |-------------------------|  |-------------------------|    |---------| |--|   |---------------|
+            "((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
+            Pattern.CASE_INSENSITIVE);
+
     private ComponentUtils() {
         throw new IllegalStateException("utility class");
     }
+
+    /*
+    Copied from github.com/neoforged/NeoForge
+    LICENSE: https://github.com/neoforged/NeoForge/blob/1.21.x/LICENSE.txt
+     */
 
     public static Component parseLinks(String line) {
         Matcher matcher = Constants.LINK_PATTERN.matcher(line);
@@ -35,7 +46,7 @@ public class ComponentUtils {
 
         if (link.startsWith("file://")) {
             link = link.replaceFirst("file://", "");
-            File file = new File(FabricLoader.getInstance().getGameDir().toFile(), link);
+            File file = new File(Minecraft.getInstance().gameDirectory, link);
             clickEvent = new ClickEvent.OpenFile(file);
         } else {
             try {
@@ -59,17 +70,6 @@ public class ComponentUtils {
 
         return container;
     }
-
-    /*
-    Copied from github.com/neoforged/NeoForge
-    LICENSE: https://github.com/neoforged/NeoForge/blob/1.21.x/LICENSE.txt
-     */
-
-    static final Pattern URL_PATTERN = Pattern.compile(
-            //         schema                          ipv4            OR        namespace                 port     path         ends
-            //   |-----------------|        |-------------------------|  |-------------------------|    |---------| |--|   |---------------|
-            "((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
-            Pattern.CASE_INSENSITIVE);
 
     public static Component newChatWithLinks(String string, boolean allowMissingHeader) {
         // Includes ipv4 and domain pattern
@@ -110,7 +110,7 @@ public class ComponentUtils {
                     uri = new URI("http://" + url);
                 }
                 // Set the click event
-                ClickEvent click = Reflects.createOpenUrl(uri.toString());
+                ClickEvent click = new ClickEvent.OpenUrl(uri);
                 link.setStyle(link.getStyle().withClickEvent(click).withUnderlined(true).withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE)));
             } catch (URISyntaxException e) {
                 // Bad syntax bail out!
@@ -146,5 +146,6 @@ public class ComponentUtils {
 
     //We will use it to add more things in the future,
     //So just let it there.
-    public record LineStyles(FormattedCharSequence text, float scale) { }
+    public record LineStyles(FormattedCharSequence text, float scale) {
+    }
 }

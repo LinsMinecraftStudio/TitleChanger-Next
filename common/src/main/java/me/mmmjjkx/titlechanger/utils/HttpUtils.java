@@ -1,4 +1,4 @@
-package me.mmmjjkx.titlechanger;
+package me.mmmjjkx.titlechanger.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

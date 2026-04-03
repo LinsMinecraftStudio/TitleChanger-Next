@@ -41,7 +41,7 @@ public abstract class ClientMixin {
     }
 
     // It makes the title shows when the game window shown. Yay!
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;newWindow(Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/blaze3d/platform/Window;"), index = 2)
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 2)
     private String startingSettings(String title) {
         if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
             return title;
@@ -50,7 +50,7 @@ public abstract class ClientMixin {
         return TitleChangerFabric.titleProcessor.firstParse(TitleChangerFabric.getConfig().generalSettings.title);
     }
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setWindowActive(Z)V"))
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;setWindowed(II)V"))
     private void setup(GameConfig gameConfig, CallbackInfo ci) {
         CompletableFuture.runAsync(() -> {
             if (TitleChangerFabric.getConfig().iconSettings.enabled) {

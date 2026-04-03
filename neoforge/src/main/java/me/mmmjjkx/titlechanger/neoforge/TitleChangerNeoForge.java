@@ -4,21 +4,21 @@ import com.mojang.logging.LogUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
-import me.mmmjjkx.titlechanger.FileUtils;
-import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
 import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
-import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
-import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
+import me.mmmjjkx.titlechanger.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.utils.FileUtils;
+import me.mmmjjkx.titlechanger.utils.HttpUtils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
@@ -59,15 +59,12 @@ import java.util.Random;
 public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
-    public static final String MODID = "titlechanger";
+    public static final String MODID = "me/mmmjjkx/titlechanger";
 
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), Constants.ICON_FOLDER);
-
-    private static LocalDateTime start;
-    private boolean checkUpdate = false;
-
     public static TitleProcessor titleProcessor;
+    private static LocalDateTime start;
 
     static {
         TitleExtensionSource.registerExtension(new TCPlaceholders());
@@ -102,6 +99,21 @@ public class TitleChangerNeoForge {
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
 
         titleProcessor = new TitleProcessor();
+    }
+
+    private boolean checkUpdate = false;
+
+    public TitleChangerNeoForge(ModContainer modContainer) {
+        start = LocalDateTime.now();
+
+        NeoForge.EVENT_BUS.register(this);
+
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((container, parent) -> {
+            ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
+            provider.setI13nFunction(a -> "me/mmmjjkx/titlechanger");
+
+            return provider.get();
+        }));
     }
 
     public static TCConfig getConfig() {
@@ -166,17 +178,10 @@ public class TitleChangerNeoForge {
         return null;
     }
 
-    public TitleChangerNeoForge(ModContainer modContainer) {
-        start = LocalDateTime.now();
-
-        NeoForge.EVENT_BUS.register(this);
-
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((container, parent) -> {
-            ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
-            provider.setI13nFunction(a -> "titlechanger");
-
-            return provider.get();
-        }));
+    public static String parseWelcomeTitle(String title) {
+        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
+        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
+        return title;
     }
 
     @SubscribeEvent
@@ -199,7 +204,7 @@ public class TitleChangerNeoForge {
             }
 
             if (getResourceSettings().checkUpdates && !checkUpdate) {
-                String ver = HttpUtils.getLatestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, Reflects.getCurrentVersion());
+                String ver = HttpUtils.getLatestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().name());
                 if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
                     e.setNewScreen(new UpdatableScreen(m -> {
                         if (m == UpdateCheckMode.ALLOW) {
@@ -218,11 +223,5 @@ public class TitleChangerNeoForge {
                 checkUpdate = true;
             }
         }
-    }
-
-    public static String parseWelcomeTitle(String title) {
-        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
-        return title;
     }
 }

@@ -6,7 +6,7 @@
 package me.mmmjjkx.titlechanger.fabric.screens.widget;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -21,23 +21,22 @@ import java.util.List;
  * Abstract scroll panel class.
  */
 public abstract class ScrollPanel extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
-    private final Minecraft client;
     protected final int width;
     protected final int height;
     protected final int top;
     protected final int bottom;
     protected final int right;
     protected final int left;
-    private boolean scrolling;
-    protected float scrollDistance;
-    protected boolean captureMouse = true;
     protected final int border;
-
+    private final Minecraft client;
     private final int barWidth;
     private final int barLeft;
     private final int barBgColor;
     private final int barColor;
     private final int barBorderColor;
+    protected float scrollDistance;
+    protected boolean captureMouse = true;
+    private boolean scrolling;
 
     /**
      * @param client the minecraft instance this ScrollPanel should use
@@ -110,15 +109,15 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     /**
      * Draws the background of the scroll panel. This runs AFTER Scissors are enabled.
      */
-    protected void drawBackground(GuiGraphics guiGraphics, float partialTick) {
-        Screen.renderMenuBackgroundTexture(guiGraphics, Screen.MENU_BACKGROUND, this.left, this.top, 0f, 0f, this.width, this.height);
+    protected void drawBackground(GuiGraphicsExtractor guiGraphics, float partialTick) {
+        Screen.extractMenuBackgroundTexture(guiGraphics, Screen.MENU_BACKGROUND, this.left, this.top, 0f, 0f, this.width, this.height);
     }
 
     /**
      * Draw anything special on the screen. Scissor (RenderSystem.enableScissor) is enabled
      * for anything that is rendered outside the view box. Do not mess with Scissor unless you support this.
      */
-    protected abstract void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY);
+    protected abstract void drawPanel(GuiGraphicsExtractor guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY);
 
     protected boolean clickPanel(double mouseX, double mouseY, MouseButtonEvent event) {
         return false;
@@ -145,9 +144,9 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_, double p_294830_) {
-        if (p_294830_ != 0) {
-            this.scrollDistance += (float) (-p_294830_ * getScrollAmount());
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        if (scrollY != 0) {
+            this.scrollDistance += (float) (-scrollY * getScrollAmount());
             applyScrollLimits();
             return true;
         }
@@ -213,7 +212,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(this.left, this.top, this.right, this.bottom);
 
         this.drawBackground(guiGraphics, partialTick);
@@ -240,7 +239,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
         guiGraphics.disableScissor();
     }
 
-    protected void drawGradientRect(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int color1, int color2) {
+    protected void drawGradientRect(GuiGraphicsExtractor guiGraphics, int left, int top, int right, int bottom, int color1, int color2) {
         guiGraphics.fillGradient(left, top, right, bottom, color1, color2);
     }
 

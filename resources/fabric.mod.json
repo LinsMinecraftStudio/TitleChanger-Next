@@ -1,38 +1,38 @@
 {
-    "schemaVersion": 1,
-    "id": "titlechanger",
-    "version": "${mod_version}",
-    "name": "TitleChanger",
-    "description": "Provides a simple but more powerful way to change the title of the game window.",
-    "authors": [
-        "lijinhong11"
+  "schemaVersion": 1,
+  "id": "titlechanger",
+  "version": "${mod_version}",
+  "name": "TitleChanger",
+  "description": "Provides a simple but more powerful way to change the title of the game window.",
+  "authors": [
+    "lijinhong11 (mmmjjkx)"
+  ],
+  "contact": {
+    "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
+    "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next"
+  },
+  "license": "LICENSE.txt",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.mmmjjkx.titlechanger.fabric.TitleChangerFabric"
     ],
-    "contact": {
-        "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
-        "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next"
-    },
-    "license": "LICENSE.txt",
-    "environment": "client",
-    "entrypoints": {
-        "client": [
-            "me.mmmjjkx.titlechanger.fabric.TitleChangerFabric"
-        ],
-        "modmenu": [
-            "me.mmmjjkx.titlechanger.fabric.hook.ModMenuHook"
-        ],
-        "titlechanger": [
-            "me.mmmjjkx.titlechanger.fabric.bulitin.TCPlaceholders"
-        ]
-    },
-    "depends": {
-        "fabricloader": ">=0.16.13",
-        "minecraft": ">=1.21.1",
-        "cloth-config": ">=15.0.140"
-    },
-    "recommends": {
-        "modmenu": ">=11.0"
-    },
-    "mixins": [
-        "titlechanger-fabric.mixins.json"
+    "modmenu": [
+      "me.mmmjjkx.titlechanger.fabric.hook.ModMenuHook"
+    ],
+    "titlechanger": [
+      "me.mmmjjkx.titlechanger.fabric.bulitin.TCPlaceholders"
     ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.13",
+    "minecraft": ">=1.21.1",
+    "cloth-config": ">=15.0.140"
+  },
+  "recommends": {
+    "modmenu": ">=11.0"
+  },
+  "mixins": [
+    "titlechanger-fabric.mixins.json"
+  ]
 }

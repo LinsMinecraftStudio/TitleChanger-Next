@@ -205,9 +205,15 @@ public class TitleProcessor {
                 });
     }
 
-    private interface TemplatePart { }
+    private boolean isStringNullOrBlank(String s) {
+        return s == null || s.isBlank();
+    }
 
-    private record TextPart(String text) implements TemplatePart { }
+    private interface TemplatePart {
+    }
+
+    private record TextPart(String text) implements TemplatePart {
+    }
 
     private record PlaceholderPart(String header, String placeholder, String[] args) implements TemplatePart {
         @Override
@@ -215,9 +221,5 @@ public class TitleProcessor {
             return "%" + (header != null ? header + "_" : "") + placeholder +
                     (args.length > 0 ? ":" + String.join(",", args) : "") + "%";
         }
-    }
-
-    private boolean isStringNullOrBlank(String s) {
-        return s == null || s.isBlank();
     }
 }

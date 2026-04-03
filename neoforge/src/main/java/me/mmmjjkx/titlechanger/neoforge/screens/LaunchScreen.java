@@ -30,17 +30,16 @@ Respect to the original license.
 package me.mmmjjkx.titlechanger.neoforge.screens;
 
 import com.ibm.icu.impl.Pair;
-import com.mojang.blaze3d.vertex.Tesselator;
 import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.formatting.Heading;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
-import me.mmmjjkx.titlechanger.neoforge.utils.ComponentUtils;
-import me.mmmjjkx.titlechanger.neoforge.utils.Reflects;
+import me.mmmjjkx.titlechanger.utils.ComponentUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.LanguageSelectScreen;
@@ -51,56 +50,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
-import net.neoforged.neoforge.common.CommonHooks;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 public class LaunchScreen extends Screen {
-    private static final MethodHandle DRAW_STRING;
-    private static final MethodHandle GET_POSE;
-
-    static {
-        DRAW_STRING = Arrays.stream(GuiGraphics.class.getMethods())
-                .filter(m -> m.getName().equals("drawString"))
-                .filter(m -> {
-                    Class<?> ret = m.getReturnType();
-                    return (ret == int.class || ret == void.class) && (m.getParameters().length == 5 && m.getParameters()[1].getType() == FormattedCharSequence.class);
-                })
-                .findFirst()
-                .map(m -> {
-                    try {
-                        return MethodHandles.lookup().unreflect(m);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .orElse(null);
-
-        GET_POSE = Arrays.stream(GuiGraphics.class.getMethods())
-                .filter(m -> m.getName().equals("pose"))
-                .filter(m -> m.getParameterCount() == 0)
-                .findFirst()
-                .map(m -> {
-                    try {
-                        return MethodHandles.lookup().unreflect(m);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .orElse(null);
-    }
-
     private final Screen previousScreen;
     private final Minecraft mcInstance = Minecraft.getInstance();
     private final Supplier<List<String>> text;
@@ -108,26 +69,8 @@ public class LaunchScreen extends Screen {
     private final Runnable onDone;
     private ScrollableTextPanel scrollableTextPanel;
 
-    private static Object getPoseFromGuiGraphics(GuiGraphics guiGraphics) {
-        try {
-            if (GET_POSE != null) {
-                return GET_POSE.invoke(guiGraphics);
-            } else {
-                Method[] methods = GuiGraphics.class.getMethods();
-                for (Method method : methods) {
-                    if ((method.getName().equals("method_51448") || method.getName().equals("pose"))
-                            && method.getParameterCount() == 0) {
-                        return method.invoke(guiGraphics);
-                    }
-                }
-                throw new RuntimeException("No pose method found in GuiGraphics");
-            }
-        } catch (Throwable e) {
-            throw new RuntimeException("Failed to get pose from GuiGraphics: " + e.getMessage(), e);
-        }
-    }
-
-    public LaunchScreen(final Screen previousScreen, Supplier<Component> title, Supplier<List<String>> text, Runnable onDone) {
+    public LaunchScreen(final Screen previousScreen, Supplier<Component> title, Supplier<List<String>> text,
+                        Runnable onDone) {
         super(title.get());
 
         this.title = title;
@@ -153,52 +96,46 @@ public class LaunchScreen extends Screen {
                 .build();
 
         final Button languageButton = Button.builder(Component.translatable("options.language"), onPress -> {
-            LanguageSelectScreen languageSelect = new LanguageSelectScreen(this, mcInstance.options, mcInstance.getLanguageManager());
+            LanguageSelectScreen languageSelect = new LanguageSelectScreen(this, mcInstance.options,
+                    mcInstance.getLanguageManager());
             mcInstance.setScreen(languageSelect);
         }).bounds(this.width / 2 - 160, this.height - 30, 150, 20).build();
 
-        this.scrollableTextPanel = new ScrollableTextPanel(mcInstance, this.width - 40, this.height - 40 - doneButton.getHeight(), 25, 20);
+        this.scrollableTextPanel = new ScrollableTextPanel(this.width - 40, this.height - 40 - doneButton.getHeight(),
+                25, 20);
 
-        this.addRenderableWidget(this.scrollableTextPanel);
         this.addRenderableWidget(doneButton);
         this.addRenderableWidget(languageButton);
+        this.addRenderableWidget(this.scrollableTextPanel);
     }
 
     @Override
-    public void render(final @NotNull GuiGraphics guiGraphics, final int mouseX, final int mouseY, final float partialTicks) {
+    public void extractRenderState(final @NotNull GuiGraphicsExtractor guiGraphics, final int mouseX, final int mouseY,
+                                   final float partialTicks) {
         this.scrollableTextPanel.setText(this.text.get());
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-        Object pose = getPoseFromGuiGraphics(guiGraphics);
+        Matrix3x2fStack pose = guiGraphics.pose();
 
-        Reflects.pushPose(pose);
-        Reflects.scale(pose, 1.5f, 1.5f, 1f);
+        pose.pushMatrix();
+        pose.scale(1.5f, 1.5f);
 
-        try {
-            DRAW_STRING.invoke(guiGraphics, this.font,
-                    this.title.get().getVisualOrderText(),
-                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                    5,
-                    0xFFFFFFFF
-            );
-        } catch (Throwable e) {
-            guiGraphics.drawString(this.font,
-                    this.title.get().getVisualOrderText(),
-                    (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
-                    5,
-                    0xFFFFFFFF
-            );
-        }
+        guiGraphics.text(this.font,
+                this.title.get().getVisualOrderText(),
+                (int) ((this.width / 2f / 1.5f) - font.width(this.title.get()) / 2.0F),
+                5,
+                0xFFFFFFFF,
+                true);
 
-        Reflects.popPose(pose);
+        pose.popMatrix();
     }
 
     public class ScrollableTextPanel extends ScrollPanel {
-        private List<Pair<Heading, ComponentUtils.LineStyles>> lines = Collections.emptyList();
         public int padding = 6;
+        private List<Pair<Heading, ComponentUtils.LineStyles>> lines = Collections.emptyList();
 
-        ScrollableTextPanel(final Minecraft mcInstance, final int width, final int height, final int top, final int left) {
-            super(mcInstance, width, height, top, left);
+        ScrollableTextPanel(final int width, final int height, final int top, final int left) {
+            super(Minecraft.getInstance(), width, height, top, left);
         }
 
         public void setText(final List<String> lines) {
@@ -210,51 +147,41 @@ public class LaunchScreen extends Screen {
             return (lines.size() * font.lineHeight) + font.lineHeight;
         }
 
-        protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
-            drawPanel(guiGraphics, entryRight, relativeY, mouseX, mouseY);
-        }
-
-        protected void drawPanel(@NotNull GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
-            guiGraphics.enableScissor(this.left, this.top, this.right, this.bottom);
+        @Override
+        protected void drawPanel(@NotNull GuiGraphicsExtractor guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
             for (final Pair<Heading, ComponentUtils.LineStyles> line : lines) {
                 if (line != null) {
                     if (line.first != Heading.NONE) {
-                        Object poseStack = getPoseFromGuiGraphics(guiGraphics);
-                        Reflects.pushPose(poseStack);
+                        Matrix3x2fStack pose = guiGraphics.pose();
+                        pose.pushMatrix();
                         float scale = switch (line.first) {
                             case L1 -> 1.8F;
                             case L2 -> 1.6F;
                             case L3 -> 1.4F;
                             default -> 1.0F;
                         };
-                        Reflects.scale(poseStack, scale, scale, 1.0F);
-                        Reflects.translate(poseStack, 0.0F, scale, 0.0F);
-                        try {
-                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF);
-                        } catch (Throwable e) {
-                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF);
-                        }
-                        Reflects.popPose(poseStack);
+                        pose.scale(scale, scale);
+                        pose.translate(0.0F, scale);
+                        guiGraphics.text(LaunchScreen.this.font, line.second.text(),
+                                (int) ((left + padding) / scale), (int) (relativeY / scale), 0xFFFFFFFF, true);
+
+                        pose.popMatrix();
                     } else {
-                        try {
-                            DRAW_STRING.invoke(guiGraphics, LaunchScreen.this.font, line.second.text(), (left + padding), relativeY, 0xFFFFFFFF);
-                        } catch (Throwable e) {
-                            guiGraphics.drawString(LaunchScreen.this.font, line.second.text(), (left + padding), relativeY, 0xFFFFFFFF);
-                        }
+                        guiGraphics.text(LaunchScreen.this.font, line.second.text(), (left + padding), relativeY, 0xFFFFFFFF, true);
                     }
                 }
                 relativeY += font.lineHeight;
             }
-            guiGraphics.disableScissor();
         }
 
         @Override
-        public @NotNull NarrationPriority narrationPriority() {
-            return NarrationPriority.FOCUSED;
+        public @NotNull NarratableEntry.NarrationPriority narrationPriority() {
+            return NarratableEntry.NarrationPriority.FOCUSED;
         }
 
         @Override
-        public void updateNarration(final @NotNull NarrationElementOutput narrationElementOutput) {}
+        public void updateNarration(final @NotNull NarrationElementOutput narrationElementOutput) {
+        }
 
         // This will fix the inconsistent gap issue of headings
         // compared to paragraphs without making the headings too big.
@@ -273,38 +200,46 @@ public class LaunchScreen extends Screen {
                 // apply formatting codes where appropriate
                 line = line.replaceAll("(?i)&([a-f]|[0-9]|l|m|n|o|r|k)", "§$1");
                 line = line.replace("\\§", "&"); // allow formatting escaping with a backslash (for example, “\&a”)
-                line = TitleChangerNeoForge.titleProcessor.firstParseNoCache(line); //allow parsing placeholders
+                line = TitleChangerNeoForge.titleProcessor.firstParseNoCache(line); // allow parsing placeholders
 
                 Heading heading = Heading.tryGetFromString(line);
                 if (heading != Heading.NONE) {
-                    line = StringUtils.replace(line, heading.getMark() + " ", "", 1);
+                    line = Strings.CS.replace(line, heading.getMark() + " ", "", 1);
                 }
 
-                var lineWithFormattedLinks = CommonHooks.newChatWithLinks(line, false);
+                var lineWithFormattedLinks = ComponentUtils.newChatWithLinks(line, false);
                 Matcher matcher = Constants.LINK_PATTERN.matcher(line);
                 if (matcher.find()) {
-                    lineWithFormattedLinks = ComponentUtils.parseLinks(line); //why someone needs write 2 styles of links
+                    lineWithFormattedLinks = ComponentUtils.parseLinks(line); // why someone needs write 2 styles of
+                    // links
                 }
 
                 final int maxTextLength = this.width - padding * 2;
                 if (maxTextLength >= 0) {
-                    Language.getInstance().getVisualOrder(font.getSplitter().splitLines(lineWithFormattedLinks, maxTextLength, Style.EMPTY)).forEach(
-                            formattedCharSequence -> resized.add(Pair.of(heading, ComponentUtils.getLine(formattedCharSequence)))
-                    );
+                    Language.getInstance()
+                            .getVisualOrder(
+                                    font.getSplitter().splitLines(lineWithFormattedLinks, maxTextLength, Style.EMPTY))
+                            .forEach(
+                                    formattedCharSequence -> resized
+                                            .add(Pair.of(heading, ComponentUtils.getLine(formattedCharSequence))));
                 }
 
                 lineCounter += resized.size() - lineCounter;
 
-                // add a blank line after headings to avoid overlapping with any text that may be directly below it.
+                // add a blank line after headings to avoid overlapping with any text that may
+                // be directly below it.
                 if (heading != Heading.NONE) {
-                    resized.add(Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
+                    resized.add(
+                            Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
                 }
 
                 lineCounter++;
             }
 
-            // if the last line isn't a heading, add a single line at the end of the panel for
-            // aesthetical (looks nicer) and functional reasons (hard to click links on last line otherwise)
+            // if the last line isn't a heading, add a single line at the end of the panel
+            // for
+            // aesthetical (looks nicer) and functional reasons (hard to click links on last
+            // line otherwise)
             if (resized.getLast().first == Heading.NONE) {
                 resized.add(Pair.of(Heading.NONE, ComponentUtils.getLine(Component.literal(" ").getVisualOrderText())));
             }

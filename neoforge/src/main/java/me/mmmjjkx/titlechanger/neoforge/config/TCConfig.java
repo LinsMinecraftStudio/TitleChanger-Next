@@ -5,7 +5,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@Config(name = "titlechanger/config")
+@Config(name = "me/mmmjjkx/titlechanger/config")
 public class TCConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("general")

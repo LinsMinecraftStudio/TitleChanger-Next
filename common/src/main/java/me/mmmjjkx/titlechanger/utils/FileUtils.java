@@ -1,7 +1,8 @@
-package me.mmmjjkx.titlechanger;
+package me.mmmjjkx.titlechanger.utils;
 
 import it.unimi.dsi.fastutil.Pair;
-import org.apache.commons.lang3.StringUtils;
+import me.mmmjjkx.titlechanger.Constants;
+import org.apache.commons.lang3.Strings;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.logging.Level;
 
 public class FileUtils {
     public static List<String> readSplashText(File cfgDir) {
-        File splash = new File(cfgDir, "titlechanger/splash.txt");
+        File splash = new File(cfgDir, "me/mmmjjkx/titlechanger/splash.txt");
         if (splash.exists()) {
             try {
                 return Files.readAllLines(splash.toPath());
@@ -30,7 +31,7 @@ public class FileUtils {
     }
 
     public static Pair<String, List<String>> readWelcomeText(File cfgDir, String lang) {
-        File folder = new File(cfgDir, "titlechanger/welcome");
+        File folder = new File(cfgDir, "me/mmmjjkx/titlechanger/welcome");
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -50,8 +51,8 @@ public class FileUtils {
 
                 String title = "";
 
-                if (StringUtils.startsWith(raw.get(0), "[TITLE] ")) {
-                    title = StringUtils.replace(raw.get(0), "[TITLE] ", "", 1);
+                if (Strings.CS.startsWith(raw.getFirst(), "[TITLE] ")) {
+                    title = Strings.CS.replace(raw.getFirst(), "[TITLE] ", "", 1);
                     raw = raw.subList(1, raw.size());
                 }
 
@@ -63,7 +64,7 @@ public class FileUtils {
         } else {
             //go back to the default file
             try {
-                File defaultFile = new File(cfgDir, "titlechanger/welcome/welcome_text.txt");
+                File defaultFile = new File(cfgDir, "me/mmmjjkx/titlechanger/welcome/welcome_text.txt");
                 if (!defaultFile.exists()) {
                     defaultFile.createNewFile();
                     Files.write(defaultFile.toPath(), Arrays.asList(Constants.WELCOME_SCREEN_TEXT_DEFAULT.split("\n")));
@@ -77,8 +78,8 @@ public class FileUtils {
 
                 String title = "";
 
-                if (StringUtils.startsWith(raw.get(0), "[TITLE] ")) {
-                    title = StringUtils.replace(raw.get(0), "[TITLE] ", "", 1);
+                if (Strings.CS.startsWith(raw.getFirst(), "[TITLE] ")) {
+                    title = Strings.CS.replace(raw.getFirst(), "[TITLE] ", "", 1);
                     raw = raw.subList(1, raw.size());
                 }
 

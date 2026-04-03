@@ -15,8 +15,8 @@ public class Constants {
     public static final Pattern LINK_PATTERN = Pattern.compile("<.+?;(file|http|https)://\\S+>");
     //
 
-    public static final String RESOURCE_SETTINGS_FILE = "titlechanger/resource_settings";
-    public static final String ICON_FOLDER = "titlechanger/icons";
+    public static final String RESOURCE_SETTINGS_FILE = "me/mmmjjkx/titlechanger/resource_settings";
+    public static final String ICON_FOLDER = "me/mmmjjkx/titlechanger/icons";
 
     public static final String WELCOME_SCREEN_TEXT_DEFAULT = """
             [TITLE] Welcome to %modpackName%

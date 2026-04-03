@@ -2,9 +2,9 @@ import java.util.*
 
 plugins {
     java
-    id("net.neoforged.gradle.userdev") version "7.1.20"
+    id("net.neoforged.gradle.userdev") version "7.1.21"
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
-    id("com.gradleup.shadow") version "9.0.0"
+    id("com.gradleup.shadow")
 }
 
 val mod_version: String by project
@@ -27,7 +27,7 @@ base {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -73,7 +73,7 @@ dependencies {
     implementation("net.neoforged:neoforge:$neo_version")
 
     implementation(project(":api"))
-    implementation(project(":"))
+    implementation(project(":common"))
 
     compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
     localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
@@ -116,8 +116,6 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.shadowJar {
-    dependsOn(project(":").tasks.shadowJar)
-
     archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {
@@ -125,10 +123,6 @@ tasks.shadowJar {
         exclude("titlechanger-fabric.mixins.json")
 
         include(project(":api"))
-        include(project(":"))
+        include(project(":common"))
     }
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
 }

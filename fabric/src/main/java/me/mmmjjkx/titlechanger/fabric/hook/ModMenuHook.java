@@ -12,7 +12,7 @@ public class ModMenuHook implements ModMenuApi {
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> {
             ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
-            provider.setI13nFunction(a -> "titlechanger");
+            provider.setI13nFunction(a -> "me/mmmjjkx/titlechanger");
 
             return provider.get();
         };

@@ -1,8 +1,7 @@
-package me.mmmjjkx.titlechanger.neoforge.screens;
+package me.mmmjjkx.titlechanger.screens;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,10 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 public class UpdatableScreen extends Screen {
-    private final Component message;
-
     protected final Consumer<UpdateCheckMode> callback;
-
+    private final Component message;
     private final MultiLineTextWidget multilineMessage;
 
     protected Component yesButton;
@@ -72,12 +69,12 @@ public class UpdatableScreen extends Screen {
      * @param partialTick the partial tick time.
      */
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.titleTop(), 16777215);
-        this.multilineMessage.render(guiGraphics, this.width / 2, this.messageTop(), partialTick);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, this.titleTop(), 16777215);
+        this.multilineMessage.extractRenderState(guiGraphics, this.width / 2, this.messageTop(), partialTick);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     private int titleTop() {
@@ -105,7 +102,7 @@ public class UpdatableScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == InputConstants.KEY_ESCAPE) {
+        if (event.key() == 256) {
             this.callback.accept(UpdateCheckMode.ALLOW_BUT_CANCEL);
             return true;
         } else {

@@ -15,3 +15,4 @@ rootProject.name = "titlechanger-container"
 include("api")
 include("fabric")
 include("neoforge")
+include("common")

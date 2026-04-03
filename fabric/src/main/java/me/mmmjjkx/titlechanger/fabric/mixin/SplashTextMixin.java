@@ -1,8 +1,8 @@
 package me.mmmjjkx.titlechanger.fabric.mixin;
 
-import me.mmmjjkx.titlechanger.FileUtils;
 import me.mmmjjkx.titlechanger.enums.SplashTextMode;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
+import me.mmmjjkx.titlechanger.utils.FileUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.User;
 import net.minecraft.client.resources.SplashManager;
@@ -25,11 +25,10 @@ import java.util.List;
 @Mixin(SplashManager.class)
 public class SplashTextMixin {
     @Shadow
-    private List<Component> splashes;
-
-    @Shadow
     @Final
     private static Style DEFAULT_STYLE;
+    @Shadow
+    private List<Component> splashes;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void pushSplashText(User user, CallbackInfo ci) {
@@ -49,14 +48,14 @@ public class SplashTextMixin {
     }
 
     @Inject(method = "apply(Ljava/util/List;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"), cancellable = true)
-    private void antiApplyChange(List<String> list, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+    private void antiApplyChange(List<String> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
         if (TitleChangerFabric.getConfig().splashTextSettings.enabled) {
             ci.cancel();
         }
     }
 
     @Inject(method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Ljava/util/List;", at = @At("HEAD"), cancellable = true)
-    private void antiChange(ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfoReturnable<List<String>> cir) {
+    private void antiChange(ResourceManager manager, ProfilerFiller profiler, CallbackInfoReturnable<List<String>> cir) {
         if (TitleChangerFabric.getConfig().splashTextSettings.enabled) {
             cir.setReturnValue(List.of());
             cir.cancel();

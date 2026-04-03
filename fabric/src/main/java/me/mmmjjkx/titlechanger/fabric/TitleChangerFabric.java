@@ -4,14 +4,14 @@ import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
-import me.mmmjjkx.titlechanger.FileUtils;
-import me.mmmjjkx.titlechanger.HttpUtils;
 import me.mmmjjkx.titlechanger.TitleProcessor;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import me.mmmjjkx.titlechanger.fabric.config.TCConfig;
 import me.mmmjjkx.titlechanger.fabric.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.fabric.screens.LaunchScreen;
-import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.utils.FileUtils;
+import me.mmmjjkx.titlechanger.utils.HttpUtils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -48,17 +48,14 @@ import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class TitleChangerFabric implements ClientModInitializer {
-    public static TitleProcessor titleProcessor;
     public static final String HITOKOTO;
-
-    public static final Logger LOGGER = LoggerFactory.getLogger("titlechanger");
-
+    public static final Logger LOGGER = LoggerFactory.getLogger("me/mmmjjkx/titlechanger");
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
-
-    private boolean checkUpdate = false;
+    public static TitleProcessor titleProcessor;
+    private static LocalDateTime start;
 
     static {
-        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
+        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("me/mmmjjkx/titlechanger", TitlePlaceholderExtension.class));
 
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
@@ -90,7 +87,7 @@ public class TitleChangerFabric implements ClientModInitializer {
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
     }
 
-    private static LocalDateTime start;
+    private boolean checkUpdate = false;
 
     @Nullable
     public static Triple<ByteBuffer, IntBuffer, IntBuffer> tryGetIcon() {
@@ -154,6 +151,12 @@ public class TitleChangerFabric implements ClientModInitializer {
         return start;
     }
 
+    public static String parseWelcomeTitle(String title) {
+        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
+        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
+        return title;
+    }
+
     @Override
     public void onInitializeClient() {
         titleProcessor = new TitleProcessor();
@@ -209,11 +212,5 @@ public class TitleChangerFabric implements ClientModInitializer {
 
     private void placeholderUpdates() {
         start = LocalDateTime.now();
-    }
-
-    public static String parseWelcomeTitle(String title) {
-        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
-        return title;
     }
 }

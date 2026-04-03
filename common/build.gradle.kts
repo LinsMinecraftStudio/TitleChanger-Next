@@ -1,14 +1,16 @@
 plugins {
     java
-    id("fetch-version")
-    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT" apply false
-    id("com.gradleup.shadow") version "9.4.1" apply false
+    id("net.fabricmc.fabric-loom")
+    id("com.gradleup.shadow")
 }
 
 group = "io.github.lijinhong11"
 version = properties["mod_version"]!!
 
 dependencies {
+    minecraft("com.mojang:minecraft:${properties["minecraft_version"]}")
+
+    implementation(project(":api"))
 }
 
 java {
