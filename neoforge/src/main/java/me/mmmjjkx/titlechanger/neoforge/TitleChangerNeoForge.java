@@ -54,12 +54,11 @@ import java.util.List;
 import java.util.Random;
 
 @Mod(TitleChangerNeoForge.MODID)
-@OnlyIn(Dist.CLIENT)
 @SuppressWarnings({"unsafe", "deprecation"})
 public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
-    public static final String MODID = "me/mmmjjkx/titlechanger";
+    public static final String MODID = "titlechanger";
 
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), Constants.ICON_FOLDER);

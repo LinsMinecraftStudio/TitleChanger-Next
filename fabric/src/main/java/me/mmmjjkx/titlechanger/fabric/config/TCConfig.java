@@ -1,11 +1,12 @@
 package me.mmmjjkx.titlechanger.fabric.config;
 
+import me.mmmjjkx.titlechanger.Constants;
 import me.mmmjjkx.titlechanger.enums.SplashTextMode;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@Config(name = "me/mmmjjkx/titlechanger/config")
+@Config(name = Constants.CONFIG_FILE)
 public class TCConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Category("general")

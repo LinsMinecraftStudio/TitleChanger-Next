@@ -13,7 +13,7 @@ import java.util.logging.Level;
 
 public class FileUtils {
     public static List<String> readSplashText(File cfgDir) {
-        File splash = new File(cfgDir, "me/mmmjjkx/titlechanger/splash.txt");
+        File splash = new File(cfgDir, "titlechanger/splash.txt");
         if (splash.exists()) {
             try {
                 return Files.readAllLines(splash.toPath());
@@ -31,7 +31,7 @@ public class FileUtils {
     }
 
     public static Pair<String, List<String>> readWelcomeText(File cfgDir, String lang) {
-        File folder = new File(cfgDir, "me/mmmjjkx/titlechanger/welcome");
+        File folder = new File(cfgDir, "titlechanger/welcome");
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -64,7 +64,7 @@ public class FileUtils {
         } else {
             //go back to the default file
             try {
-                File defaultFile = new File(cfgDir, "me/mmmjjkx/titlechanger/welcome/welcome_text.txt");
+                File defaultFile = new File(cfgDir, "titlechanger/welcome/welcome_text.txt");
                 if (!defaultFile.exists()) {
                     defaultFile.createNewFile();
                     Files.write(defaultFile.toPath(), Arrays.asList(Constants.WELCOME_SCREEN_TEXT_DEFAULT.split("\n")));
