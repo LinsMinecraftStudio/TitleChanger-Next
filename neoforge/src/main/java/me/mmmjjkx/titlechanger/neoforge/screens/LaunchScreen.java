@@ -95,7 +95,7 @@ public class LaunchScreen extends Screen {
                 .bounds(this.width / 2 + 10, this.height - 30, 150, 20)
                 .build();
 
-        final Button languageButton = Button.builder(Component.translatable("options.language"), onPress -> {
+        final Button languageButton = Button.builder(Component.translatable("options.language"), _ -> {
             LanguageSelectScreen languageSelect = new LanguageSelectScreen(this, mcInstance.options,
                     mcInstance.getLanguageManager());
             mcInstance.setScreen(languageSelect);

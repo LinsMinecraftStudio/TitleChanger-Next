@@ -30,6 +30,6 @@ side = "CLIENT"
 [[dependencies."${mod_id}"]]
 modId = "cloth_config"
 type = "required"
-versionRange = "[15.0.140,)"
+versionRange = "[26.1.0,)"
 ordering = "NONE"
 side = "CLIENT"

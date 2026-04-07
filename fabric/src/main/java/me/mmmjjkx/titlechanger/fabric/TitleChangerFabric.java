@@ -13,6 +13,8 @@ import me.mmmjjkx.titlechanger.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.utils.FileUtils;
 import me.mmmjjkx.titlechanger.utils.HttpUtils;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
+import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -49,17 +51,17 @@ import java.util.Random;
 @Environment(EnvType.CLIENT)
 public class TitleChangerFabric implements ClientModInitializer {
     public static final String HITOKOTO;
-    public static final Logger LOGGER = LoggerFactory.getLogger("me/mmmjjkx/titlechanger");
+    public static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
     public static TitleProcessor titleProcessor;
     private static LocalDateTime start;
 
     static {
-        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("me/mmmjjkx/titlechanger", TitlePlaceholderExtension.class));
+        TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
 
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
-        AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
+        AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((_, c) -> {
             titleProcessor.restart();
 
             if (c.generalSettings.enabled) {

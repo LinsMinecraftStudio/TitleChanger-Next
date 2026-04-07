@@ -108,9 +108,9 @@ public class TitleChangerNeoForge {
 
         NeoForge.EVENT_BUS.register(this);
 
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((container, parent) -> {
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((_, parent) -> {
             ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
-            provider.setI13nFunction(a -> "me/mmmjjkx/titlechanger");
+            provider.setI13nFunction(_ -> "titlechanger");
 
             return provider.get();
         }));

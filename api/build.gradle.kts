@@ -1,10 +1,10 @@
 plugins {
     java
-    id("maven-publish")
+    //id("maven-publish")
 }
 
 group = "io.github.lijinhong11"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 base {
     archivesName = "titlechanger-api"
@@ -14,10 +14,6 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -36,14 +32,6 @@ publishing {
     }
 
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/LinsMinecraftStudio/TitleChanger-New")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN_PKG")
-            }
-        }
     }
 }
 

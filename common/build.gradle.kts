@@ -1,7 +1,6 @@
 plugins {
     java
     id("net.fabricmc.fabric-loom")
-    id("com.gradleup.shadow")
 }
 
 group = "io.github.lijinhong11"

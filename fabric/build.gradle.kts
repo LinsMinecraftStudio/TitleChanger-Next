@@ -21,7 +21,6 @@ repositories {
     mavenCentral()
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
-    maven("https://maven.parchmentmc.org")
 }
 
 sourceSets {

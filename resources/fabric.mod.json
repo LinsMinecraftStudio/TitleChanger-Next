@@ -8,10 +8,18 @@
     "lijinhong11 (mmmjjkx)"
   ],
   "contact": {
-    "homepage": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
-    "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next"
+    "homepage": "https://modrinth.com/mod/titlechanger-next",
+    "sources": "https://github.com/LinsMinecraftStudio/TitleChanger-Next",
+    "issues": "https://github.com/LinsMinecraftStudio/TitleChanger-Next/issues"
   },
-  "license": "LICENSE.txt",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/9YP2UaPZhE"
+      }
+    }
+  },
+  "license": "GPL-3.0",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -25,12 +33,12 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.16.13",
-    "minecraft": ">=1.21.1",
-    "cloth-config": ">=15.0.140"
+    "fabricloader": ">=0.18.0",
+    "minecraft": ">=26.1",
+    "cloth-config": "*"
   },
   "recommends": {
-    "modmenu": ">=11.0"
+    "modmenu": ">=17.0.0"
   },
   "mixins": [
     "titlechanger-fabric.mixins.json"
