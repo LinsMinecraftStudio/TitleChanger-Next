@@ -21,10 +21,6 @@ repositories {
     maven("https://maven.shedaniel.me/")
 }
 
-base {
-    archivesName.set(mod_id)
-}
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)

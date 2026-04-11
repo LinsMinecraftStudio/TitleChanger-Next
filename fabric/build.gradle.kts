@@ -7,10 +7,6 @@ plugins {
 group = "io.github.lijinhong11"
 version = "${project.properties["mod_version"]}"
 
-base {
-    archivesName = "titlechanger-fabric"
-}
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
@@ -65,7 +61,7 @@ tasks.test {
 }
 
 tasks.shadowJar {
-    archiveFileName.set("titlechanger-fabric-${version}-shadow-raw.jar")
+    archiveFileName.set("titlechanger-fabric-${project.version}.jar")
 
     dependencies {
         include(project(":api"))
