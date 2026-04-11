@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -76,16 +75,14 @@ public class TitleProcessor {
                 return;
             }
 
-            CompletableFuture.runAsync(() -> {
-                try {
-                    String result = processTemplate(parts, TriState.FALSE);
-                    resultConsumer.accept(result);
-                } catch (Exception e) {
-                    System.err.println("Error processing template: " + e.getMessage());
-                    resultConsumer.accept(rawParse.replaceAll("%.*?%", "ERROR"));
-                }
-            });
-        }, 10, intervalMs, TimeUnit.MILLISECONDS);
+            try {
+                String result = processTemplate(parts, TriState.FALSE);
+                resultConsumer.accept(result);
+            } catch (Exception e) {
+                System.err.println("Error processing template: " + e.getMessage());
+                resultConsumer.accept(rawParse.replaceAll("%.*?%", "ERROR"));
+            }
+        }, 100, intervalMs, TimeUnit.MILLISECONDS);
     }
 
     private List<TemplatePart> parseTemplate(String template) {
@@ -196,7 +193,7 @@ public class TitleProcessor {
     }
 
     public void restart() {
-        executor.shutdown();
+        executor.close();
         executor = Executors.newSingleThreadScheduledExecutor(
                 r -> {
                     Thread t = new Thread(r, "TitleChanger-Processor");

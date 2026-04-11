@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
@@ -26,22 +25,15 @@ public abstract class ClientMixin {
     @Final
     private Window window;
 
-    @Redirect(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
-    public void updateTitleTC(Minecraft instance) {
-        if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
-            instance.updateTitle();
-        }
-    }
-
-    @Redirect(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
-    public void updateTitleTC2(Minecraft instance) {
-        if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
-            instance.updateTitle();
+    @Inject(method = "updateTitle", at = @At("HEAD"), cancellable = true)
+    public void updateTitleTC(CallbackInfo ci) {
+        if (TitleChangerFabric.getConfig().generalSettings.enabled) {
+            ci.cancel();
         }
     }
 
     // It makes the title shows when the game window shown. Yay!
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 2)
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 3)
     private String startingSettings(String title) {
         if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
             return title;
@@ -50,7 +42,7 @@ public abstract class ClientMixin {
         return TitleChangerFabric.titleProcessor.firstParse(TitleChangerFabric.getConfig().generalSettings.title);
     }
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;setWindowed(II)V"))
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeGui()V"))
     private void setup(GameConfig gameConfig, CallbackInfo ci) {
         CompletableFuture.runAsync(() -> {
             if (TitleChangerFabric.getConfig().iconSettings.enabled) {

@@ -1,6 +1,5 @@
 package me.mmmjjkx.titlechanger.neoforge;
 
-import com.mojang.logging.LogUtils;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
@@ -10,7 +9,7 @@ import me.mmmjjkx.titlechanger.neoforge.bulitin.TCPlaceholders;
 import me.mmmjjkx.titlechanger.neoforge.config.TCConfig;
 import me.mmmjjkx.titlechanger.neoforge.config.TCResourceSettings;
 import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
-import me.mmmjjkx.titlechanger.screens.UpdatableScreen;
+import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.utils.FileUtils;
 import me.mmmjjkx.titlechanger.utils.HttpUtils;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -25,15 +24,13 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +39,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,15 +52,16 @@ import java.util.List;
 import java.util.Random;
 
 @Mod(TitleChangerNeoForge.MODID)
+@EventBusSubscriber(modid = TitleChangerNeoForge.MODID)
 @SuppressWarnings({"unsafe", "deprecation"})
 public class TitleChangerNeoForge {
     public static final String HITOKOTO;
 
     public static final String MODID = "titlechanger";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), Constants.ICON_FOLDER);
-    public static TitleProcessor titleProcessor;
+    public static TitleProcessor titleProcessor = new TitleProcessor();
     private static LocalDateTime start;
 
     static {
@@ -70,12 +69,15 @@ public class TitleChangerNeoForge {
 
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
-        AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((hl, c) -> {
+        AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((_, c) -> {
             titleProcessor.restart();
+
+            LOGGER.info("called");
 
             if (c.generalSettings.enabled) {
                 titleProcessor.refresh(c.generalSettings.title);
                 titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
+                LOGGER.info("called");
             }
 
             if (c.iconSettings.enabled) {
@@ -96,16 +98,10 @@ public class TitleChangerNeoForge {
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
-
-        titleProcessor = new TitleProcessor();
     }
-
-    private boolean checkUpdate = false;
 
     public TitleChangerNeoForge(ModContainer modContainer) {
         start = LocalDateTime.now();
-
-        NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ((_, parent) -> {
             ConfigScreenProvider<TCConfig> provider = (ConfigScreenProvider<TCConfig>) AutoConfigClient.getConfigScreen(TCConfig.class, parent);
@@ -184,7 +180,8 @@ public class TitleChangerNeoForge {
     }
 
     @SubscribeEvent
-    public void onOpen(ScreenEvent.Opening e) {
+    public static void onOpen(ScreenEvent.Opening e) {
+        boolean checkUpdate = false;
         if (e.getNewScreen() instanceof TitleScreen) {
             if (getResourceSettings().enableWelcomeScreen) {
                 e.setNewScreen(new LaunchScreen(new TitleScreen(), () -> {
@@ -218,8 +215,6 @@ public class TitleChangerNeoForge {
                         Minecraft.getInstance().setScreen(new TitleScreen());
                     }, getResourceSettings().modpackName));
                 }
-
-                checkUpdate = true;
             }
         }
     }

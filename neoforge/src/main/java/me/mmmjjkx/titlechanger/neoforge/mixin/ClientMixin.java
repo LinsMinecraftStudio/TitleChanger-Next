@@ -1,5 +1,7 @@
 package me.mmmjjkx.titlechanger.neoforge.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.platform.Window;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import net.minecraft.client.Minecraft;
@@ -13,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
@@ -26,21 +27,14 @@ public abstract class ClientMixin {
     @Final
     private Window window;
 
-    @Redirect(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
-    public void updateTitleTC(Minecraft instance) {
+    @WrapMethod(method = "updateTitle")
+    public void updateTitleTC(Operation<Void> original) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
-            instance.updateTitle();
+            original.call();
         }
     }
 
-    @Redirect(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateTitle()V"))
-    public void updateTitleTC2(Minecraft instance) {
-        if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
-            instance.updateTitle();
-        }
-    }
-
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 2)
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 3)
     private String startingSettings(String title) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
             return title;
@@ -49,7 +43,7 @@ public abstract class ClientMixin {
         return TitleChangerNeoForge.titleProcessor.firstParse(TitleChangerNeoForge.getConfig().generalSettings.title);
     }
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;setWindowed(II)V"))
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeGui()V"))
     private void setup(GameConfig gameConfig, CallbackInfo ci) {
         CompletableFuture.runAsync(() -> {
             if (TitleChangerNeoForge.getConfig().iconSettings.enabled) {
