@@ -19,6 +19,7 @@ repositories {
     maven("https://maven.neoforged.net/releases")
     maven("https://maven.neoforged.net/snapshots")
     maven("https://maven.shedaniel.me/")
+    maven("https://maven.offsetmonkey538.top/releases")
 }
 
 java {
@@ -74,6 +75,8 @@ dependencies {
     compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
     localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
 
+    compileOnly("eu.pb4:placeholder-api-neoforge:3.0.0+26.1+neoforge")
+    localRuntime("eu.pb4:placeholder-api-neoforge:3.0.0+26.1+neoforge")
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // val jei_vesion: String by project

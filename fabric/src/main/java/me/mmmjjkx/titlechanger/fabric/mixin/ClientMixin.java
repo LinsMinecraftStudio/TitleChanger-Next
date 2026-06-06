@@ -39,7 +39,7 @@ public abstract class ClientMixin {
             return title;
         }
 
-        return TitleChangerFabric.titleProcessor.firstParse(TitleChangerFabric.getConfig().generalSettings.title);
+        return TitleChangerFabric.parseTPA(TitleChangerFabric.titleProcessor.firstParse(TitleChangerFabric.FINAL_TITLE));
     }
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeGui()V"))
@@ -59,7 +59,9 @@ public abstract class ClientMixin {
                 }
             }
 
-            TitleChangerFabric.titleProcessor.startProcessing(TitleChangerFabric.getConfig().generalSettings.updateInterval, window::setTitle);
+            TitleChangerFabric.titleProcessor.startProcessing(TitleChangerFabric.getConfig().generalSettings.updateInterval, s -> {
+                window.setTitle(TitleChangerFabric.parseTPA(s));
+            });
         });
     }
 }

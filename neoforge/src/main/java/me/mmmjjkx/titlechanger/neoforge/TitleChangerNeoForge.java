@@ -1,5 +1,8 @@
 package me.mmmjjkx.titlechanger.neoforge;
 
+import eu.pb4.placeholders.api.ParserContext;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import it.unimi.dsi.fastutil.Pair;
 import me.mmmjjkx.titlechanger.Constants;
@@ -26,6 +29,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
@@ -55,13 +59,16 @@ import java.util.Random;
 @EventBusSubscriber(modid = TitleChangerNeoForge.MODID)
 @SuppressWarnings({"unsafe", "deprecation"})
 public class TitleChangerNeoForge {
+    public static final String MODID = "titlechanger";
+    public static final TitleProcessor titleProcessor = new TitleProcessor();
+
     public static final String HITOKOTO;
 
-    public static final String MODID = "titlechanger";
+    public static volatile String FINAL_TITLE = "";
 
     private static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), Constants.ICON_FOLDER);
-    public static TitleProcessor titleProcessor = new TitleProcessor();
+
     private static LocalDateTime start;
 
     static {
@@ -72,12 +79,14 @@ public class TitleChangerNeoForge {
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((_, c) -> {
             titleProcessor.restart();
 
-            LOGGER.info("called");
-
             if (c.generalSettings.enabled) {
-                titleProcessor.refresh(c.generalSettings.title);
-                titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
-                LOGGER.info("called");
+                if (c.generalSettings.randomTitle && !c.generalSettings.randomTitles.isEmpty()) {
+                    FINAL_TITLE = c.generalSettings.randomTitles.get(new Random().nextInt(c.generalSettings.randomTitles.size()));
+                } else {
+                    FINAL_TITLE = c.generalSettings.title;
+                }
+                titleProcessor.refresh(FINAL_TITLE);
+                titleProcessor.startProcessing(c.generalSettings.updateInterval, s -> Minecraft.getInstance().getWindow().setTitle(parseTPA(s)));
             }
 
             if (c.iconSettings.enabled) {
@@ -98,6 +107,15 @@ public class TitleChangerNeoForge {
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
+        changeTitle();
+    }
+
+    private static void changeTitle() {
+        if (getConfig().generalSettings.randomTitle && !getConfig().generalSettings.randomTitles.isEmpty()) {
+            FINAL_TITLE = getConfig().generalSettings.randomTitles.get(new Random().nextInt(getConfig().generalSettings.randomTitles.size()));
+        } else {
+            FINAL_TITLE = getConfig().generalSettings.title;
+        }
     }
 
     public TitleChangerNeoForge(ModContainer modContainer) {
@@ -177,6 +195,19 @@ public class TitleChangerNeoForge {
         title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
         title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
         return title;
+    }
+
+    public static String parseTPA(String s) {
+        if (ModList.get().isLoaded("placeholder_api_neoforge")) {
+            ParserContext ctx = ParserContext.of();
+            if (Minecraft.getInstance().player != null) {
+                ctx = PlaceholderContext.of(Minecraft.getInstance().player).asParserContext();
+            }
+
+            return Placeholders.COMMON_PLACEHOLDER_PARSER.parseComponent(s, ctx).getString();
+        } else {
+            return s;
+        }
     }
 
     @SubscribeEvent

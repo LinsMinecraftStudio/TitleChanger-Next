@@ -17,6 +17,7 @@ repositories {
     mavenCentral()
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
+    maven("https://maven.nucleoid.xyz/")
 }
 
 sourceSets {
@@ -42,6 +43,11 @@ dependencies {
     }
 
     api("com.terraformersmc:modmenu:${properties["modmenu_version"]}") {
+        exclude("net.fabricmc.fabric-api")
+        exclude("net.fabricmc", "fabric-loader")
+    }
+
+    api("eu.pb4:placeholder-api:${properties["placeholder_api_version"]}") {
         exclude("net.fabricmc.fabric-api")
         exclude("net.fabricmc", "fabric-loader")
     }

@@ -26,6 +26,17 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public String getStaticPlaceholderValue(String placeholder, String[] args) {
+        if (!isIASInstalled()) {
+            switch (placeholder) {
+                case "playername" -> {
+                    return Minecraft.getInstance().getUser().getName();
+                }
+                case "playeruuid" -> {
+                    return Minecraft.getInstance().getUser().getProfileId().toString();
+                }
+            }
+        }
+
         return switch (placeholder) {
             case "mcver" -> SharedConstants.getCurrentVersion().name();
             case "hitokoto" -> TitleChangerNeoForge.HITOKOTO;
@@ -57,10 +68,19 @@ public class TCPlaceholders implements TitlePlaceholderExtension {
 
     @Override
     public String getDynamicPlaceholderValue(String placeholder, String[] args) {
+        if (isIASInstalled()) {
+            switch (placeholder) {
+                case "playername" -> {
+                    return Minecraft.getInstance().getUser().getName();
+                }
+                case "playeruuid" -> {
+                    return Minecraft.getInstance().getUser().getProfileId().toString();
+                }
+            }
+        }
+
         return switch (placeholder) {
             case "playingmode" -> getPlayingMode();
-            case "playername" -> Minecraft.getInstance().getUser().getName();
-            case "playeruuid" -> Minecraft.getInstance().getUser().getProfileId().toString();
             case "fps" -> String.valueOf(Minecraft.getInstance().getFps());
             case "ping" -> getPing();
             case "playtime" -> getPlayTime();

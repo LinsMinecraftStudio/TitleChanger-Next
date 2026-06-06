@@ -6,6 +6,9 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Config(name = Constants.CONFIG_FILE)
 public class TCConfig implements ConfigData {
     @ConfigEntry.Gui.TransitiveObject
@@ -32,6 +35,13 @@ public class TCConfig implements ConfigData {
 
         @ConfigEntry.Gui.Tooltip(count = 2)
         public long updateInterval = 1000;
+
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean randomTitle = false;
+
+        @ConfigEntry.Gui.Tooltip
+        public List<String> randomTitles = new ArrayList<>();
     }
 
     public static class Placeholder implements ConfigData {

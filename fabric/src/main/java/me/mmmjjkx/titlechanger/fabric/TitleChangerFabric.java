@@ -1,5 +1,8 @@
 package me.mmmjjkx.titlechanger.fabric;
 
+import eu.pb4.placeholders.api.ParserContext;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import io.github.lijinhong11.titlechanger.api.TitleExtensionSource;
 import io.github.lijinhong11.titlechanger.api.TitlePlaceholderExtension;
 import it.unimi.dsi.fastutil.Pair;
@@ -48,11 +51,17 @@ import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class TitleChangerFabric implements ClientModInitializer {
+    public static final TitleProcessor titleProcessor = new TitleProcessor();
+
     public static final String HITOKOTO;
-    public static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
+
+    public static volatile String FINAL_TITLE = "";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
-    public static TitleProcessor titleProcessor;
+
     private static LocalDateTime start;
+    private boolean checkUpdate = false;
 
     static {
         TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
@@ -63,8 +72,13 @@ public class TitleChangerFabric implements ClientModInitializer {
             titleProcessor.restart();
 
             if (c.generalSettings.enabled) {
-                titleProcessor.refresh(c.generalSettings.title);
-                titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
+                if (c.generalSettings.randomTitle && !c.generalSettings.randomTitles.isEmpty()) {
+                    FINAL_TITLE = c.generalSettings.randomTitles.get(new Random().nextInt(c.generalSettings.randomTitles.size()));
+                } else {
+                    FINAL_TITLE = c.generalSettings.title;
+                }
+                titleProcessor.refresh(FINAL_TITLE);
+                titleProcessor.startProcessing(c.generalSettings.updateInterval, s -> Minecraft.getInstance().getWindow().setTitle(parseTPA(s)));
             }
 
             if (c.iconSettings.enabled) {
@@ -85,9 +99,16 @@ public class TitleChangerFabric implements ClientModInitializer {
         });
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
+        changeTitle();
     }
 
-    private boolean checkUpdate = false;
+    private static void changeTitle() {
+        if (getConfig().generalSettings.randomTitle && !getConfig().generalSettings.randomTitles.isEmpty()) {
+            FINAL_TITLE = getConfig().generalSettings.randomTitles.get(new Random().nextInt(getConfig().generalSettings.randomTitles.size()));
+        } else {
+            FINAL_TITLE = getConfig().generalSettings.title;
+        }
+    }
 
     @Nullable
     public static Triple<ByteBuffer, IntBuffer, IntBuffer> tryGetIcon() {
@@ -135,6 +156,19 @@ public class TitleChangerFabric implements ClientModInitializer {
         return null;
     }
 
+    public static String parseTPA(String s) {
+        if (FabricLoader.getInstance().isModLoaded("placeholder-api")) {
+            ParserContext ctx = ParserContext.of();
+            if (Minecraft.getInstance().player != null) {
+                ctx = PlaceholderContext.of(Minecraft.getInstance().player).asParserContext();
+            }
+
+            return Placeholders.COMMON_PLACEHOLDER_PARSER.parseComponent(s, ctx).getString();
+        } else {
+            return s;
+        }
+    }
+
     public static TCConfig getConfig() {
         return AutoConfig.getConfigHolder(TCConfig.class).getConfig();
     }
@@ -159,8 +193,7 @@ public class TitleChangerFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        titleProcessor = new TitleProcessor();
-        placeholderUpdates();
+        start = LocalDateTime.now();
 
         ScreenEvents.BEFORE_INIT.register((client, screen, w, h) -> {
             if (screen instanceof TitleScreen) {
@@ -208,9 +241,5 @@ public class TitleChangerFabric implements ClientModInitializer {
         if (!iconFolder.exists()) {
             iconFolder.mkdirs();
         }
-    }
-
-    private void placeholderUpdates() {
-        start = LocalDateTime.now();
     }
 }

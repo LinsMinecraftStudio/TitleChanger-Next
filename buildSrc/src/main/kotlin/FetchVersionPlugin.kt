@@ -90,24 +90,19 @@ open class FetchVersionPlugin : Plugin<Project> {
 
         val list = JsonParser.parseString(html).asJsonObject["versions"].asJsonArray
 
-        val regex = Regex("(\\d{2}\\.\\d+\\.\\d+\\.\\d{1,3})(-beta|)")
+        val regex = Regex("""(\d{2}\.\d+\.\d+(?:\.\d+)?)(?:-.*)?""")
         val versions = list.asList()
-            .map {
-                it.asString
-            }
-            .filter {
-                regex.find(it) != null
-            }
+            .map { it.asString }
+            .filter { regex.matches(it) }
             .filter {
                 val split = it.split(".")
                 split[0] == target[0] && split[1] == target[1]
             }
             .sortedBy {
                 val split = it.split(".")
-                val patch = split[2].substringBefore("-beta").toInt()
-                val build = split[3].substringBefore("-beta").toInt()
-
-                patch * 100 + build
+                val p3 = split[2].substringBefore("-").toIntOrNull() ?: 0
+                val p4 = split.getOrNull(3)?.substringBefore("-")?.toIntOrNull() ?: 0
+                p3 * 100 + p4
             }
             .toList()
 
