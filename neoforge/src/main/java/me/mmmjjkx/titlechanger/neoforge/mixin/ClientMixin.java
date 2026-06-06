@@ -3,8 +3,6 @@ package me.mmmjjkx.titlechanger.neoforge.mixin;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.platform.Window;
-import eu.pb4.placeholders.api.ParserContext;
-import eu.pb4.placeholders.api.Placeholders;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
@@ -42,7 +40,7 @@ public abstract class ClientMixin {
             return title;
         }
 
-        return TitleChangerNeoForge.parseTPA(TitleChangerNeoForge.titleProcessor.firstParse(TitleChangerNeoForge.FINAL_TITLE));
+        return TitleChangerNeoForge.titleProcessor.firstParse(TitleChangerNeoForge.FINAL_TITLE);
     }
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;resizeGui()V"))
@@ -62,9 +60,7 @@ public abstract class ClientMixin {
                 }
             }
 
-            TitleChangerNeoForge.titleProcessor.startProcessing(TitleChangerNeoForge.getConfig().generalSettings.updateInterval, s -> {
-                window.setTitle(TitleChangerNeoForge.parseTPA(s));
-            });
+            TitleChangerNeoForge.titleProcessor.startProcessing(TitleChangerNeoForge.getConfig().generalSettings.updateInterval, window::setTitle);
         });
     }
 }

@@ -37,7 +37,6 @@ public class TCConfig implements ConfigData {
         public long updateInterval = 1000;
 
         @ConfigEntry.Gui.Tooltip(count = 2)
-        @ConfigEntry.Gui.RequiresRestart
         public boolean randomTitle = false;
 
         @ConfigEntry.Gui.Tooltip

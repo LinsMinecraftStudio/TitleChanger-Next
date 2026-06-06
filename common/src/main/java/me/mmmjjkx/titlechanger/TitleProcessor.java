@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,8 @@ public class TitleProcessor {
     private ScheduledExecutorService executor;
 
     private volatile String rawParse = "";
+
+    private Function<String, String> postProcessor = Function.identity();
 
     public TitleProcessor() {
         this.executor = Executors.newSingleThreadScheduledExecutor(
@@ -45,28 +48,34 @@ public class TitleProcessor {
 
         try {
             List<TemplatePart> list = parseTemplate(rawParse);
-            return processTemplate(list, TriState.DEFAULT);
+            return postProcessor.apply(processTemplate(list, TriState.DEFAULT));
         } catch (Exception e) {
             System.err.println("Error processing template: " + e.getMessage());
-            return template.replaceAll("%.*?%", "ERROR");
+            return template;
         }
     }
 
     public String firstParseNoCache(String template) {
         try {
             List<TemplatePart> list = parseTemplate(template);
-            return processTemplate(list, TriState.DEFAULT);
+            return postProcessor.apply(processTemplate(list, TriState.DEFAULT));
         } catch (Exception e) {
             System.err.println("Error processing template: " + e.getMessage());
-            return template.replaceAll("%.*?%", "ERROR");
+            return template;
         }
     }
 
     public void startProcessing(long intervalMs, Consumer<String> resultConsumer) {
         List<TemplatePart> parts = parseTemplate(rawParse);
 
+        Consumer<String> wrappedConsumer = s -> resultConsumer.accept(postProcessor.apply(s));
+
         if (intervalMs < 0) {
-            resultConsumer.accept(processTemplate(parts, TriState.FALSE));
+            try {
+                wrappedConsumer.accept(processTemplate(parts, TriState.FALSE));
+            } catch (Exception e) {
+                resultConsumer.accept(rawParse);
+            }
             return;
         }
 
@@ -77,10 +86,14 @@ public class TitleProcessor {
 
             try {
                 String result = processTemplate(parts, TriState.FALSE);
-                resultConsumer.accept(result);
+                wrappedConsumer.accept(result);
             } catch (Exception e) {
                 System.err.println("Error processing template: " + e.getMessage());
-                resultConsumer.accept(rawParse.replaceAll("%.*?%", "ERROR"));
+                try {
+                    wrappedConsumer.accept(rawParse);
+                } catch (Exception e2) {
+                    resultConsumer.accept(rawParse);
+                }
             }
         }, 100, intervalMs, TimeUnit.MILLISECONDS);
     }
@@ -192,8 +205,12 @@ public class TitleProcessor {
         return Constants.NO_RESULT;
     }
 
+    public void setPostProcessor(Function<String, String> postProcessor) {
+        this.postProcessor = postProcessor != null ? postProcessor : Function.identity();
+    }
+
     public void restart() {
-        executor.close();
+        executor.shutdownNow();
         executor = Executors.newSingleThreadScheduledExecutor(
                 r -> {
                     Thread t = new Thread(r, "TitleChanger-Processor");

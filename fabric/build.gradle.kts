@@ -37,17 +37,17 @@ dependencies {
     implementation(project(":api"))
 
     //api
-    api("me.shedaniel.cloth:cloth-config-fabric:${properties["cloth_config_version"]}") {
+    implementation("me.shedaniel.cloth:cloth-config-fabric:${properties["cloth_config_version"]}") {
         exclude("net.fabricmc.fabric-api")
         exclude("net.fabricmc", "fabric-loader")
     }
 
-    api("com.terraformersmc:modmenu:${properties["modmenu_version"]}") {
+    implementation("com.terraformersmc:modmenu:${properties["modmenu_version"]}") {
         exclude("net.fabricmc.fabric-api")
         exclude("net.fabricmc", "fabric-loader")
     }
 
-    api("eu.pb4:placeholder-api:${properties["placeholder_api_version"]}") {
+    implementation("eu.pb4:placeholder-api:${properties["placeholder_api_version"]}") {
         exclude("net.fabricmc.fabric-api")
         exclude("net.fabricmc", "fabric-loader")
     }

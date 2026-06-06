@@ -73,6 +73,7 @@ public class TitleChangerNeoForge {
 
     static {
         TitleExtensionSource.registerExtension(new TCPlaceholders());
+        titleProcessor.setPostProcessor(TitleChangerNeoForge::parseTPA);
 
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
@@ -86,7 +87,7 @@ public class TitleChangerNeoForge {
                     FINAL_TITLE = c.generalSettings.title;
                 }
                 titleProcessor.refresh(FINAL_TITLE);
-                titleProcessor.startProcessing(c.generalSettings.updateInterval, s -> Minecraft.getInstance().getWindow().setTitle(parseTPA(s)));
+                titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
             }
 
             if (c.iconSettings.enabled) {
@@ -204,7 +205,13 @@ public class TitleChangerNeoForge {
                 ctx = PlaceholderContext.of(Minecraft.getInstance().player).asParserContext();
             }
 
-            return Placeholders.COMMON_PLACEHOLDER_PARSER.parseComponent(s, ctx).getString();
+            LOGGER.info("TICKED");
+
+            try {
+                return Placeholders.COMMON_PLACEHOLDER_PARSER.parseComponent(s, ctx).getString();
+            } catch (Exception e) {
+                return s;
+            }
         } else {
             return s;
         }
