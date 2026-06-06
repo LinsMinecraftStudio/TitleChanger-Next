@@ -38,7 +38,8 @@
     "cloth-config": "*"
   },
   "recommends": {
-    "modmenu": ">=17.0.0"
+    "modmenu": ">=17.0.0",
+    "placeholder-api": ">=3.0.0+26.1"
   },
   "mixins": [
     "titlechanger-fabric.mixins.json"
