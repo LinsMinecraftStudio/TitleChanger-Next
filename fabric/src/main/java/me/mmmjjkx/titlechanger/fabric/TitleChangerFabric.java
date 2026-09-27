@@ -24,12 +24,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
-import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -70,8 +70,6 @@ public class TitleChangerFabric implements ClientModInitializer {
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((_, c) -> {
-            titleProcessor.restart();
-
             if (c.generalSettings.enabled) {
                 if (c.generalSettings.randomTitle && !c.generalSettings.randomTitles.isEmpty()) {
                     FINAL_TITLE = c.generalSettings.randomTitles.get(new Random().nextInt(c.generalSettings.randomTitles.size()));
@@ -80,6 +78,8 @@ public class TitleChangerFabric implements ClientModInitializer {
                 }
                 titleProcessor.refresh(FINAL_TITLE);
                 titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
+            } else {
+                titleProcessor.restart();
             }
 
             if (c.iconSettings.enabled) {
@@ -191,19 +191,17 @@ public class TitleChangerFabric implements ClientModInitializer {
     }
 
     public static String parseWelcomeTitle(String title) {
-        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
-        return title;
+        return titleProcessor.firstParseNoCache(title);
     }
 
     @Override
     public void onInitializeClient() {
         start = LocalDateTime.now();
 
-        ScreenEvents.BEFORE_INIT.register((client, screen, w, h) -> {
+        ScreenEvents.AFTER_INIT.register((client, screen, w, h) -> {
             if (screen instanceof TitleScreen) {
                 if (getResourceSettings().enableWelcomeScreen) {
-                    Minecraft.getInstance().setScreen(new LaunchScreen(new TitleScreen(), () -> {
+                    Minecraft.getInstance().setScreenAndShow(new LaunchScreen(new TitleScreen(), () -> {
                         Pair<String, List<String>> pair = FileUtils.readWelcomeText(FabricLoader.getInstance().getConfigDir().toFile(), Minecraft.getInstance().getLanguageManager().getSelected());
                         String title = pair.left();
                         return Component.literal(parseWelcomeTitle(title));
@@ -224,7 +222,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                             .map(c -> c.getMetadata().getVersion().getFriendlyString())
                             .orElse("unknown"));
                     if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
-                        client.setScreen(new UpdatableScreen(m -> {
+                        client.setScreenAndShow(new UpdatableScreen(m -> {
                             if (m == UpdateCheckMode.ALLOW) {
                                 Util.getPlatform().openUri("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId);
                             }
@@ -234,7 +232,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                                 AutoConfig.getConfigHolder(TCResourceSettings.class).save();
                             }
 
-                            Minecraft.getInstance().setScreen(new TitleScreen());
+                            Minecraft.getInstance().setScreenAndShow(new TitleScreen());
                         }, getResourceSettings().modpackName));
                     }
 

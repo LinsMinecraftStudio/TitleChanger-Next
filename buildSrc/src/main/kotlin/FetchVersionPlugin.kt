@@ -21,7 +21,7 @@ open class FetchVersionPlugin : Plugin<Project> {
                     return@beforeProject
                 }
 
-                val cacheFile = File(project.layout.buildDirectory.get().asFile, "dependency_sync.cache")
+                val cacheFile = File(project.layout.settingsDirectory.asFile, "dependency_sync.cache")
                 if (!cacheFile.exists()) {
                     cacheFile.parentFile.mkdirs()
                     cacheFile.createNewFile()

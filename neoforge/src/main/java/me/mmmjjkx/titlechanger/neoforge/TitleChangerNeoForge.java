@@ -35,7 +35,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -78,8 +77,6 @@ public class TitleChangerNeoForge {
         AutoConfig.register(TCResourceSettings.class, JanksonConfigSerializer::new);
 
         AutoConfig.register(TCConfig.class, GsonConfigSerializer::new).registerSaveListener((_, c) -> {
-            titleProcessor.restart();
-
             if (c.generalSettings.enabled) {
                 if (c.generalSettings.randomTitle && !c.generalSettings.randomTitles.isEmpty()) {
                     FINAL_TITLE = c.generalSettings.randomTitles.get(new Random().nextInt(c.generalSettings.randomTitles.size()));
@@ -88,6 +85,8 @@ public class TitleChangerNeoForge {
                 }
                 titleProcessor.refresh(FINAL_TITLE);
                 titleProcessor.startProcessing(c.generalSettings.updateInterval, Minecraft.getInstance().getWindow()::setTitle);
+            } else {
+                titleProcessor.restart();
             }
 
             if (c.iconSettings.enabled) {
@@ -193,9 +192,7 @@ public class TitleChangerNeoForge {
     }
 
     public static String parseWelcomeTitle(String title) {
-        title = Strings.CS.replace(title, "%modpackName%", getResourceSettings().modpackName);
-        title = Strings.CS.replace(title, "%modpackVersion%", getResourceSettings().modpackVersion);
-        return title;
+        return titleProcessor.firstParseNoCache(title);
     }
 
     public static String parseTPA(String s) {
@@ -204,8 +201,6 @@ public class TitleChangerNeoForge {
             if (Minecraft.getInstance().player != null) {
                 ctx = PlaceholderContext.of(Minecraft.getInstance().player).asParserContext();
             }
-
-            LOGGER.info("TICKED");
 
             try {
                 return Placeholders.COMMON_PLACEHOLDER_PARSER.parseComponent(s, ctx).getString();
@@ -250,7 +245,7 @@ public class TitleChangerNeoForge {
                             AutoConfig.getConfigHolder(TCResourceSettings.class).save();
                         }
 
-                        Minecraft.getInstance().setScreen(new TitleScreen());
+                        Minecraft.getInstance().setScreenAndShow(new TitleScreen());
                     }, getResourceSettings().modpackName));
                 }
             }

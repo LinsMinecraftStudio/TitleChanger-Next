@@ -1,9 +1,9 @@
 package me.mmmjjkx.titlechanger.enums.formatting;
 
 public enum Alignment {
-    LEFT("[left]"),
-    CENTER("[center]"),
-    RIGHT("[right]");
+    LEFT("<left>"),
+    CENTER("<center>"),
+    RIGHT("<right>");
 
     private final String mark;
 
@@ -13,5 +13,9 @@ public enum Alignment {
 
     public String getMark() {
         return mark;
+    }
+
+    public String getEndMark() {
+        return "</" + name().toLowerCase() + ">";
     }
 }

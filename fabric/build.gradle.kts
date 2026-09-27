@@ -35,6 +35,9 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":api"))
+    implementation("org.commonmark:commonmark:0.30.0")
+    implementation("org.commonmark:commonmark-ext-gfm-strikethrough:0.30.0")
+    implementation("org.commonmark:commonmark-ext-gfm-tables:0.30.0")
 
     //api
     implementation("me.shedaniel.cloth:cloth-config-fabric:${properties["cloth_config_version"]}") {
@@ -72,5 +75,10 @@ tasks.shadowJar {
     dependencies {
         include(project(":api"))
         include(project(":common"))
+        include(dependency("org.commonmark:commonmark:0.30.0"))
+        include(dependency("org.commonmark:commonmark-ext-gfm-strikethrough:0.30.0"))
+        include(dependency("org.commonmark:commonmark-ext-gfm-tables:0.30.0"))
     }
+
+    relocate("org.commonmark", "me.mmmjjkx.titlechanger.libs.commonmark")
 }

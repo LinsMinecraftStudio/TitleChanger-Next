@@ -2,17 +2,15 @@ import java.util.*
 
 plugins {
     java
-    id("net.neoforged.gradle.userdev") version "7.1.21"
+    id("net.neoforged.gradle.userdev") version "7.1.38"
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
     id("com.gradleup.shadow")
 }
 
-val mod_version: String by project
-val mod_group_id: String by project
-val mod_id: String by project
+val mod_id = project.findProperty("mod_id") as String
 
-project.version = mod_version
-project.group = mod_group_id
+project.version = project.findProperty("mod_version") as String
+project.group = project.findProperty("mod_group_id") as String
 
 repositories {
     mavenLocal()
@@ -71,12 +69,15 @@ dependencies {
 
     implementation(project(":api"))
     implementation(project(":common"))
+    implementation("org.commonmark:commonmark:0.30.0")
+    implementation("org.commonmark:commonmark-ext-gfm-strikethrough:0.30.0")
+    implementation("org.commonmark:commonmark-ext-gfm-tables:0.30.0")
 
-    compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
-    localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${properties["cloth_config_version"]}")
+    compileOnly("me.shedaniel.cloth:cloth-config-neoforge:${findProperty("cloth_config_version")}")
+    localRuntime("me.shedaniel.cloth:cloth-config-neoforge:${findProperty("cloth_config_version")}")
 
-    compileOnly("eu.pb4:placeholder-api-neoforge:3.0.0+26.1+neoforge")
-    localRuntime("eu.pb4:placeholder-api-neoforge:3.0.0+26.1+neoforge")
+    compileOnly("eu.pb4:placeholder-api-neoforge:${findProperty("placeholder_api_version")}+neoforge")
+    localRuntime("eu.pb4:placeholder-api-neoforge:${findProperty("placeholder_api_version")}+neoforge")
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // val jei_vesion: String by project
@@ -118,10 +119,12 @@ tasks.shadowJar {
     archiveFileName.set("titlechanger-neoforge-${project.version}.jar")
 
     dependencies {
-        exclude("fabric.mod.json")
-        exclude("titlechanger-fabric.mixins.json")
-
         include(project(":api"))
         include(project(":common"))
+        include(dependency("org.commonmark:commonmark:0.30.0"))
+        include(dependency("org.commonmark:commonmark-ext-gfm-strikethrough:0.30.0"))
+        include(dependency("org.commonmark:commonmark-ext-gfm-tables:0.30.0"))
     }
+
+    relocate("org.commonmark", "me.mmmjjkx.titlechanger.libs.commonmark")
 }

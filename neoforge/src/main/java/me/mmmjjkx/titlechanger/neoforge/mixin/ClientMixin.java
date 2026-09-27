@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.platform.Window;
 import me.mmmjjkx.titlechanger.neoforge.TitleChangerNeoForge;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.main.GameConfig;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.glfw.GLFW;
@@ -27,6 +28,10 @@ public abstract class ClientMixin {
     @Final
     private Window window;
 
+    @Shadow
+    @Final
+    public Options options;
+
     @WrapMethod(method = "updateTitle")
     public void updateTitleTC(Operation<Void> original) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
@@ -34,7 +39,7 @@ public abstract class ClientMixin {
         }
     }
 
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;Ljava/lang/String;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 3)
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;ZLjava/lang/String;Lcom/mojang/blaze3d/platform/MonitorManager;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 4)
     private String startingSettings(String title) {
         if (!TitleChangerNeoForge.getConfig().generalSettings.enabled) {
             return title;
@@ -60,7 +65,13 @@ public abstract class ClientMixin {
                 }
             }
 
-            TitleChangerNeoForge.titleProcessor.startProcessing(TitleChangerNeoForge.getConfig().generalSettings.updateInterval, window::setTitle);
+            if (TitleChangerNeoForge.getConfig().generalSettings.enabled) {
+                TitleChangerNeoForge.titleProcessor.startProcessing(TitleChangerNeoForge.getConfig().generalSettings.updateInterval, window::setTitle);
+            }
+
+            if (TitleChangerNeoForge.getResourceSettings().enableWelcomeScreen) {
+                options.onboardingAccessibilityFinished();
+            }
         });
     }
 }

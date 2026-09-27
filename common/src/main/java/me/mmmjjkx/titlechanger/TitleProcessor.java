@@ -66,6 +66,7 @@ public class TitleProcessor {
     }
 
     public void startProcessing(long intervalMs, Consumer<String> resultConsumer) {
+        restart();
         List<TemplatePart> parts = parseTemplate(rawParse);
 
         Consumer<String> wrappedConsumer = s -> resultConsumer.accept(postProcessor.apply(s));
@@ -165,19 +166,15 @@ public class TitleProcessor {
 
     private String resolveDynamicPlaceholder(String header, String placeholder, String[] args) {
         for (TitlePlaceholderExtension ext : extensions) {
-            String value = ext.getDynamicPlaceholderValue(placeholder, args);
-
-            if (Constants.NO_RESULT.equals(value)) {
-                continue;
-            }
-
             if (!ext.getPlaceholders().contains(placeholder)) {
                 continue;
             }
 
-            if ((header != null && ext.getPlaceholderHeader().equalsIgnoreCase(header))
-                    || (isStringNullOrBlank(header) && isStringNullOrBlank(ext.getPlaceholderHeader()))) {
-                return value;
+            if (matchesHeader(ext, header)) {
+                String value = ext.getDynamicPlaceholderValue(placeholder, args);
+                if (!Constants.NO_RESULT.equals(value)) {
+                    return value;
+                }
             }
         }
 
@@ -186,23 +183,24 @@ public class TitleProcessor {
 
     private String resolveStaticPlaceholder(String header, String placeholder, String[] args) {
         for (TitlePlaceholderExtension ext : extensions) {
-            String value = ext.getStaticPlaceholderValue(placeholder, args);
-
-            if (Constants.NO_RESULT.equals(value)) {
-                continue;
-            }
-
             if (!ext.getPlaceholders().contains(placeholder)) {
                 continue;
             }
 
-            if ((header != null && ext.getPlaceholderHeader().equalsIgnoreCase(header))
-                    || (isStringNullOrBlank(header) && isStringNullOrBlank(ext.getPlaceholderHeader()))) {
-                return value;
+            if (matchesHeader(ext, header)) {
+                String value = ext.getStaticPlaceholderValue(placeholder, args);
+                if (!Constants.NO_RESULT.equals(value)) {
+                    return value;
+                }
             }
         }
 
         return Constants.NO_RESULT;
+    }
+
+    private boolean matchesHeader(TitlePlaceholderExtension extension, String header) {
+        return (header != null && header.equalsIgnoreCase(extension.getPlaceholderHeader()))
+                || (isStringNullOrBlank(header) && isStringNullOrBlank(extension.getPlaceholderHeader()));
     }
 
     public void setPostProcessor(Function<String, String> postProcessor) {
