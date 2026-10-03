@@ -4,6 +4,7 @@ import me.mmmjjkx.titlechanger.enums.formatting.Alignment;
 import me.mmmjjkx.titlechanger.enums.formatting.THeading;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+
 import java.util.List;
 
 public class ComponentUtils {

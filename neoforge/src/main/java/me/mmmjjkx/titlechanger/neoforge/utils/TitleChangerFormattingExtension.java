@@ -45,7 +45,8 @@ public final class TitleChangerFormattingExtension {
                     break;
                 }
             }
-            if (lineAlignment != Alignment.LEFT) line = MARK_START + "a" + lineAlignment.name().charAt(0) + MARK_END + line;
+            if (lineAlignment != Alignment.LEFT)
+                line = MARK_START + "a" + lineAlignment.name().charAt(0) + MARK_END + line;
             normalized.add(leading + protectGradient(line));
         }
         return normalized;
@@ -83,7 +84,7 @@ public final class TitleChangerFormattingExtension {
             String value = matcher.group(3);
             int count = value.codePointCount(0, value.length());
             int index = 0;
-            for (int offset = 0; offset < value.length();) {
+            for (int offset = 0; offset < value.length(); ) {
                 int codePoint = value.codePointAt(offset);
                 float progress = count <= 1 ? 0F : (float) index / (count - 1);
                 result.append(Component.literal(new String(Character.toChars(codePoint))).setStyle(style.withColor(interpolate(start, end, progress))));

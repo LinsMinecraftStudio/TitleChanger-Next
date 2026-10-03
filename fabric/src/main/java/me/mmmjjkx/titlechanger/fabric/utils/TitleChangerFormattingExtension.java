@@ -85,7 +85,7 @@ public final class TitleChangerFormattingExtension {
             String value = matcher.group(3);
             int count = value.codePointCount(0, value.length());
             int index = 0;
-            for (int offset = 0; offset < value.length();) {
+            for (int offset = 0; offset < value.length(); ) {
                 int codePoint = value.codePointAt(offset);
                 float progress = count <= 1 ? 0F : (float) index / (count - 1);
                 result.append(Component.literal(new String(Character.toChars(codePoint))).setStyle(style.withColor(interpolate(start, end, progress))));

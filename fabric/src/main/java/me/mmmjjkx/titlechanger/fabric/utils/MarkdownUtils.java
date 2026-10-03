@@ -1,27 +1,22 @@
 package me.mmmjjkx.titlechanger.fabric.utils;
 
-import me.mmmjjkx.titlechanger.enums.formatting.THeading;
 import me.mmmjjkx.titlechanger.enums.formatting.Alignment;
+import me.mmmjjkx.titlechanger.enums.formatting.THeading;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.commonmark.Extension;
-import org.commonmark.node.*;
-import org.commonmark.parser.Parser;
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.ext.gfm.tables.TableBlock;
-import org.commonmark.ext.gfm.tables.TableCell;
-import org.commonmark.ext.gfm.tables.TableRow;
-import org.commonmark.ext.gfm.tables.TableHead;
-import org.commonmark.ext.gfm.tables.TableBody;
+import org.commonmark.ext.gfm.tables.*;
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +57,8 @@ public final class MarkdownUtils {
                 }
                 case ThematicBreak _ ->
                         result.add(ComponentUtils.getLine(Component.literal("--------------------").getVisualOrderText(), THeading.NONE, Alignment.LEFT));
-                case FencedCodeBlock codeBlock ->
-                        addCodeLines(codeBlock.getLiteral(), result);
-                case IndentedCodeBlock codeBlock ->
-                        addCodeLines(codeBlock.getLiteral(), result);
+                case FencedCodeBlock codeBlock -> addCodeLines(codeBlock.getLiteral(), result);
+                case IndentedCodeBlock codeBlock -> addCodeLines(codeBlock.getLiteral(), result);
                 default -> {
                 }
             }
@@ -139,14 +132,14 @@ public final class MarkdownUtils {
     }
 
     private static void renderTableRow(TableRow row, List<ComponentUtils.LineStyles> result, File gameDirectory) {
-            List<Component> cells = new ArrayList<>();
-            for (Node cell = row.getFirstChild(); cell != null; cell = cell.getNext()) {
-                if (cell instanceof TableCell tableCell) {
-                    Component content = renderChildren(tableCell, tableCell.isHeader() ? Style.EMPTY.withBold(true) : Style.EMPTY, gameDirectory);
-                    cells.add(content);
-                }
+        List<Component> cells = new ArrayList<>();
+        for (Node cell = row.getFirstChild(); cell != null; cell = cell.getNext()) {
+            if (cell instanceof TableCell tableCell) {
+                Component content = renderChildren(tableCell, tableCell.isHeader() ? Style.EMPTY.withBold(true) : Style.EMPTY, gameDirectory);
+                cells.add(content);
             }
-            result.add(ComponentUtils.getTableLine(cells));
+        }
+        result.add(ComponentUtils.getTableLine(cells));
     }
 
     private static void renderQuote(BlockQuote quote, List<ComponentUtils.LineStyles> result, File gameDirectory) {
@@ -160,9 +153,9 @@ public final class MarkdownUtils {
             } else if (child instanceof BlockQuote nested) {
                 renderQuote(nested, result, gameDirectory);
             } else if (child instanceof BulletList list) {
-                    renderList(list, "│ • ", 0, 0, result, gameDirectory);
+                renderList(list, "│ • ", 0, 0, result, gameDirectory);
             } else if (child instanceof OrderedList list) {
-                    renderList(list, "│ ", list.getMarkerStartNumber(), 0, result, gameDirectory);
+                renderList(list, "│ ", list.getMarkerStartNumber(), 0, result, gameDirectory);
             }
         }
     }

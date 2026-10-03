@@ -15,6 +15,7 @@ import me.mmmjjkx.titlechanger.fabric.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.fabric.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.utils.FileUtils;
 import me.mmmjjkx.titlechanger.utils.HttpUtils;
+import me.mmmjjkx.titlechanger.utils.ImageUtils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -24,16 +25,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
@@ -41,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
@@ -54,14 +52,10 @@ public class TitleChangerFabric implements ClientModInitializer {
     public static final TitleProcessor titleProcessor = new TitleProcessor();
 
     public static final String HITOKOTO;
-
-    public static volatile String FINAL_TITLE = "";
-
     private static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FabricLoader.getInstance().getConfigDir().toFile(), Constants.ICON_FOLDER);
-
+    public static volatile String FINAL_TITLE = "";
     private static LocalDateTime start;
-    private boolean checkUpdate = false;
 
     static {
         TitleExtensionSource.registerExtensions(FabricLoader.getInstance().getEntrypoints("titlechanger", TitlePlaceholderExtension.class));
@@ -83,16 +77,9 @@ public class TitleChangerFabric implements ClientModInitializer {
             }
 
             if (c.iconSettings.enabled) {
-                Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerFabric.tryGetIcon();
+                ImageUtils.IconData icon = TitleChangerFabric.tryGetIcon();
                 if (icon != null) {
-                    IntBuffer w = icon.getMiddle();
-                    IntBuffer h = icon.getRight();
-                    try (GLFWImage.Buffer icons = GLFWImage.malloc(1)) {
-                        GLFWImage iconImage = icons.get(0);
-                        iconImage.set(w.get(0), h.get(0), icon.getLeft());
-
-                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().handle(), icons);
-                    }
+                    ImageUtils.setWindowIcon(icon);
                 }
             }
 
@@ -103,6 +90,8 @@ public class TitleChangerFabric implements ClientModInitializer {
         changeTitle();
     }
 
+    private boolean checkUpdate = false;
+
     private static void changeTitle() {
         if (getConfig().generalSettings.randomTitle && !getConfig().generalSettings.randomTitles.isEmpty()) {
             FINAL_TITLE = getConfig().generalSettings.randomTitles.get(new Random().nextInt(getConfig().generalSettings.randomTitles.size()));
@@ -112,7 +101,7 @@ public class TitleChangerFabric implements ClientModInitializer {
     }
 
     @Nullable
-    public static Triple<ByteBuffer, IntBuffer, IntBuffer> tryGetIcon() {
+    public static ImageUtils.IconData tryGetIcon() {
         if (getConfig().iconSettings.enabled) {
             boolean random = getConfig().iconSettings.randomIcons;
             String file;
@@ -148,7 +137,7 @@ public class TitleChangerFabric implements ClientModInitializer {
                     return null;
                 }
 
-                return Triple.of(icon, w, h);
+                return new ImageUtils.IconData(icon, w.get(0), h.get(0));
             } catch (IOException e) {
                 return null;
             }
@@ -222,9 +211,9 @@ public class TitleChangerFabric implements ClientModInitializer {
                             .map(c -> c.getMetadata().getVersion().getFriendlyString())
                             .orElse("unknown"));
                     if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
-                        client.setScreenAndShow(new UpdatableScreen(m -> {
+                        client.setScreenAndShow(new UpdatableScreen((s, m) -> {
                             if (m == UpdateCheckMode.ALLOW) {
-                                Util.getPlatform().openUri("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId);
+                                ConfirmLinkScreen.confirmLinkNow(s, URI.create("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId));
                             }
 
                             if (m == UpdateCheckMode.NEVER) {

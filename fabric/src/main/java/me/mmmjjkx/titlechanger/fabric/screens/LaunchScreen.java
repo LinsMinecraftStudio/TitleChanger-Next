@@ -29,13 +29,13 @@ Respect to the original license.
 
 package me.mmmjjkx.titlechanger.fabric.screens;
 
-import me.mmmjjkx.titlechanger.enums.formatting.THeading;
 import me.mmmjjkx.titlechanger.enums.formatting.Alignment;
+import me.mmmjjkx.titlechanger.enums.formatting.THeading;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
 import me.mmmjjkx.titlechanger.fabric.screens.widget.ScrollPanel;
 import me.mmmjjkx.titlechanger.fabric.utils.ComponentUtils;
-import me.mmmjjkx.titlechanger.fabric.utils.MarkdownUtils;
 import me.mmmjjkx.titlechanger.fabric.utils.ImageRenderer;
+import me.mmmjjkx.titlechanger.fabric.utils.MarkdownUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -155,7 +155,7 @@ public class LaunchScreen extends Screen {
                 if (line.codeBlock() && (index == 0 || !lines.get(index - 1).codeBlock())) {
                     height += CODE_VERTICAL_PADDING;
                 }
-                    height += line.heading() == THeading.NONE
+                height += line.heading() == THeading.NONE
                         ? font.lineHeight
                         : (int) Math.ceil(font.lineHeight * scaleFor(line.heading()));
                 if (line.heading() != THeading.NONE) {
@@ -277,15 +277,15 @@ public class LaunchScreen extends Screen {
             if (maxTextLength < 1) {
                 return resized;
             }
-                for (ComponentUtils.LineStyles line : markdown) {
-                    if (line.imageSource() != null) {
+            for (ComponentUtils.LineStyles line : markdown) {
+                if (line.imageSource() != null) {
                     resized.add(line);
-                        continue;
-                    }
-                    if (line.tableRow()) {
-                        resized.add(line);
-                        continue;
-                    }
+                    continue;
+                }
+                if (line.tableRow()) {
+                    resized.add(line);
+                    continue;
+                }
                 Language.getInstance().getVisualOrder(font.getSplitter().splitLines(line.component() != null ? line.component() : Component.literal(""), maxTextLength, Style.EMPTY))
                         .forEach(sequence -> resized.add(line.codeBlock()
                                 ? ComponentUtils.getCodeLine(sequence)

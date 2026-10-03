@@ -2,12 +2,10 @@ package me.mmmjjkx.titlechanger.fabric.mixin;
 
 import com.mojang.blaze3d.platform.Window;
 import me.mmmjjkx.titlechanger.fabric.TitleChangerFabric;
+import me.mmmjjkx.titlechanger.utils.ImageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.main.GameConfig;
-import org.apache.commons.lang3.tuple.Triple;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWImage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,19 +14,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(Minecraft.class)
 public abstract class ClientMixin {
     @Shadow
     @Final
-    private Window window;
-
+    public Options options;
     @Shadow
     @Final
-    public Options options;
+    private Window window;
 
     @Inject(method = "updateTitle", at = @At("HEAD"), cancellable = true)
     public void updateTitleTC(CallbackInfo ci) {
@@ -38,7 +33,7 @@ public abstract class ClientMixin {
     }
 
     // It makes the title shows when the game window shown. Yay!
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;ZLjava/lang/String;Lcom/mojang/blaze3d/platform/MonitorManager;Lcom/mojang/blaze3d/systems/GpuBackend;)V"), index = 4)
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;ZLjava/lang/String;Lcom/mojang/blaze3d/platform/MonitorManager;Lcom/mojang/renderpearl/api/device/GpuBackend;I)V"), index = 4)
     private String startingSettings(String title) {
         if (!TitleChangerFabric.getConfig().generalSettings.enabled) {
             return title;
@@ -51,16 +46,9 @@ public abstract class ClientMixin {
     private void setup(GameConfig gameConfig, CallbackInfo ci) {
         CompletableFuture.runAsync(() -> {
             if (TitleChangerFabric.getConfig().iconSettings.enabled) {
-                Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerFabric.tryGetIcon();
+                ImageUtils.IconData icon = TitleChangerFabric.tryGetIcon();
                 if (icon != null) {
-                    IntBuffer w = icon.getMiddle();
-                    IntBuffer h = icon.getRight();
-                    try (GLFWImage.Buffer icons = GLFWImage.malloc(1)) {
-                        GLFWImage iconImage = icons.get(0);
-                        iconImage.set(w.get(0), h.get(0), icon.getLeft());
-
-                        GLFW.glfwSetWindowIcon(window.handle(), icons);
-                    }
+                    ImageUtils.setWindowIcon(icon);
                 }
             }
 

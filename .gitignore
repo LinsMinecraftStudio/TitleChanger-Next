@@ -45,3 +45,5 @@ bin/
 .dat_old
 /fabric/run/
 /neoforge/runs/
+
+dependency_sync.cache

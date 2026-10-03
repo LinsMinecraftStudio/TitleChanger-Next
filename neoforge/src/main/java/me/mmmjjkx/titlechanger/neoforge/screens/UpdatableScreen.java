@@ -1,5 +1,6 @@
 package me.mmmjjkx.titlechanger.neoforge.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import me.mmmjjkx.titlechanger.enums.UpdateCheckMode;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -11,21 +12,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class UpdatableScreen extends Screen {
-    protected final Consumer<UpdateCheckMode> callback;
+    protected final BiConsumer<Screen, UpdateCheckMode> callback;
     private final Component message;
     private final MultiLineTextWidget multilineMessage;
 
     protected Component yesButton;
     protected Component noButton;
 
-    public UpdatableScreen(Consumer<UpdateCheckMode> callback, String modpackName) {
+    public UpdatableScreen(BiConsumer<Screen, UpdateCheckMode> callback, String modpackName) {
         this(callback, Component.translatable("titlechanger.update-checker.available", modpackName), Component.translatable("titlechanger.update-checker.available.desc"), CommonComponents.GUI_YES, CommonComponents.GUI_NO);
     }
 
-    public UpdatableScreen(Consumer<UpdateCheckMode> callback, Component title, Component message, Component yesButton, Component noButton) {
+    public UpdatableScreen(BiConsumer<Screen, UpdateCheckMode> callback, Component title, Component message, Component yesButton, Component noButton) {
         super(title);
 
         this.callback = callback;
@@ -50,13 +51,13 @@ public class UpdatableScreen extends Screen {
 
     protected void addButtons(int y) {
         this.addRenderableWidget(
-                Button.builder(this.yesButton, _ -> this.callback.accept(UpdateCheckMode.ALLOW)).bounds(this.width / 2 - 60 - 125, y, 120, 20).build()
+                Button.builder(this.yesButton, _ -> this.callback.accept(this, UpdateCheckMode.ALLOW)).bounds(this.width / 2 - 60 - 125, y, 120, 20).build()
         );
         this.addRenderableWidget(
-                Button.builder(this.noButton, _ -> this.callback.accept(UpdateCheckMode.ALLOW_BUT_CANCEL)).bounds(this.width / 2 - 60 + 125, y, 120, 20).build()
+                Button.builder(this.noButton, _ -> this.callback.accept(this, UpdateCheckMode.ALLOW_BUT_CANCEL)).bounds(this.width / 2 - 60 + 125, y, 120, 20).build()
         );
         this.addRenderableWidget(
-                Button.builder(Component.translatable("titlechanger.update-checker.never"), _ -> this.callback.accept(UpdateCheckMode.NEVER)).bounds(this.width / 2 - 60, y, 120, 20).build()
+                Button.builder(Component.translatable("titlechanger.update-checker.never"), _ -> this.callback.accept(this, UpdateCheckMode.NEVER)).bounds(this.width / 2 - 60, y, 120, 20).build()
         );
     }
 
@@ -102,8 +103,8 @@ public class UpdatableScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.key() == 256) {
-            this.callback.accept(UpdateCheckMode.ALLOW_BUT_CANCEL);
+        if (event.key() == InputConstants.KEY_ESCAPE) {
+            this.callback.accept(this, UpdateCheckMode.ALLOW_BUT_CANCEL);
             return true;
         } else {
             return super.keyPressed(event);

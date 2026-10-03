@@ -15,6 +15,7 @@ import me.mmmjjkx.titlechanger.neoforge.screens.LaunchScreen;
 import me.mmmjjkx.titlechanger.neoforge.screens.UpdatableScreen;
 import me.mmmjjkx.titlechanger.utils.FileUtils;
 import me.mmmjjkx.titlechanger.utils.HttpUtils;
+import me.mmmjjkx.titlechanger.utils.ImageUtils;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.gui.ConfigScreenProvider;
@@ -22,10 +23,10 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -35,10 +36,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
@@ -46,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
@@ -62,12 +61,9 @@ public class TitleChangerNeoForge {
     public static final TitleProcessor titleProcessor = new TitleProcessor();
 
     public static final String HITOKOTO;
-
-    public static volatile String FINAL_TITLE = "";
-
     private static final Logger LOGGER = LoggerFactory.getLogger("TitleChanger");
     private static final File iconFolder = new File(FMLPaths.CONFIGDIR.get().toFile(), Constants.ICON_FOLDER);
-
+    public static volatile String FINAL_TITLE = "";
     private static LocalDateTime start;
 
     static {
@@ -90,16 +86,9 @@ public class TitleChangerNeoForge {
             }
 
             if (c.iconSettings.enabled) {
-                Triple<ByteBuffer, IntBuffer, IntBuffer> icon = TitleChangerNeoForge.tryGetIcon();
+                ImageUtils.IconData icon = TitleChangerNeoForge.tryGetIcon();
                 if (icon != null) {
-                    IntBuffer w = icon.getMiddle();
-                    IntBuffer h = icon.getRight();
-                    try (GLFWImage.Buffer icons = GLFWImage.malloc(1)) {
-                        GLFWImage iconImage = icons.get(0);
-                        iconImage.set(w.get(0), h.get(0), icon.getLeft());
-
-                        GLFW.glfwSetWindowIcon(Minecraft.getInstance().getWindow().handle(), icons);
-                    }
+                    ImageUtils.setWindowIcon(icon);
                 }
             }
 
@@ -108,14 +97,6 @@ public class TitleChangerNeoForge {
 
         HITOKOTO = HttpUtils.getHikotoko(I18n.get("titlechanger.error.hitokoto"));
         changeTitle();
-    }
-
-    private static void changeTitle() {
-        if (getConfig().generalSettings.randomTitle && !getConfig().generalSettings.randomTitles.isEmpty()) {
-            FINAL_TITLE = getConfig().generalSettings.randomTitles.get(new Random().nextInt(getConfig().generalSettings.randomTitles.size()));
-        } else {
-            FINAL_TITLE = getConfig().generalSettings.title;
-        }
     }
 
     public TitleChangerNeoForge(ModContainer modContainer) {
@@ -127,6 +108,14 @@ public class TitleChangerNeoForge {
 
             return provider.get();
         }));
+    }
+
+    private static void changeTitle() {
+        if (getConfig().generalSettings.randomTitle && !getConfig().generalSettings.randomTitles.isEmpty()) {
+            FINAL_TITLE = getConfig().generalSettings.randomTitles.get(new Random().nextInt(getConfig().generalSettings.randomTitles.size()));
+        } else {
+            FINAL_TITLE = getConfig().generalSettings.title;
+        }
     }
 
     public static TCConfig getConfig() {
@@ -146,7 +135,7 @@ public class TitleChangerNeoForge {
     }
 
     @Nullable
-    public static Triple<ByteBuffer, IntBuffer, IntBuffer> tryGetIcon() {
+    public static ImageUtils.IconData tryGetIcon() {
         if (getConfig().iconSettings.enabled) {
             boolean random = getConfig().iconSettings.randomIcons;
             String file;
@@ -182,7 +171,7 @@ public class TitleChangerNeoForge {
                     return null;
                 }
 
-                return Triple.of(icon, w, h);
+                return new ImageUtils.IconData(icon, w.get(0), h.get(0));
             } catch (IOException e) {
                 return null;
             }
@@ -235,9 +224,9 @@ public class TitleChangerNeoForge {
             if (getResourceSettings().checkUpdates && !checkUpdate) {
                 String ver = HttpUtils.getLatestModrinthVersion("neoforge", getResourceSettings().modrinthProjectId, SharedConstants.getCurrentVersion().name());
                 if (ver != null && !ver.equals(getResourceSettings().modpackVersion)) {
-                    e.setNewScreen(new UpdatableScreen(m -> {
+                    e.setNewScreen(new UpdatableScreen((s, m) -> {
                         if (m == UpdateCheckMode.ALLOW) {
-                            Util.getPlatform().openUri("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId);
+                            ConfirmLinkScreen.confirmLinkNow(s, URI.create("https://modrinth.com/project/" + getResourceSettings().modrinthProjectId));
                         }
 
                         if (m == UpdateCheckMode.NEVER) {

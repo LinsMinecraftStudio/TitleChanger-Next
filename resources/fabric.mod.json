@@ -34,12 +34,12 @@
   },
   "depends": {
     "fabricloader": ">=0.18.0",
-    "minecraft": ">=26.1",
+    "minecraft": ">=26.3",
     "cloth-config": "*"
   },
   "recommends": {
-    "modmenu": ">=17.0.0",
-    "placeholder-api": ">=3.0.0+26.1"
+    "modmenu": ">=21.0.0",
+    "placeholder-api": ">=3.2.0+26.3"
   },
   "mixins": [
     "titlechanger-fabric.mixins.json"

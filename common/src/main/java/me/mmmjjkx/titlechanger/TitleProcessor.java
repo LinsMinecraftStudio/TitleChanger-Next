@@ -81,7 +81,7 @@ public class TitleProcessor {
         }
 
         executor.scheduleAtFixedRate(() -> {
-            if (Minecraft.getInstance().getWindow().isFullscreen()) {
+            if (Minecraft.getInstance().options.fullscreen().get()) {
                 return;
             }
 

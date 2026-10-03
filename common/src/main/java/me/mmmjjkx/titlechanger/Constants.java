@@ -16,63 +16,63 @@ public class Constants {
 
     public static final String WELCOME_SCREEN_TEXT_DEFAULT = """
             [TITLE] Welcome to %modpackName%
-
+            
             This is a Markdown welcome screen. It supports *italic text*, **bold text**, ***bold italic text***,
             ~~strikethrough~~, `inline code`, and escaped characters such as \\*literal asterisks\\*.
-
+            
             <gradient=#ff5f6d,#ffc371>This is an inline gradient</gradient> with Markdown around it: **bold** and *italic*.
-
+            
             <center>This line is centered.</center>
             
             <right>This line is right-aligned.</right>
-
+            
             ## Alignment and gradient
-
+            
             <left>This line uses left alignment.</left>
-
+            
             <center>This line uses center alignment.</center>
             
             <right>This line uses right alignment.</right>
-
+            
             <center><gradient=#ff5f6d,#ffc371>Centered gradient text</gradient></center>
             
             <right>**Right-aligned bold text**</right>
             
             <left><gradient=#36d1dc,#5b86e5>Left-aligned blue gradient</gradient></left>
-
+            
             > This is a block quote written with Markdown.
-
+            
             ## Lists
-
+            
             - First unordered item
             - Second unordered item with **bold text**
               - Nested items are also accepted by CommonMark
-
+            
             1. First ordered item
             2. Second ordered item
-
+            
             ---
-
+            
             ## Links
-
+            
             - [Open the TitleChanger project](https://modrinth.com/mod/titlechanger-next)
             - [Open the welcome folder](file://config/titlechanger/welcome)
-
+            
             ## Tables
-
+            
             | Name | Value |
             | ---- | ----- |
             | Mod | TitleChanger |
             | Version | %modver:titlechanger% |
-
+            
             ## Images
-
+            
             Use a local file or a web URL with standard Markdown image syntax:
-
+            
             ![Local image](config/titlechanger/images/example.png)
             ![Example image](https://dummyimage.com/640x360/202020/ffffff.png&text=TitleChanger)
             ![Remote image](https://example.com/example.png)
-
+            
             ## Code Blocks
             ```java
             // This is a normal Markdown code block.
@@ -83,11 +83,11 @@ public class Constants {
               }
             }
             ```
-
+            
             ## Minecraft colors
-
+            
             The following are the 16 standard Minecraft chat colors:
-
+            
             - &0black
             - &1dark blue
             - &2dark green
@@ -106,10 +106,10 @@ public class Constants {
             - &fwhite
             
             ## Multi-language support
-
+            
             Create a localized file such as `welcome_text_zh_cn.txt` in the welcome folder.
             The default welcome text is used when a localized file does not exist.
-
+            
             **Note:** Clicking the `Done` button disables this welcome screen.
             """;
 

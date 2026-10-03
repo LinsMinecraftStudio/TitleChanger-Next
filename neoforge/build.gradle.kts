@@ -2,7 +2,7 @@ import java.util.*
 
 plugins {
     java
-    id("net.neoforged.gradle.userdev") version "7.1.38"
+    id("net.neoforged.gradle.userdev") version "7.1.39"
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.3"
     id("com.gradleup.shadow")
 }

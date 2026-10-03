@@ -8,16 +8,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.commonmark.Extension;
-import org.commonmark.node.*;
-import org.commonmark.parser.Parser;
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.ext.gfm.tables.TableBlock;
-import org.commonmark.ext.gfm.tables.TableCell;
-import org.commonmark.ext.gfm.tables.TableRow;
-import org.commonmark.ext.gfm.tables.TableHead;
-import org.commonmark.ext.gfm.tables.TableBody;
+import org.commonmark.ext.gfm.tables.*;
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
 
 import java.io.File;
 import java.net.URI;
@@ -53,10 +48,8 @@ public final class MarkdownUtils {
                 case OrderedList list -> renderList(list, null, list.getMarkerStartNumber(), 0, result, gameDirectory);
                 case ThematicBreak _ ->
                         result.add(ComponentUtils.getLine(Component.literal("--------------------").getVisualOrderText(), THeading.NONE, Alignment.LEFT));
-                case FencedCodeBlock codeBlock ->
-                        addCodeLines(codeBlock.getLiteral(), result);
-                case IndentedCodeBlock codeBlock ->
-                        addCodeLines(codeBlock.getLiteral(), result);
+                case FencedCodeBlock codeBlock -> addCodeLines(codeBlock.getLiteral(), result);
+                case IndentedCodeBlock codeBlock -> addCodeLines(codeBlock.getLiteral(), result);
                 default -> {
                 }
             }
@@ -130,14 +123,14 @@ public final class MarkdownUtils {
     }
 
     private static void renderTableRow(TableRow row, List<ComponentUtils.LineStyles> result, File gameDirectory) {
-            List<Component> cells = new ArrayList<>();
-            for (Node cell = row.getFirstChild(); cell != null; cell = cell.getNext()) {
-                if (cell instanceof TableCell tableCell) {
-                    Component content = renderChildren(tableCell, tableCell.isHeader() ? Style.EMPTY.withBold(true) : Style.EMPTY, gameDirectory);
-                    cells.add(content);
-                }
+        List<Component> cells = new ArrayList<>();
+        for (Node cell = row.getFirstChild(); cell != null; cell = cell.getNext()) {
+            if (cell instanceof TableCell tableCell) {
+                Component content = renderChildren(tableCell, tableCell.isHeader() ? Style.EMPTY.withBold(true) : Style.EMPTY, gameDirectory);
+                cells.add(content);
             }
-            result.add(ComponentUtils.getTableLine(cells));
+        }
+        result.add(ComponentUtils.getTableLine(cells));
     }
 
     private static void renderQuote(BlockQuote quote, List<ComponentUtils.LineStyles> result, File gameDirectory) {
@@ -169,8 +162,10 @@ public final class MarkdownUtils {
         }
         if (node instanceof StrongEmphasis strong) return renderChildren(strong, style.withBold(true), gameDirectory);
         if (node instanceof Emphasis emphasis) return renderChildren(emphasis, style.withItalic(true), gameDirectory);
-        if (node instanceof Strikethrough strike) return renderChildren(strike, style.withStrikethrough(true), gameDirectory);
-        if (node instanceof Code code) return Component.literal(code.getLiteral()).setStyle(style.withColor(ChatFormatting.GRAY));
+        if (node instanceof Strikethrough strike)
+            return renderChildren(strike, style.withStrikethrough(true), gameDirectory);
+        if (node instanceof Code code)
+            return Component.literal(code.getLiteral()).setStyle(style.withColor(ChatFormatting.GRAY));
         if (node instanceof Image) return Component.empty();
         if (node instanceof Link link) {
             try {
@@ -183,7 +178,8 @@ public final class MarkdownUtils {
                 return renderChildren(link, style, gameDirectory);
             }
         }
-        if (node instanceof SoftLineBreak || node instanceof HardLineBreak) return Component.literal("\n").setStyle(style);
+        if (node instanceof SoftLineBreak || node instanceof HardLineBreak)
+            return Component.literal("\n").setStyle(style);
         return renderChildren(node, style, gameDirectory);
     }
 
